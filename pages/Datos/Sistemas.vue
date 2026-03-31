@@ -1,0 +1,130 @@
+<script setup>
+import Form from "~/components/organism/Forms/Form.vue";
+import { ref, onMounted, watch, h, computed } from "vue";
+import { useSistemaActions } from "~/composables/Usuarios/Sistema.js";
+import { useSistemasBuilder } from "~/build/Sistemas/useSistemasBuilder";
+import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
+import { useSistemasStore } from "~/stores/Formularios/Sistemas/Sistema";
+import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
+
+const varView = useVarView();
+const notificaciones = useNotificacionesStore();
+const storeSistemas = useSistemasStore()
+const sistemas = ref([]);
+const refresh = ref(1);
+const active = ref(false);
+const isEditing = ref(false);
+
+async function llamadatos() {
+    sistemas.value = await storeSistemas.traer();
+    varView.datosActualizados()
+}
+
+const {
+    agregarSistema,
+    verSistema,
+    cerrar,
+    eliminarSistemas
+} = useSistemaActions({
+    storeSistemas,
+    varView,
+    notificaciones,
+    llamadatos,
+    refresh,
+    show: active,
+    isEditing
+});
+
+watch(() => active.value,
+    async (estado) => {
+        if (!estado && varView.cambioEnApi) {
+            await llamadatos();
+            refresh.value++;
+        }
+    }
+);
+
+onMounted(async () => {
+    sistemas.value = await storeSistemas.traer();
+    await llamadatos();
+    console.log(sistemas.value)
+});
+
+const propiedadesFormulario = computed(() => 
+  useSistemasBuilder({
+      storeId: "RegistroSistema",
+      storePinia: "Sistemas",
+      cerrar: cerrar,
+      active,
+      isEditing,
+  })
+)
+
+const columns = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'nombre', header: 'Nombre' },
+//   {
+//     accessorKey: 'componentes',
+//     header: 'componentes',
+//     cell: ({ row }) =>
+//       h('div', { class: 'max-w-[250px] truncate' }, row.getValue('componentes') || '-')
+//   },
+  {
+    id: 'actions',
+    cell: ({ row }) =>
+      h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row)
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost'
+            })
+        )
+      )
+  }
+]
+
+function getRowItems(row) {
+  const sistema = row.original
+  return [
+    { type: 'label', label: 'Acciones' },
+    {
+      label: 'Editar',
+      onSelect() {
+        verSistema(sistema)
+      }
+    },
+    { type: 'separator' },
+    {
+      label: 'Eliminar',
+      onSelect() {
+        eliminarSistemas(sistema)
+      }
+    }
+  ]
+}
+
+const propiedadesTabla = computed(() => {
+    return {
+        titulo: 'Gestionar Sistemas',
+        agregar: agregarSistema,
+        data: sistemas,
+        columns: columns,
+    }
+})
+</script>
+
+<template>
+    <FondoDefault>
+        <Form :Propiedades="propiedadesFormulario"></Form>
+        <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
+    </FondoDefault>
+</template>

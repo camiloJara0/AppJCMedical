@@ -1,0 +1,19 @@
+export default defineAppConfig({
+  ui: {
+    colors: {
+      primary: 'blue',
+      gray: 'stone',
+      muted: '#1f2937',
+    },
+    breadcrumb: {
+      slots: {
+        link: 'group relative flex items-center gap-1.5 text-sm min-w-0 focus-visible:outline-primary text-red-500'
+      },
+      variants: {
+        false: {
+          link: 'text-gray-400 font-medium'
+        }
+      }
+    }
+  }
+})
