@@ -1,31 +1,91 @@
 import { eliminarCita } from "~/Core/Citas/DeleteCitas";
 import { useCitasStore } from "~/stores/Formularios/citas/Cita";
+import { useEquiposStore } from '~/stores/Formularios/Equipos/Equipo';
+import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte';
+import { useSistemasStore } from '~/stores/Formularios/Sistemas/Sistema';
 
 export function useCitaActions({
-  stores,
-  varView,
-  notificaciones,
   llamadatos,
   refresh,
   show,
-  isEditing
+  isEditing,
+  fecha,
 }) {
 
   const store = useCitasStore()
-  
+  const citasStore = useCitasStore()
+  const reporteStore = useReporteStore()
+  const equipoStore = useEquiposStore()
+  const varView = useVarView()
+  const storeSistemas = useSistemasStore()
+
+  const notificacionesStore = useNotificacionesStore()
+  const {
+    alertRespuestaInput,
+    alertRespuesta,
+    simple,
+    mensaje,
+    options
+  } = notificacionesStore
+
+  function parseFechaISO(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d); // siempre local, sin UTC
+  }
+
   const agregarCita = () => {
-    show.value = true;
+    show = true;
     varView.soloVer = false;
     varView.isEditing = false
+    varView.showNuevaCita = true
   };
 
   const cerrar = () => {
-    show.value = false;
-    isEditing.value = false;
+    varView.showNuevaCita = false
+    show = false;
+    isEditing = false;
     varView.soloVer = true;
   };
 
-  const verCita = async (Cita) => {
+  /* =========================
+     CANCELAR CITA
+  ========================= */
+  async function cancelarCita(cita) {
+    console.log(cita)
+    store.Formulario.Cita = cita;
+    const Cita = store.Formulario.Cita;
+
+    options.icono = "warning"
+    options.titulo = "¿Deseas eliminar la Cita?"
+    options.html = `Se eliminará la Cita programada para: <span>${Cita.nombre_equipo}</span>`
+    options.confirmtext = "Sí, eliminar"
+    options.canceltext = "Atrás";
+
+    const respuesta = await alertRespuesta();
+
+    if (respuesta !== "confirmado") return;
+
+    const eliminado = await eliminarCita(Cita);
+
+    if (!eliminado) return;
+
+    options.position = "top-end",
+      options.texto = "Cita eliminada con éxito."
+    options.background = "#6bc517"
+    options.tiempo = 1500
+
+    mensaje();
+    options.background = "#d33";
+
+    cerrar();
+    await llamadatos();
+    refresh.value++;
+  }
+
+  /* =========================
+     ACTUALIZAR CITA
+  ========================= */
+  function actualizarCita(Cita) {
     store.Formulario.Cita.id = Cita.id;
     store.Formulario.Cita.tecnico_id = Cita.tecnico_id;
     store.Formulario.Cita.cliente_id = Cita.cliente_id;
@@ -34,50 +94,153 @@ export function useCitaActions({
     store.Formulario.Cita.fecha = Cita.fecha;
     store.Formulario.Cita.hora = Cita.hora;
     store.Formulario.Cita.estado = Cita.estado;
-    show.value = true
-    isEditing.value = true;
+    show = true
+    isEditing = true;
+    varView.showNuevaCita = true
     varView.isEditing = true
-  };
+  }
 
-  const eliminarCitas = async (cita) => {
-    store.Formulario.Cita = cita;
-    const Cita = store.Formulario.Cita;
+  /* =========================
+     MOSTRAR MOTIVOS
+  ========================= */
+  function showMotivoCancelacion(cita) {
+    options.icono = 'info'
+    options.titulo = 'Motivo de cancelacion'
+    options.texto = cita.motivo_cancelacion || 'Cita cancelada!'
+    options.tiempo = 5000
+    simple()
+  }
 
-    notificaciones.options = {
-      icono: "warning",
-      titulo: "¿Deseas eliminar la Cita?",
-      html: `Se eliminará la Cita programada para: <span>${Cita.fecha}</span>`,
-      confirmtext: "Sí, eliminar",
-      canceltext: "Atrás"
-    };
+  function showMotivoEdicion(cita) {
+    options.icono = 'info'
+    options.titulo = 'Motivo de edición'
+    options.texto = cita.motivo_edicion || 'La cita ha sido editada!'
+    options.tiempo = 5000
+    simple()
+  }
 
-    const respuesta = await notificaciones.alertRespuesta();
+  /* =========================
+     OBSERVACIÓN PROFESIONAL
+  ========================= */
+  async function showObservacion(cita) {
 
-    if (respuesta !== "confirmado") return;
+    options.icono = 'info'
+    options.titulo = 'Observacion del Profesional'
+    options.texto = 'Cita Realizada con exito!'
+    options.tiempo = 5000
+    simple()
+  }
 
-    const eliminado = await eliminarCita(Cita);
+  function normalizarFecha(fecha) {
+    const f = new Date(fecha);
+    f.setHours(0, 0, 0, 0); // fuerza a medianoche
+    return f;
+  }
 
-    if (!eliminado) return;
+  function parseFechaLocal(fechaStr) {
+    const [year, month, day] = fechaStr.split('-').map(Number);
+    return new Date(year, month - 1, day); // año, mes (0-based), día
+  }
 
-    notificaciones.options = {
-      position: "top-end",
-      texto: "Cita eliminada con éxito.",
-      background: "#6bc517",
-      tiempo: 1500
-    };
 
-    notificaciones.mensaje();
-    notificaciones.options.background = "#d33";
+  /* =========================
+     ACTIVAR CITA
+  ========================= */
+  async function activarCita(cita) {
+    const now = new Date()
+    const horaActual = now.toTimeString().slice(0, 5)
 
-    cerrar();
-    await llamadatos();
-    refresh.value++;
-  };
+    const fechaHoy = normalizarFecha(new Date());
+    const fechaHasta = parseFechaLocal(cita.fecha);
+
+    if (fechaHoy > fechaHasta) {
+      options.icono = 'warning'
+      options.titulo = 'Rango vencido'
+      options.texto = 'Consulta con un administrador para habilitar Cita!'
+      options.tiempo = 3000
+      simple()
+      return
+    }
+
+    let equipos = equipoStore.Equipos
+
+    const equipo = equipos.find(
+      p => p.id === cita.equipo_id
+    )
+
+    if (!equipo) {
+      options.icono = 'warning'
+      options.titulo = 'No se encontro el equipo'
+      options.texto = 'Verifica si existe en la lista de equipos.'
+      options.tiempo = 3000
+      simple()
+      return
+    }
+
+    prepararRegistro(cita, equipo)
+
+    // const servicios = await servicioStore.listServicios()
+    // varView.tipoConsulta = servicios.find(s => s.id === cita.id_servicio)
+
+    // if (!varView.tipoConsulta) {
+    //     options.icono = 'warning'
+    //     options.titulo = 'No se encontro el tipo de servicio'
+    //     options.tiempo = 3000
+    //     simple()
+    //     return
+    // }
+
+    resolverPlantilla(cita, equipo, horaActual)
+    varView.showNuevoRegistro = true
+  }
+
+  /* =========================
+     HELPERS INTERNOS
+  ========================= */
+  function prepararRegistro(cita, equipo) {
+    reporteStore.Formulario.equipo.nombre = cita.nombre_equipo
+    reporteStore.Formulario.equipo.id = equipo.id
+
+    reporteStore.Formulario.reporte.cita_id = cita.id
+    reporteStore.Formulario.reporte.tecnico_id = cita.tecnico_id
+    reporteStore.Formulario.reporte.cliente_id = cita.cliente_id
+    reporteStore.Formulario.reporte.equipo_id = cita.equipo_id
+    reporteStore.Formulario.reporte.tipo = cita.tipo
+    reporteStore.Formulario.reporte.estado = 'realizada'
+
+    reporteStore.Formulario.cita = { ...cita }
+  }
+
+  async function resolverPlantilla(cita, equipo, horaActual) {
+    const sistemas = await storeSistemas.traerSistemasPorEquipo(equipo.id);
+    const fechaForm = fecha?.value
+      ? fecha.value.split('/').reverse().join('-')
+      : cita.fecha
+
+    reporteStore.Formulario.reporte.fecha = fechaForm
+
+    const sistemasBuilder = sistemas.map(sistema => ({
+      id: sistema.id,
+      nombre: sistema.nombre,
+      componentes: sistema.componentes.map(c => ({
+        id: c.id,
+        nombre: c.nombre
+      }))
+    }))
+
+    varView.sistemasBuilder = sistemasBuilder
+
+  }
 
   return {
+    cancelarCita,
+    actualizarCita,
+    showMotivoCancelacion,
+    showMotivoEdicion,
+    showObservacion,
+    activarCita,
+    parseFechaISO,
     agregarCita,
-    verCita,
     cerrar,
-    eliminarCitas
-  };
+  }
 }

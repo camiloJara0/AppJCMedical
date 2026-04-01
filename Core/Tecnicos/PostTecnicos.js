@@ -6,14 +6,33 @@ export async function enviarTecnicos(isEditing, tecnico) {
         const url = isEditing ?
             `${config.public.api}/${config.public.tecnico}/${tecnico.id}` :
             `${config.public.api}/${config.public.tecnico}`
+
+        // Construir FormData
+        const formData = new FormData();
+        formData.append("nombre", tecnico.nombre);
+        formData.append("correo", tecnico.correo);
+        formData.append("telefono", tecnico.telefono);
+        formData.append("direccion", tecnico.direccion || '');
+
+        // Si hay imagen seleccionada
+        if (tecnico.sello) {
+            const blob = tecnico.sello
+            const fileImagen = new File([blob], "imagen.jpg", { type: blob.type });
+            formData.append("sello", fileImagen);
+        }
+
+        if (isEditing) {
+            // formData.append("_method", "PUT");
+            formData.append("id", producto.id);
+        }
+
         const response = await fetch(url, {
             method: method,
             headers: {
-                'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(tecnico)
+            body: formData
         });
 
         if (!response.ok) {

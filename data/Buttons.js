@@ -35,7 +35,7 @@ export const buttons = ref([
         secciones: [
             {
                 titulo: "Componentes",
-                ruta: '/Datos/Componentes'
+                ruta: '/Datos'
             },
             {
                 titulo: "Sistemas",
@@ -52,7 +52,7 @@ export const buttons = ref([
         secciones: [
             {
                 titulo: "Reportes",
-                ruta: '/Historial/Reportes'
+                ruta: '/Historial'
             },
             {
                 titulo: "Cotizaciones",
@@ -73,7 +73,7 @@ export const buttons = ref([
             },
             {
                 titulo: "Tecnicos",
-                ruta: '/Usuarios/Tecnicos'
+                ruta: '/Usuarios'
             },
             {
                 titulo: "Agenda",

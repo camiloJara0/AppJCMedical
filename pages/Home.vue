@@ -116,12 +116,12 @@ const rows = [
     </div>
 </div>
 
-  <div class="p-6 space-y-6 bg-gray-50 min-h-screen">
+  <div class="p-6 space-y-6 dark:text-gray-50 min-h-screen">
     <!-- Header -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Dashboard Biomédico</h1>
-        <p class="text-sm text-gray-500">Gestión de inventario, cotizaciones y mantenimientos</p>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Dashboard Biomédico</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-300">Gestión de inventario, cotizaciones y mantenimientos</p>
       </div>
       <UButton color="primary" label="Nueva Cotización" />
     </div>
@@ -131,7 +131,7 @@ const rows = [
       <UCard>
         <div class="flex justify-between">
           <div>
-            <p class="text-sm text-gray-500">Equipos Totales</p>
+            <p class="text-sm text-gray-500 dark:text-gray-300">Equipos Totales</p>
             <h2 class="text-2xl font-bold">128</h2>
           </div>
           <UIcon name="i-heroicons-cpu-chip" class="text-primary text-3xl" />
@@ -141,7 +141,7 @@ const rows = [
       <UCard>
         <div class="flex justify-between">
           <div>
-            <p class="text-sm text-gray-500">Mantenimientos Pendientes</p>
+            <p class="text-sm text-gray-500 dark:text-gray-300">Mantenimientos Pendientes</p>
             <h2 class="text-2xl font-bold text-warning">23</h2>
           </div>
           <UIcon name="i-heroicons-wrench-screwdriver" class="text-warning text-3xl" />
@@ -151,7 +151,7 @@ const rows = [
       <UCard>
         <div class="flex justify-between">
           <div>
-            <p class="text-sm text-gray-500">Cotizaciones Activas</p>
+            <p class="text-sm text-gray-500 dark:text-gray-300">Cotizaciones Activas</p>
             <h2 class="text-2xl font-bold text-info">15</h2>
           </div>
           <UIcon name="i-heroicons-document-text" class="text-info text-3xl" />
@@ -161,7 +161,7 @@ const rows = [
       <UCard>
         <div class="flex justify-between">
           <div>
-            <p class="text-sm text-gray-500">Equipos Críticos</p>
+            <p class="text-sm text-gray-500 dark:text-gray-300">Equipos Críticos</p>
             <h2 class="text-2xl font-bold text-danger">5</h2>
           </div>
           <UIcon name="i-heroicons-exclamation-triangle" class="text-danger text-3xl" />

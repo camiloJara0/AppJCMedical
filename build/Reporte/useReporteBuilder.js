@@ -18,7 +18,7 @@ export function useReporteBuilder({
         .setStorePinia(storePinia)
         .setFormularioFondo(true)
         .setFormularioShow(active)
-        .setFormularioTituloFormulario('Registrar Consulta')
+        .setFormularioTituloFormulario('Registrar Reporte de Mantenimiento')
         .setFormularioTipo('Wizard')
         .setFormulariotamaño('MD')
         .setBotones([
@@ -26,7 +26,7 @@ export function useReporteBuilder({
             { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
-        .nuevaSeccion('Registrar Reporte de equipo')
+        .nuevaSeccion('Checklist de componentes')
         for (let i = 0; i < sistemas.length; i++) {
 
             builder.addCampo({
@@ -116,7 +116,6 @@ export function useReporteBuilder({
             label: 'Actividades realizadas',
             placeholder: 'Descripcion de la actividad',
             vmodel: 'actividades',
-            tamaño: 'w-full cols-span-2'
         })
     return builder.build()
 }

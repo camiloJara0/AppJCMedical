@@ -5,6 +5,7 @@ import ButtonForm from '~/components/atoms/Buttons/ButtonForm.vue';
 
 import { useFormulario, mapCamposLimpios } from './useFormulario';
 import { cargarStore } from './componentLoader';
+import { isRef } from 'vue';
 
 const props = defineProps({
     Propiedades: {
@@ -13,6 +14,7 @@ const props = defineProps({
 });
 
 const tablaStore = await cargarStore(props.Propiedades.content.storePinia) || {}
+const varView = useVarView()
 
 const {
     traerDatos,
@@ -41,26 +43,25 @@ onMounted(() => {
     if (datosGuardados) Object.assign(tablaStore?.Formulario, datosGuardados)
 });
 
+function setFalse(target) {
+  if (isRef(target)) {
+    target.value = false
+  } else {
+    target = false
+  }
+}
+
 function limpiar() {
     mapCamposLimpios(tablaStore?.Formulario)
     localStorage.removeItem(props.Propiedades.content.storeId)
 
-    const show = props.Propiedades.formulario.show
+    setFalse(props.Propiedades.formulario.show)
+    varView.showNuevaCita = false
 
-    if (unref(show)) {
-        // Si es ref
-        if (show && typeof show === 'object' && 'value' in show) {
-            show.value = false
-        } else {
-            props.Propiedades.formulario.show = false
-        }
-    }
-
-    const cerrar = props.Propiedades.formulario.botones.filter(boton => {
-        return boton.type === 'cerrar'
-    })?.[0]
+    const cerrar = props.Propiedades.formulario.botones.find(
+        boton => boton.type === 'cerrar'
+    )
     cerrar?.accion()
-
 }
 
 </script>

@@ -74,7 +74,7 @@ function parseFechaISO(iso) {
 const diasConCitas = computed(() => {
     const arrayCitas = [];
     Citas.value.map((cita) => {
-        if (cita.estado === 'Inactiva') {
+        if (cita.estado === 'inactiva') {
             arrayCitas.push(cita.fecha.split('-').reverse().join('/'))
         }
     })
@@ -90,7 +90,7 @@ const diasVencidos = computed(() => {
 
         const fechaHoyC = parseFechaISO(new Date().toISOString().split('T')[0]);
         const fechaHasta = parseFechaISO(cita.fechaHasta);
-        if (cita.estado === 'Inactiva' && fechaHoyC > fechaHasta) {
+        if (cita.estado === 'inactiva' && fechaHoyC > fechaHasta) {
             arrayCitas.push(cita.fecha.split('-').reverse().join('/'))
         }
     })
@@ -102,7 +102,7 @@ const citasProximas = computed(() => {
     Citas.value.map((cita) => {
         const fechaHoyC = parseFechaISO(new Date().toISOString().split('T')[0]);
         const fecha = parseFechaISO(cita.fecha);
-        if (cita.estado === 'Inactiva' && fecha > fechaHoyC) {
+        if (cita.estado === 'inactiva' && fecha > fechaHoyC) {
             arrayCitas.push(cita.fecha.split('-').reverse().join('/'))
         }
     })

@@ -50,6 +50,10 @@ const {
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-lg">{{ props.Propiedades.titulo }}</h3>
                 <div class="flex gap-2">
+                    <UButton v-for="button in props.Propiedades.buttons" variant="soft" color="primary" loading-auto
+                        :trailing-icon="button.icon" size="md" @click="button.accion">
+                        {{ button.texto }}
+                    </UButton>
                     <UButton @click="() => { mostrarFiltros = !mostrarFiltros }" variant="solid" color="primary"
                         trailing-icon="lucide-list-filter" size="md">
                         Filtrar

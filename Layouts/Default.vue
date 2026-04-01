@@ -67,7 +67,7 @@ onUnmounted(() => {
         "navbar navbar"
         "aside main"
         "footer footer";
-    grid-template-rows: 60px 1fr 30px;
+    grid-template-rows: 52px 1fr 30px;
     min-height: 100vh;
     /* fallback */
     min-height: 100dvh;

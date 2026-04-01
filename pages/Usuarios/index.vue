@@ -62,52 +62,72 @@ const columns = [
     { accessorKey: 'nombre', header: 'Nombre' },
     { accessorKey: 'telefono', header: 'Teléfono' },
     { accessorKey: 'direccion', header: 'Dirección' },
-     {
+    {
+        accessorKey: 'estado',
+        header: 'Estado',
+        cell: ({ row }) => {
+            const estado = row.getValue('estado')
+
+            const color =
+                estado === 'activo'
+                    ? 'success'
+                    : estado === 'inactivo'
+                        ? 'neutral'
+                        : 'warning'
+
+            return h(
+                UBadge,
+                { variant: 'subtle', color, class: 'capitalize' },
+                () => estado
+            )
+        }
+    },
+    {
         id: 'actions',
         cell: ({ row }) =>
-        h(
-            'div',
-            { class: 'text-right' },
             h(
-            UDropdownMenu,
-            {
-                content: { align: 'end' },
-                items: getRowItems(row)
-            },
-            () =>
-                h(UButton, {
-                icon: 'i-lucide-ellipsis-vertical',
-                color: 'neutral',
-                variant: 'ghost'
-                })
+                'div',
+                { class: 'text-right' },
+                h(
+                    UDropdownMenu,
+                    {
+                        content: { align: 'end' },
+                        items: getRowItems(row)
+                    },
+                    () =>
+                        h(UButton, {
+                            icon: 'i-lucide-ellipsis-vertical',
+                            color: 'neutral',
+                            variant: 'ghost'
+                        })
+                )
             )
-        )
     },
 ]
 function getRowItems(row) {
-  const categoria = row.original
+    const categoria = row.original
 
-  return [
-    {
-      type: 'label',
-      label: 'Acciones'
-    },
-    {
-      label: 'Editar',
-      onSelect() {
-        verTecnico(categoria)
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Eliminar',
-      onSelect() {
-        eliminarTecnicos(categoria)
-      }
-    }
-  ]
+    return [
+        {
+            type: 'label',
+            label: 'Acciones'
+        },
+        {
+            label: 'Editar',
+            onSelect() {
+                verTecnico(categoria)
+            }
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Eliminar',
+            onSelect() {
+                eliminarTecnicos(categoria)
+            }
+        }
+    ]
 }
 
 const propiedadesTabla = computed(() => {
@@ -117,7 +137,7 @@ const propiedadesTabla = computed(() => {
         data: tecnicos,
         columns: columns,
         filtros: [
-            {columna: 'estado', placeholder: 'Estado'}
+            { columna: 'estado', placeholder: 'Estado' }
         ],
     }
 })

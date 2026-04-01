@@ -34,7 +34,7 @@ const breadcrumbItems = computed(() => {
 <template>
   <!-- Desktop View with Breadcrumb -->
   <div class="hidden md:flex items-center gap-1">
-    <UBreadcrumb :items="breadcrumbItems" class="text-gray-500" />
+    <UBreadcrumb :items="breadcrumbItems" :ui="{ link: 'text-gray-400 dark:text-gray-300 text-xs' }" />
   </div>
 
   <!-- Mobile View with Dropdown -->

@@ -1,4 +1,6 @@
 import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
+import { reducirImagen } from '~/Core/Productos/PostProductos';
+import { useTecnicosStore } from '~/stores/Formularios/Tecnicos/Tecnico';
 
 export function useTecnicosBuilder({
     storeId,
@@ -8,6 +10,7 @@ export function useTecnicosBuilder({
     cerrar
 }) {
     const builder = new FormularioBuilder()
+    const tecnicosStore = useTecnicosStore()
 
     return builder
         .setStoreId(storeId)
@@ -69,6 +72,21 @@ export function useTecnicosBuilder({
             name: 'direccion',
             tamaño: 'w-full',
             vmodel: 'Tecnico.direccion',
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'file',
+            label: 'Sello o Firma',
+            id: 'sello',
+            name: 'sello',
+            tamaño: 'w-full',
+            events: {
+                onChange: async (event) => {
+                    const file = event.target.files[0];
+                    const imagen = await reducirImagen(file)
+                    tecnicosStore.Formulario.Tecnico.sello = imagen
+                }
+            }
         })
         .build()
 }

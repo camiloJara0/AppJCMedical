@@ -39,7 +39,7 @@ export function useLoginBuilder({
       text: `
             <div class="flex flex-col justify-center items-center gap-1 pb-5">
                 <h3 class="text-white md:text-3xl text-xl font-bold">Ananké</h3>
-                <p class="text-gray-200 text-sm">Tu salud, nuestra prioridad</p>
+                <p class="text-gray-200 text-sm">Mantenimientos equipos biomédicos</p>
             </div>
         `,
       tamaño: 'w-full col-span-2 flex justify-center'

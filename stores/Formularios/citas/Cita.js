@@ -39,9 +39,15 @@ export const useCitasStore = defineStore('Citas', {
         },
 
         async traer(online = true, filtrar) {
+            const varView = useVarView()
             const citas = await traerCitas()
-            this.Citas = citas
-            return citas
+            let citasFiltradas = citas
+            if(varView.getRol === 'Tecnico') {
+                const user = varView.getUser
+                citasFiltradas = citas.filter(c => c.tecnico_id === user.tecnico_id)
+            }
+            this.Citas = citasFiltradas
+            return citasFiltradas
         }
     }
 });

@@ -78,7 +78,7 @@ export function useProductosBuilder({
         .addCampo({
             component: 'Input',
             type: 'file',
-            placeholder: 'Firma y Sello',
+            label: 'Imagen del Producto',
             id: 'sello',
             name: 'sello',
             tamaño: 'w-full cursor-pointer',

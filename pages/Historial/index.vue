@@ -113,6 +113,7 @@ const reporte = computed(() => storeReportes.Formulario)
                                     color="gray" 
                                     variant="ghost" 
                                     icon="i-lucide-printer"
+                                    loading-auto
                                     @click="imprimirReporte(reporte.Reporte?.id)"
                                 />
                                 <UButton 

@@ -73,7 +73,18 @@ export function useCitasBuilder({
             name: 'tipo',
             tamaño: 'w-full',
             vmodel: 'Cita.tipo',
-            options: ['Preventivo', 'Reparacion']
+            options: [
+                'Preventivo',
+                'Correctivo',
+                'Diagnóstico',
+                'Predictivo',
+                'Proactivo',
+                'Detectivo',
+                'Mantenimiento de emergencia',
+                'Mantenimiento rutinario',
+                'Mantenimiento mayor',
+                'Mantenimiento menor'
+            ]
         })
         .addCampo({
             component: 'Input',

@@ -38,7 +38,7 @@ console.log(datos)
 
                 const tokenEncrypt = encryptData(data.access_token);
                 const rolEncrypt = encryptData(data.user.rol);
-                const userEncrypt = encryptData(data.user.correo);
+                const userEncrypt = encryptData(data.user);
 
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('rol', rolEncrypt);
@@ -53,7 +53,7 @@ console.log(datos)
                     const cotizacion = localStorage.getItem('cotizacion')
                     window.location.href = cotizacion ? cotizacion : '/Home'
                 } else {
-                    window.location.href = '/'
+                    window.location.href = '/Citas'
                 }
 
                 notificacionesStore.close()

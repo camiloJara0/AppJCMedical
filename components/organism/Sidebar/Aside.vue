@@ -11,6 +11,11 @@ const footer = useSeccionFooter();
 
 onMounted(() => {
     storeAside.sessionActive();
+    const login = varView.getUser
+    console.log(login)
+    if(!login || Object.keys(login).length === 0) {
+        window.location.href = '/'
+    }
     const permisosStore = varView.getPermisos
     buttons.value = storeAside.getbuttons(permisosStore);
 });
@@ -151,10 +156,10 @@ function accesoRapidoSelected(nombre) {
                     <!-- Navegación por íconos -->
                     <nav class="flex md:flex-col flex-row items-center gap-6" @click="cambiarEstadoFalse()">
                         <!-- <ButtonAside v-for="button in buttons" :key="button.nombre" :data="button" /> -->
-                        <NuxtLink to="/Productos" @click="accesoRapidoSelected('Productos')">
-                            <ButtonRounded tooltip="Productos" tooltip-position="right"
+                        <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
+                            <ButtonRounded tooltip="Agenda" tooltip-position="right"
                                 color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-store text-lg"></i>
+                                <i class="fa-solid fa-calendar-day text-lg"></i>
                             </ButtonRounded>
                         </NuxtLink>
                         <NuxtLink to="/Cotizacion" @click="accesoRapidoSelected('Cotizaciones')">
@@ -163,22 +168,22 @@ function accesoRapidoSelected(nombre) {
                                 <i class="fa-solid fa-money-bill text-lg"></i>
                             </ButtonRounded>
                         </NuxtLink>
-                        <NuxtLink to="/Usuarios/Tecnicos" @click="accesoRapidoSelected('Tecnicos')">
+                        <NuxtLink to="/Usuarios" @click="accesoRapidoSelected('Tecnicos')">
                             <ButtonRounded tooltip="Tecnicos" tooltip-position="right"
                                 color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
                                 <i class="fa-solid fa-user-gear text-lg"></i>
                             </ButtonRounded>
                         </NuxtLink>
-                        <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
-                            <ButtonRounded tooltip="Agenda" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-calendar-day text-lg"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Historial/Reportes" @click="accesoRapidoSelected('Reportes')">
+                        <NuxtLink to="/Historial" @click="accesoRapidoSelected('Reportes')">
                             <ButtonRounded tooltip="Reportes" tooltip-position="right"
                                 color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
                                 <i class="fa-solid fa-file-lines text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                        <NuxtLink to="/Productos" @click="accesoRapidoSelected('Productos')">
+                            <ButtonRounded tooltip="Productos" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-store text-lg"></i>
                             </ButtonRounded>
                         </NuxtLink>
                     </nav>
@@ -231,78 +236,72 @@ function accesoRapidoSelected(nombre) {
                         <!-- Navegación por íconos -->
                         <div @click="cambiarEstadoFalse()">
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2"  to="/Categorias"
-                                @click="accesoRapidoSelected('Categorias')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Categorías</span>
-                                <i class="fa-solid fa-building text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Citas"
+                            @click="accesoRapidoSelected('Citas')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Agenda</span>
+                            <i class="fa-solid fa-calendar-day text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos"
-                                @click="accesoRapidoSelected('Productos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Productos</span>
-                                <i class="fa-solid fa-store text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Categorias"
+                            @click="accesoRapidoSelected('Categorias')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Categorías</span>
+                            <i class="fa-solid fa-building text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Cotizacion"
-                                @click="accesoRapidoSelected('Cotizaciones')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Cotizaciones</span>
-                                <i
-                                    class="fa-solid fa-money-bill text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Usuarios/Clientes"
+                            @click="accesoRapidoSelected('Clientes')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Clientes</span>
+                            <i class="fa-solid fa-users text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Usuarios/Tecnicos"
-                                @click="accesoRapidoSelected('Tecnicos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Técnicos</span>
-                                <i
-                                    class="fa-solid fa-user-gear text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos"
+                            @click="accesoRapidoSelected('Componentes')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Componentes</span>
+                            <i class="fa-solid fa-microchip text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Citas"
-                                @click="accesoRapidoSelected('Citas')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Agenda</span>
-                                <i
-                                    class="fa-solid fa-calendar-day text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Cotizacion"
+                            @click="accesoRapidoSelected('Cotizaciones')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Cotizaciones</span>
+                            <i class="fa-solid fa-money-bill text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Usuarios/Clientes"
-                                @click="accesoRapidoSelected('Clientes')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Clientes</span>
-                                <i class="fa-solid fa-users text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Equipos"
+                            @click="accesoRapidoSelected('Equipos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Equipos</span>
+                            <i class="fa-solid fa-desktop text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Tipo_equipos"
-                                @click="accesoRapidoSelected('TipoEquipos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Tipo Equipos</span>
-                                <i
-                                    class="fa-solid fa-screwdriver-wrench text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Historial"
+                            @click="accesoRapidoSelected('Reportes')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Reportes</span>
+                            <i class="fa-solid fa-file-lines text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Equipos"
-                                @click="accesoRapidoSelected('Equipos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Equipos</span>
-                                <i class="fa-solid fa-desktop text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos/Sistemas"
+                            @click="accesoRapidoSelected('Sistemas')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Sistemas</span>
+                            <i class="fa-solid fa-network-wired text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos/Sistemas"
-                                @click="accesoRapidoSelected('Sistemas')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Sistemas</span>
-                                <i
-                                    class="fa-solid fa-network-wired text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Tipo_equipos"
+                            @click="accesoRapidoSelected('TipoEquipos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Tipo Equipos</span>
+                            <i class="fa-solid fa-screwdriver-wrench text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos/Componentes"
-                                @click="accesoRapidoSelected('Componentes')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Componentes</span>
-                                <i
-                                    class="fa-solid fa-microchip text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Usuarios"
+                            @click="accesoRapidoSelected('Tecnicos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Técnicos</span>
+                            <i class="fa-solid fa-user-gear text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
 
-                            <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Historial/Reportes"
-                                @click="accesoRapidoSelected('Reportes')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Reportes</span>
-                                <i
-                                    class="fa-solid fa-file-lines text-lg text-gray-400 dark:text-gray-600 transition"></i>
-                            </NuxtLink>
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos"
+                            @click="accesoRapidoSelected('Productos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Productos</span>
+                            <i class="fa-solid fa-store text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
                         </div>
                     </div>
 
