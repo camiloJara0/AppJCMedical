@@ -8,13 +8,15 @@ const storeAside = useButtonsAside();
 const buttons = ref([]);
 const varView = useVarView()
 const footer = useSeccionFooter();
+const router = useRouter()
+
 
 onMounted(() => {
     storeAside.sessionActive();
     const login = varView.getUser
     console.log(login)
     if(!login || Object.keys(login).length === 0) {
-        window.location.href = '/'
+        router.push('/Home')
     }
     const permisosStore = varView.getPermisos
     buttons.value = storeAside.getbuttons(permisosStore);

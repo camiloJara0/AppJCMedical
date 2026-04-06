@@ -86,6 +86,11 @@ export async function cargarStore(storeName) {
       tablaStore = useUsuariosStore();
       break;
     }
+    case 'Rol': {
+      const { useRolStore } = await import('~/stores/Formularios/Roles/rol');
+      tablaStore = useRolStore();
+      break;
+    }
     default:
       console.warn(`Store "${storeName}" no reconocido.`);
       break;

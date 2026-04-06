@@ -14,6 +14,8 @@ export const useApiRest = defineStore('apiRest', {
             const notificacionesStore = useNotificacionesStore()
             const config = useRuntimeConfig()
             const varView = useVarView()
+            const router = useRouter()
+
             this.baseUrl = config.public.api // URL API
 
             if (!opcion || !opcion.metodo) {
@@ -79,7 +81,7 @@ export const useApiRest = defineStore('apiRest', {
                         notificacionesStore.options.texto = 'Vuelve a ingresar con tu contraseña';
                         notificacionesStore.options.tiempo = 5000;
                         await notificacionesStore.simple();
-                        window.location.href = '/';
+                        router.push('/Home');
                         varView.permisoTemporal = null;
                         return
                     }
@@ -111,7 +113,7 @@ export const useApiRest = defineStore('apiRest', {
                         await notificacionesStore.simple();
 
                         // Redirigir al login
-                        window.location.href = '/';
+                        router.push('/Home');
                         return;
                     }
 

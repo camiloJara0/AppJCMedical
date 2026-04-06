@@ -4,12 +4,7 @@ export default defineNuxtConfig({
   ssr: false,
   nitro: { preset: 'static' },
   css: ['~/assets/css/main.css'],
-  modules: [
-    '@nuxt/ui',
-    '@pinia/nuxt',
-    '@nuxtjs/color-mode',
-    'nuxt-charts'
-  ],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/color-mode', 'nuxt-charts', '@vite-pwa/nuxt'],
   colorMode: { preference: 'system', classSuffix: '' },
   runtimeConfig: {
     public: {
@@ -26,66 +21,13 @@ export default defineNuxtConfig({
       componente: 'api/componente',
       cita: 'api/cita',
       reporte: 'api/reporte',
+      rol: 'api/rol',
+      secciones: 'api/secciones',
 
       cambiarContraseña: 'api/cambiarContraseña',
       cambiarContraseñaPrimerVez: 'api/cambiarContraseñaPrimerVez',
       recuperarContraseña: 'api/recuperarContraseña',
       primerIngreso: 'api/primerIngreso',
-
-      // eps: 'api/v1/eps',
-      // professions: 'api/v1/professions',
-      // empresas: 'api/v1/empresas',
-      // users: 'api/v1/users',
-      // pacientes: 'api/v1/pacientes',
-      // profesionals: 'api/v1/profesionals',
-      // informacionUsers: 'api/v1/informacionUsers',
-      // citas: 'api/v1/citas',
-      // citasHoy: 'api/v1/citasHoy',
-      // citasPorRango: 'api/v1/citasPorRango',
-      // citasPaginadas: 'api/v1/citasPaginadas',
-      // citasFiltradas: 'api/v1/citasFiltradas',
-      // historiasClinicas: 'api/v1/historiasClinicas',
-      // historiasNutricion: 'api/v1/historiasClinicasNutricion',
-      // historiasClinicasTrabajoSocial: 'api/v1/historiasClinicasTrabajoSocial',
-      // historiasClinicasNota: 'api/v1/historiasClinicasNota',
-      // analisis: 'api/v1/analisis',
-      // examenFisicos: 'api/v1/examenFisicos',
-      // planManejoMedicamentos: 'api/v1/planManejoMedicamentos',
-      // planManejoProcedimientos: 'api/v1/planManejoProcedimientos',
-      // planManejoEquipos: 'api/v1/planManejoEquipos',
-      // planManejoInsumos: 'api/v1/planManejoInsumos',
-      // antecedentes: 'api/v1/antecedentes',
-      // diagnosticos: 'api/v1/diagnosticos',
-      // diagnosticosCIF: 'api/v1/diagnosticosCIF',
-      // notas: 'api/v1/notas',
-      // descripcionNotas: 'api/v1/descripcionNotas',
-      // software: 'api/v1/software',
-      // facturaciones: 'api/v1/facturaciones',
-      // enfermedades: 'api/v1/enfermedades',
-      // secciones: 'api/v1/secciones',
-      // cambiarContraseña: 'api/v1/cambiarContraseña',
-      // cambiarContraseñaPrimerVez: 'api/v1/cambiarContraseñaPrimerVez',
-      // recuperarContraseña: 'api/v1/recuperarContraseña',
-      // primerIngreso: 'api/v1/primerIngreso',
-      // diasAsignadosRestantes: 'api/v1/diasAsignadosRestantes',
-      // terapias: 'api/v1/terapias',
-      // servicios: 'api/v1/servicios',
-      // administradores: 'api/v1/administradores',
-      // cie10: 'api/v1/cie10',
-      // insumos: 'api/v1/insumos',
-      // movimientos: 'api/v1/movimientos',
-      // dashboard: 'api/v1/dashboard',
-      // traeDatosHistoria: 'api/v1/traeDatosHistoria',
-      // traeDatosPlanManejo: 'api/v1/traeDatosPlanManejo',
-      // traePacientes: 'api/v1/traePacientes',
-      // traeKardex: 'api/v1/traeKardex',
-      // traeProfesionales: 'api/v1/traeProfesionales',
-      // kardex: 'api/v1/kardex',
-      // historialCambioSonda: 'api/v1/historialCambioSonda',
-      // profesionalHasPermisos: 'api/v1/profesionalHasPermisos',
-      // solicitarPermiso:  'api/v1/solicitarPermiso',
-      // celdaColors: 'api/v1/celdaColors',
-      // importarInsumos: 'api/v1/importarInsumos',
     }
   },
   app: {
@@ -95,9 +37,37 @@ export default defineNuxtConfig({
        ]
     },
   },
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'ANANKE APP',
+      short_name: 'ANANKE',
+      theme_color: '#2262a3',
+      background_color: '#ffffff',
+      display: 'standalone',
+      icons: [
+        {
+          src: '/logo.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/cruz.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
+      globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+     navigateFallback: '/index.html',
+    navigateFallbackAllowlist: [/^\/$/,/^\/.+/],
+
+    },
+    devOptions: {
+      enabled: true
+    }
+  }
 });
-
-
-
-
-

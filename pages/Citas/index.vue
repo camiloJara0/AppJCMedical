@@ -12,7 +12,6 @@ import { CardBuilder } from '~/build/Constructores/CardBuilder'
 import { TablaBuilder } from '~/build/Constructores/TablaBuilder'
 import { useCitaActions } from '~/composables/Usuarios/Cita'
 import { useSistemasStore } from '~/stores/Formularios/Sistemas/Sistema'
-import Tabla from '~/components/atoms/html/Tabla.vue'
 import TablaNuxt from '~/components/organism/Table/TablaNuxt.vue'
 import FondoDefault from '~/components/atoms/Fondos/FondoDefault.vue'
 import { eliminarCita } from '~/Core/Citas/DeleteCitas'
@@ -64,7 +63,7 @@ async function llamadatos() {
     varView.datosActualizados()
 }
 // Watch para actualizar citas al agregar nueva
-watch(() => show.value,
+watch(() => varView.showNuevaCita,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
             await llamadatos();
@@ -293,9 +292,9 @@ const propiedades = computed(() => {
 
 const columns = [
     { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'tecnico_id', header: 'Técnico' },
-    { accessorKey: 'cliente_id', header: 'Cliente' },
-    { accessorKey: 'equipo_id', header: 'Equipo' },
+    { accessorKey: 'nombre_tecnico', header: 'Técnico' },
+    { accessorKey: 'nombre_cliente', header: 'Cliente' },
+    { accessorKey: 'nombre_equipo', header: 'Equipo' },
     { accessorKey: 'tipo', header: 'Tipo' },
     { accessorKey: 'fecha', header: 'Fecha' },
     { accessorKey: 'hora', header: 'Hora' },
@@ -306,11 +305,11 @@ const columns = [
             const estado = row.getValue('estado')
 
             const color =
-                estado === 'activo'
+                estado === 'realizada'
                     ? 'success'
                     : estado === 'inactivo'
                         ? 'neutral'
-                        : 'warning'
+                        : 'error'
 
             return h(
                 UBadge,

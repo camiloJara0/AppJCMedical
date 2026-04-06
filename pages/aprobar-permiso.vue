@@ -5,6 +5,7 @@ import { decryptData } from '~/composables/Formulario/crypto';
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
+
 const {
   options,
   simple,
@@ -20,7 +21,7 @@ onMounted(async () => {
 
   // ❌ No logueado → login
   if (!varView.getRol || varView.getRol === '') {
-    window.location.href = '/'
+    router.push('/')
   }
 
   try {
@@ -32,7 +33,7 @@ onMounted(async () => {
       options.texto = 'Rol de usuario sin permiso';
       options.tiempo = 5000;
       await simple();
-      window.location.href = '/'
+      router.push('/Home')
       return
     }
 

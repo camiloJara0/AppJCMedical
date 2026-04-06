@@ -19,6 +19,8 @@ const cotizaciones = ref([]);
 const refresh = ref(1);
 const config = useRuntimeConfig()
 const backendUrl = config.public.api
+const router = useRouter()
+
 
 const active = ref(false);
 const isEditing = ref(false);
@@ -68,7 +70,7 @@ onMounted(async () => {
         options.tiempo = 1500,
         mensaje()
         localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
-        window.location.href = '/'
+        router.push('/Cotizacion')
     }
 
     await llamadatos()

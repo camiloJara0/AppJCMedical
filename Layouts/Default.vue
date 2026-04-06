@@ -1,4 +1,5 @@
 <template>
+    
     <div class="containerMain transition-[grid-template-columns] duration-300 ease-in-out"
         :class="{ 'grid-cols-[180px_1fr]': varView.expandido, 'grid-cols-[20px_1fr]': !varView.expandido }">
         <Loader v-if="varView.cargando"></Loader>
@@ -15,6 +16,7 @@
         </div>
         <Footer></Footer>
     </div>
+    
 </template>
 
 <script setup>
@@ -29,6 +31,7 @@ import Permiso from '~/components/molecules/Spinner/Permiso.vue';
 import LoaderPorcentaje from '~/components/molecules/Spinner/LoaderPorcentaje.vue';
 
 const varView = useVarView();
+const { $pwa } = useNuxtApp()
 
 function manejarCambioRed() {
     const ahora = Date.now();
@@ -43,6 +46,10 @@ function manejarCambioRed() {
 }
 
 onMounted(async() => {
+      if ($pwa?.isPWAInstalled) {
+    console.log('La app ya está instalada como PWA')
+  }
+
     window.addEventListener('online', manejarCambioRed);
     // Opcional: iniciar si ya está en línea al cargar
     if (navigator.onLine) {

@@ -7,8 +7,9 @@ export const login = async (datos) => {
     const notificacionesStore = useNotificacionesStore();
     const api = useApiRest();
     const config = useRuntimeConfig()
+    const router = useRouter()
     const varView = useVarView();
-console.log(datos)
+
     const online = navigator.onLine;
     if (online) {
         try {
@@ -51,9 +52,9 @@ console.log(datos)
 
                 if(data.user.rol === 'Admin'){
                     const cotizacion = localStorage.getItem('cotizacion')
-                    window.location.href = cotizacion ? cotizacion : '/Home'
+                    router.push( cotizacion ? cotizacion : '/Home')
                 } else {
-                    window.location.href = '/Citas'
+                    router.push('/Citas')
                 }
 
                 notificacionesStore.close()

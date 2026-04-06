@@ -4,6 +4,8 @@
 <template>
       <UApp>
             <NuxtLayout>
+                  <NuxtPwaManifest />
+                  <NuxtPwaAssets />
                   <NuxtPage />
             </NuxtLayout>
       </UApp>
