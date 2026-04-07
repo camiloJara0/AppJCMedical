@@ -1,11 +1,24 @@
 export async function enviarReporte(data) {
     try {
-        console.log(data)
+        const varView = useVarView()
         data.componentes = Object.entries(data.componentes).map(([id, value]) => ({
             componente_id: id,
             estado: value.estado,
             observacion: value.observacion,
         }));
+
+        data.materiales = data.materiales.filter(d => {
+            return d && Object.values(d).some(v => v !== '' && v != null);
+        });
+        data.mediciones = data.mediciones.filter(d => {
+            return d && Object.values(d).some(v => v !== '' && v != null);
+        });
+        data.repuestos = data.repuestos.filter(d => {
+            return d && Object.values(d).some(v => v !== '' && v != null);
+        });
+        data.accesorios = data.accesorios.filter(d => {
+            return d && Object.values(d).some(v => v !== '' && v != null);
+        });
 
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
@@ -25,6 +38,8 @@ export async function enviarReporte(data) {
 
         const dataRes = await response.json();
         console.log(dataRes)
+        varView.propiedadesPDF = dataRes.ids.Reporte.id
+        varView.showPDFServicio = true
         return true;
     } catch (error) {
         console.error('Error al enviar componente:', error);

@@ -195,7 +195,7 @@ function changeShowPendientes() {
 
                         <UBadge :color="cita.estado === 'realizada' ? 'success' :
                                 cita.estado === 'cancelada' ? 'error' :
-                                    'warning'
+                                    'neutral'
                             " variant="soft" class="capitalize">
                             {{ cita.estado }}
                         </UBadge>

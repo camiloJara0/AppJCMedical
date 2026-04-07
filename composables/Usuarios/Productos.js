@@ -35,6 +35,7 @@ export function useProductoActions({
 
   const verProducto = async (Producto) => {
     mapCampos(Producto, store.Formulario.Producto);
+    store.Formulario.Producto.imagen = ''
 
     store.Formulario.Producto.id = Producto.id;
     isEditing.value = true;
@@ -46,7 +47,8 @@ export function useProductoActions({
      ELIMINAR Producto
   =============================== */
 
-  const eliminarProductosModal = async () => {
+  const eliminarProductosModal = async (producto) => {
+    store.Formulario.Producto = producto
     const Producto = store.Formulario.Producto;
 
     notificaciones.options = {

@@ -23,7 +23,7 @@ export async function enviarTecnicos(isEditing, tecnico) {
 
         if (isEditing) {
             // formData.append("_method", "PUT");
-            formData.append("id", producto.id);
+            formData.append("id", tecnico.id);
         }
 
         const response = await fetch(url, {

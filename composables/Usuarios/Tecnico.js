@@ -31,6 +31,7 @@ export function useTecnicoActions({
     store.Formulario.Tecnico.nombre = Tecnico.nombre;
     store.Formulario.Tecnico.telefono = Tecnico.telefono;
     store.Formulario.Tecnico.direccion = Tecnico.direccion;
+    store.Formulario.Tecnico.correo = Tecnico.correo;
     show.value = true
     isEditing.value = true;
     varView.isEditing = true

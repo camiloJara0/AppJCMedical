@@ -1,0 +1,127 @@
+<script setup lang="ts">
+// Props compatibles con NuxtUI 3.3.7
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
+  id: String,
+  name: String,
+  required: Boolean,
+  disabled: Boolean,
+  color: {
+    type: String,
+    default: 'primary'
+  },
+  variant: {
+    type: String,
+    default: 'outline'
+  },
+  size: {
+    type: String,
+    default: 'md'
+  },
+  Propiedades: {
+    type: Object,
+    default: () => ({})
+  }
+});
+
+const emit = defineEmits(['update:modelValue', 'blur', 'change']);
+
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+let ctx: CanvasRenderingContext2D | null = null;
+let drawing = false;
+
+onMounted(() => {
+  if (canvasRef.value) {
+    ctx = canvasRef.value.getContext('2d');
+    if (ctx) {
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+    }
+  }
+});
+
+const startDrawing = (event: MouseEvent | TouchEvent) => {
+  drawing = true;
+  ctx?.beginPath();
+  const { x, y } = getCoordinates(event);
+  ctx?.moveTo(x, y);
+};
+
+const draw = (event: MouseEvent | TouchEvent) => {
+  if (!drawing || !ctx) return;
+  const { x, y } = getCoordinates(event);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+};
+
+const stopDrawing = () => {
+  drawing = false;
+  if (canvasRef.value) {
+    const dataUrl = canvasRef.value.toDataURL('image/png');
+    emit('update:modelValue', dataUrl);
+    emit('change', dataUrl);
+  }
+};
+
+const clearCanvas = () => {
+  if (canvasRef.value && ctx) {
+    ctx.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+    emit('update:modelValue', '');
+  }
+};
+
+const getCoordinates = (event: MouseEvent | TouchEvent) => {
+  if (!canvasRef.value) return { x: 0, y: 0 };
+  const rect = canvasRef.value.getBoundingClientRect();
+  if (event instanceof MouseEvent) {
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  } else {
+    const touch = event.touches[0];
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+  }
+};
+</script>
+
+<template>
+  <div class="w-full" :class="Propiedades.tamaño">
+    <UFormField
+      v-if="Propiedades.label || Propiedades.name"
+      :label="Propiedades.label"
+      :name="Propiedades.name"
+    >
+      <div
+        class="border rounded-md p-2 flex flex-col gap-2"
+        :class="[`u-${variant}`, `u-${color}`, `u-${size}`]"
+      >
+        <canvas
+          ref="canvasRef"
+          width="400"
+          height="200"
+          class="border border-gray-300 rounded-md cursor-crosshair"
+          @mousedown="startDrawing"
+          @mousemove="draw"
+          @mouseup="stopDrawing"
+          @mouseleave="stopDrawing"
+          @touchstart.prevent="startDrawing"
+          @touchmove.prevent="draw"
+          @touchend.prevent="stopDrawing"
+        ></canvas>
+
+        <div class="flex gap-2">
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            @click="clearCanvas"
+          >
+            Limpiar
+          </UButton>
+        </div>
+      </div>
+    </UFormField>
+  </div>
+</template>

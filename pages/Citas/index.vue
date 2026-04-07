@@ -307,7 +307,7 @@ const columns = [
             const color =
                 estado === 'realizada'
                     ? 'success'
-                    : estado === 'inactivo'
+                    : estado === 'inactiva'
                         ? 'neutral'
                         : 'error'
 
@@ -346,6 +346,12 @@ function getRowItems(row) {
     return [
         { type: 'label', label: 'Acciones' },
         {
+            label: 'Realizar',
+            onSelect() {
+                activarCita(cita)
+            }
+        },
+        {
             label: 'Editar',
             onSelect() {
                 actualizarCita(cita)
@@ -364,10 +370,15 @@ function getRowItems(row) {
 const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestionar Citas',
+        agregar: agregarCita,
         data: citas,
         columns: columns,
         buttons: [
             { icon: 'lucide-table', accion: showFila, texto: 'En lista'}
+        ],
+        filtros: [
+            {columna: 'estado', placeholder: 'Estado'},
+            {columna: 'tipo', placeholder: 'Tipo'},
         ]
     }
 })

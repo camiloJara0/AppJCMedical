@@ -23,9 +23,11 @@ export const useReporteStore = defineStore('Reportes', {
             materiales: [],
             mediciones: [],
             repuestos: [],
+            accesorios: [],
             actividades: '',
             cita: {},
-            reporte: {}
+            reporte: {},
+            firma: ''
         },
         ReporteSeleccionado: null,
     }),

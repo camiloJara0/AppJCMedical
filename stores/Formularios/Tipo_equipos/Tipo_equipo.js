@@ -9,7 +9,8 @@ export const useTipo_equiposStore = defineStore('Tipo_equipos', {
         Formulario: {
             Tipo_equipo: {
                 id: '',
-                nombre: ''
+                nombre: '',
+                sistemas: ''
             }
         },
         Tipo_equipoSeleccionado: null,

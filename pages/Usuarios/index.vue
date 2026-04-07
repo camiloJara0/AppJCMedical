@@ -266,7 +266,5 @@ const propiedadesTablaRol = computed(() => {
     <FondoDefault>
         <TablaNuxt :Propiedades="propiedadesTabla" />
         <Form :Propiedades="propiedadesFormulario" />
-        <Form :Propiedades="propiedadesFormularioRol" />
-        <TablaNuxt :Propiedades="propiedadesTablaRol" class="mt-3" />
     </FondoDefault>
 </template>

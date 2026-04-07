@@ -165,7 +165,7 @@ function getRowItems(row) {
             label: 'Acciones'
         },
         {
-            label: 'Editar',
+            label: 'Responder',
             onSelect() {
                 console.log('editar', cotizacion)
                 verCotizacion(cotizacion)

@@ -22,7 +22,7 @@ export function useReporteBuilder({
         .setFormularioTipo('Wizard')
         .setFormulariotamaño('MD')
         .setBotones([
-            { type: 'enviar', text: 'Enviar', color: 'primary'},
+            { type: 'enviar', text: 'Siguiente', color: 'primary'},
             { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
@@ -74,6 +74,19 @@ export function useReporteBuilder({
 
         builder.addCampo({
             component: 'GroupCampos',
+            labelGroup: 'Accesorios con los que cuenta',
+            value: [],
+            vmodel: 'accesorios',
+            buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '', estado: '' } }],
+            campos: [
+                { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del accesorio' },
+                { typeCampo: 'Select', label: 'Estado', key: 'estado', name: 'estado', placeholder: 'Selecciona el estado', options: ['Bueno', 'Malo'] },
+            ],
+            containerCampos: 'grid grid-cols-2 gap-3'
+        })
+
+        builder.addCampo({
+            component: 'GroupCampos',
             labelGroup: 'Materiales Utilizados',
             value: [],
             vmodel: 'materiales',
@@ -81,7 +94,8 @@ export function useReporteBuilder({
             campos: [
                 { typeCampo: 'Input', type: 'number', label: 'Cantidad', key: 'cantidad', name: 'cantidad', placeholder: '0' },
                 { typeCampo: 'Input', type: 'text', label: 'Descripción', key: 'descripcion', name: 'descripcion', placeholder: 'Descripcion' }
-            ]
+            ],
+            containerCampos: 'grid grid-cols-2 gap-3'
         })
 
         builder.addCampo({
@@ -91,11 +105,12 @@ export function useReporteBuilder({
             vmodel: 'mediciones',
             buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { variable: '', unidad: '', valor_medido: '', valor_esperado: '' } }],
             campos: [
-                { typeCampo: 'Input', type: 'text', label: 'Variable', key: 'Variable', name: 'variable', placeholder: '0' },
-                { typeCampo: 'Input', type: 'text', label: 'Unidad', key: 'unidad', name: 'unidad', placeholder: '0' },
+                { typeCampo: 'Input', type: 'text', label: 'Variable', key: 'Variable', name: 'variable', placeholder: 'Neumatico' },
+                { typeCampo: 'Input', type: 'text', label: 'Unidad', key: 'unidad', name: 'unidad', placeholder: 'Centimetro' },
                 { typeCampo: 'Input', type: 'number', label: 'Valor Medido', key: 'valorMedidio', name: 'valor_medido', placeholder: '0' },
                 { typeCampo: 'Input', type: 'number', label: 'Valor Esperado', key: 'valorEsperado', name: 'valor_esperado', placeholder: '0' },
-            ]
+            ],
+            containerCampos: 'grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3'
         })
 
         builder.addCampo({
@@ -116,6 +131,18 @@ export function useReporteBuilder({
             label: 'Actividades realizadas',
             placeholder: 'Descripcion de la actividad',
             vmodel: 'actividades',
+            tamaño: 'col-span-2 w-full',
+            rows: 5
+        })
+
+        builder.addCampo({
+            component: 'Dibujo',
+            label: 'Realizado por, Dibuja tu firma',
+            placeholder: 'Descripcion de la actividad',
+            vmodel: 'actividades',
+            tamaño: ' w-full',
+            rows: 5,
+            vmodel: 'firma'
         })
     return builder.build()
 }

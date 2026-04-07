@@ -16,12 +16,12 @@ onMounted(async () => {
 });
 
 // PDF
-async function exportarServicioPDF(data) {
+async function exportarServicioPDF(id) {
     try {
         varView.cargando = true
         const config = useRuntimeConfig()
-        const token = decryptData(localStorage.getItem('token'))
-        const res = await fetch(`${config.public.api}/api/v1/${data.servicio}/${data.id}/pdf`, {
+        const token = localStorage.getItem('token')
+        const res = await fetch(`${config.public.api}/api/reporte/${id}/pdf`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -38,7 +38,7 @@ async function exportarServicioPDF(data) {
 
         // Leer el nombre desde el header
         const disposition = res.headers.get('Content-Disposition');
-        let fileName = `${varView.propiedadesPDF.servicio}`;
+        let fileName = `reporte_${id}.pdf`;
         if (disposition) {
             const match = disposition.match(/filename\*?=(?:UTF-8''|")?([^";]+)/);
             if (match && match[1]) {
@@ -87,7 +87,7 @@ const cerrarPDF = () => {
 
             <!-- Encabezado -->
             <div class="bg-(--color-default) px-5 py-2 flex justify-between items-center">
-                <h3 class="text-white text-lg font-semibold">📄 Documento cargado para vista previa</h3>
+                <h3 class="text-white text-lg font-semibold">Documento cargado para vista previa</h3>
 
                 <div class="flex gap-1">
                     <!-- Botón de descarga -->

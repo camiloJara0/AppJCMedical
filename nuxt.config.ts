@@ -13,6 +13,7 @@ export default defineNuxtConfig({
       api: 'http://127.0.0.1:8000',
       login: 'api/login',
       categoria: 'api/categorias',
+      productos: 'api/productos',
       cliente: 'api/cliente',
       equipo: 'api/equipo',
       tecnico: 'api/tecnico',

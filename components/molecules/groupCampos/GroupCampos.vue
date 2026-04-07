@@ -203,7 +203,7 @@ const itemsCompletos = computed(() =>
                 <ButtonRounded v-if="Propiedades.labelGroup && !Propiedades.disabled" @click="showCampos = !showCampos" color="w-7.5 h-7.5 flex justify-center items-center gap-1 hover:bg-gray-200 
                             hover:dark:bg-gray-700 bg-inherit cursor-pointer rounded-full" tooltip="Desplegar/ocultar">
                     <i class="fa-solid text-blue-700 font-bold"
-                        :class="{ 'fa-angle-up': showCampos, 'fa-angle-down': !showCampos }">
+                        :class="{ 'fa-angle-up': showCampos, 'fa-plus': !showCampos }">
                     </i>
                 </ButtonRounded>
             </div>
@@ -241,8 +241,8 @@ const itemsCompletos = computed(() =>
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : 'bg-gray-300 text-gray-700 cursor-not-allowed'
                 ]" :disabled="!isFormValid()">
-                    <i class="fa-solid fa-plus"></i>
                     {{ editIndex !== null ? 'Actualizar' : 'Guardar' }}
+                    <i class="fa-solid fa-floppy-disk ml-1"></i>
                 </button>
 
             </div>
@@ -254,7 +254,7 @@ const itemsCompletos = computed(() =>
                 <thead class="bg-gray-200 dark:bg-gray-600">
                     <tr>
                         <th v-for="campo in Propiedades.campos" :key="campo.name" class="px-3 py-2 text-left">
-                            {{ campo.placeholder }}
+                            {{ campo.label }}
                         </th>
                         <th v-if="!Propiedades.disabled" class="px-3 py-2 text-center">Acciones</th>
                     </tr>

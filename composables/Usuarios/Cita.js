@@ -54,6 +54,7 @@ export function useCitaActions({
     console.log(cita)
     store.Formulario.Cita = cita;
     const Cita = store.Formulario.Cita;
+    varView.showActualizarCita = true
 
     options.icono = "warning"
     options.titulo = "¿Deseas eliminar la Cita?"
@@ -63,14 +64,17 @@ export function useCitaActions({
 
     const respuesta = await alertRespuesta();
 
-    if (respuesta !== "confirmado") return;
+    if (respuesta !== "confirmado") {
+      varView.showActualizarCita = false
+      return
+    };
 
     const eliminado = await eliminarCita(Cita);
 
     if (!eliminado) return;
 
     options.position = "top-end",
-      options.texto = "Cita eliminada con éxito."
+    options.texto = "Cita eliminada con éxito."
     options.background = "#6bc517"
     options.tiempo = 1500
 

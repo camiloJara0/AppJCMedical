@@ -16,6 +16,7 @@ export function loadComponent(name) {
     Card: () => import('~/components/molecules/Cards/Card.vue'),
     Button: () => import('~/components/atoms/Buttons/Button.vue'),
     Radio: () => import('~/components/atoms/RadioButtons/RadioButton.vue'),
+    Dibujo: () => import('~/components/atoms/Canva/Dibujo.vue')
   };
 
   const loader = componentMap[name];
