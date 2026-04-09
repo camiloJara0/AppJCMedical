@@ -8,8 +8,9 @@ import Select from '../atoms/Selects/Select.vue';
 
 import { watch, reactive, ref } from 'vue'
 import { decryptData } from '~/composables/Formulario/crypto';
-import { usePacientesStore } from '~/stores/Formularios/paciente/Paciente';
-import { useMedicosStore } from '~/stores/Formularios/profesional/Profesionales';
+import { useClientesStore } from '~/stores/Formularios/Clientes';
+import { useTecnicosStore } from '~/stores/Formularios/Tecnicos/Tecnico';
+import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte';
 
 const varView = useVarView()
 const notificacionesStore = useNotificacionesStore();
@@ -32,16 +33,16 @@ const props = defineProps({
 const generandoPDFs = ref(false);
 const cancelarPDFs = ref(false);
 const progreso = ref(0);
-const pacientesStore = usePacientesStore()
-const profesionalStore = useMedicosStore()
+const clienteStore = useClientesStore()
+const tecnicoStore = useTecnicosStore()
+const reporteStore = useReporteStore()
 const calendarioCitasStore = useCalendarioCitas();
 
 const file = reactive({
     fechaInicio: '',
     fechaFin: '',
-    id_paciente: varView.id_pacientePDF,
-    id_profesional: '',
-    servicio: varView.servicioPDF,
+    id_cliente: '',
+    id_tecnico: '',
 });
 
 const camposRequeridos = [
@@ -88,7 +89,7 @@ const validarform = () => {
 };
 
 // Filtrar análisis por rango de fechas
-const filtrarAnalisisPorFecha = (analisis, historias, notas, terapias, servicio, fechaInicio, fechaFin, id_paciente = '', id_profesional = '') => {
+const filtrarReportePorFecha = (reportes, fechaInicio, fechaFin, id_cliente = '', id_tecnico = '') => {
     const inicio = new Date(fechaInicio);
     inicio.setHours(0, 0, 0, 0); // incluir desde el inicio del día
 
@@ -96,29 +97,14 @@ const filtrarAnalisisPorFecha = (analisis, historias, notas, terapias, servicio,
     fin.setHours(23, 59, 59, 999); // incluir hasta el final del día
 
     const resultado = [];
-    for (const item of analisis) {
-        let fechaCreacion = '';
-
-        if (servicio === 'Nota') {
-            const nota = notas.find(n => n.id_analisis === item.id);
-            if (!nota) continue;
-            fechaCreacion = new Date(nota.fecha_nota);
-        } else if (servicio === 'Terapia') {
-            const terapia = terapias.find(n => n.id_analisis === item.id);
-            if (!terapia) continue;
-            fechaCreacion = new Date(terapia.fecha);
-        } else {
-            fechaCreacion = new Date(item.created_at);
-        }
-
-        const id_paciente_analisis = historias.find(h => h.id === item.id_historia)?.id_paciente;
+    for (const item of reportes) {
+        let fechaCreacion = item.fecha;
 
         const condicionFecha = fechaCreacion >= inicio && fechaCreacion <= fin;
-        const condicionProfesional = id_profesional ? parseInt(id_profesional) === parseInt(item.id_medico) : true;
-        const condicionPaciente = id_paciente ? parseInt(id_paciente) === parseInt(id_paciente_analisis) : true;
-        const condicionServicio = servicio === item.servicio;
+        const condicionTecnico = id_tecnico ? parseInt(id_tecnico) === parseInt(item.tecnico_id) : true;
+        const condicionCliente = id_cliente ? parseInt(id_cliente) === parseInt(item.cliente_id) : true;
 
-        if (condicionFecha && condicionProfesional && condicionPaciente && condicionServicio) {
+        if (condicionFecha && condicionTecnico && condicionCliente) {
             resultado.push(item);
         }
     }
@@ -134,38 +120,19 @@ const enviarPDFs = async () => {
 
         // Cargar datos necesarios
         varView.cargando = true;
-        await apiRest.getData('Analisis', 'analisis');
-        await apiRest.getData('HistoriaClinica', 'historiasClinicas');
+        const reportes = reporteStore.traer()
         varView.cargando = false;
 
-        store.almacen = 'Analisis';
-        let analisisData = await store.leerdatos();
-
-        store.almacen = 'HistoriaClinica';
-        let historiasData = await store.leerdatos();
-        let notas = []
-        let terapias = []
-
-        if (file.servicio === 'Nota' || varView.servicioPDF === 'Nota') {
-            notas = await apiRest.getData('Nota', 'notas');
-        } else if (file.servicio === 'Terapia' || varView.servicioPDF === 'Terapia') {
-            terapias = await apiRest.getData('Terapia', 'terapias');
-        }
-
-        // Filtrar análisis por rango de fechas
-        const analisisFiltrados = filtrarAnalisisPorFecha(
-            analisisData,
-            historiasData,
-            notas,
-            terapias,
-            file.servicio || varView.servicioPDF,
+        // Filtrar reportes por rango de fechas
+        const reportesFiltrados = filtrarReportePorFecha(
+            reportes,
             file.fechaInicio,
             file.fechaFin,
-            file.id_paciente || varView.id_pacientePDF,
-            file.id_profesional
+            file.id_cliente,
+            file.id_tecnico
         );
 
-        if (analisisFiltrados.length === 0) {
+        if (reportesFiltrados.length === 0) {
             options.position = 'top-end';
             options.background = '#d33'
             options.texto = "No se encontraron registros en el rango de fechas especificado";
@@ -175,10 +142,10 @@ const enviarPDFs = async () => {
             return;
         }
 
-        const totalAnalisis = analisisFiltrados.length;
-        const token = decryptData(localStorage.getItem('token'))
+        const totalReportes = reportesFiltrados.length;
+        const token = localStorage.getItem('token')
         // Generar y descargar PDFs secuencialmente
-        for (let i = 0; i < analisisFiltrados.length; i++) {
+        for (let i = 0; i < reportesFiltrados.length; i++) {
             // 🔹 Verificar si se canceló
             if (cancelarPDFs.value) {
                 varView.showExportarPDFs = false
@@ -190,11 +157,11 @@ const enviarPDFs = async () => {
                 break;
             }
 
-            const analisis = analisisFiltrados[i];
+            const reporte = reportesFiltrados[i];
 
 
             try {
-                const res = await fetch(`${config.public.api}/api/v1/${file.servicio}/${analisis.id}/pdf`, {
+                const res = await fetch(`${config.public.api}/api/reporte/${reporte.id}/pdf`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -208,12 +175,9 @@ const enviarPDFs = async () => {
                 const blob = await res.blob();
                 const url = window.URL.createObjectURL(blob);
 
-                // Opcion de abrimos el PDF en una nueva pestaña sin descargar
-                // window.open(url, '_blank');
-
                 // Leer el nombre desde el header
                 const disposition = res.headers.get('Content-Disposition');
-                let fileName = `${varView.servicioPDF || file.servicio}_${analisis.id}.pdf`;
+                let fileName = `reporte_${reporte.id}.pdf`;
                 if (disposition) {
                 const match = disposition.match(/filename\*?=(?:UTF-8''|")?([^";]+)/);
                 if (match && match[1]) {
@@ -234,7 +198,7 @@ const enviarPDFs = async () => {
                 // Pausa entre descargas
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                progreso.value = Math.round(((i + 1) / totalAnalisis) * 100);
+                progreso.value = Math.round(((i + 1) / totalReportes) * 100);
             } catch (err) {
                 console.error("Error al obtener el PDF:", err);
             }
@@ -243,7 +207,7 @@ const enviarPDFs = async () => {
         // Si no se canceló, mostramos mensaje de éxito
         if (!cancelarPDFs.value) {
             options.position = 'top-end';
-            options.texto = `${totalAnalisis} PDFs generados y descargados exitosamente`;
+            options.texto = `${totalReportes} PDFs generados y descargados exitosamente`;
             options.background = '#22c55e';
             options.tiempo = 2000;
             mensaje();
@@ -281,23 +245,6 @@ const enviarPDFs = async () => {
                             <p class="text-lg font-medium text-gray-700 dark:text-gray-300">Rango de Fechas</p>
                         </div>
 
-                        <!-- Select servicio -->
-                        <div class="pb-3" v-if="!varView.onlyPaciente">
-                            <Select v-model="file.servicio" :Propiedades="{
-                                placeholder: 'Servicio',
-                                id: 'servicio',
-                                name: 'servicio',
-                                label: 'Elige el Servicio',
-                                options: [
-                                    { text: 'Nota', value: 'Nota' },
-                                    { text: 'Terapia', value: 'Terapia' },
-                                    { text: 'Evolución', value: 'Evolucion' },
-                                    { text: 'Trabajo Social', value: 'Trabajo Social' },
-                                    { text: 'Medicina', value: 'Medicina' }
-                                ]
-                            }" />
-                        </div>
-
                         <!-- Inputs fechas -->
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
                             <Input v-model="file.fechaInicio" :Propiedades="{
@@ -317,36 +264,28 @@ const enviarPDFs = async () => {
                         </div>
 
                         <!-- Filtros -->
-                        <div v-if="!varView.onlyPaciente">
+                        <div>
                             <div class="flex items-center gap-2 mt-5">
                                 <i class="fa-solid fa-filter text-green-500"></i>
                                 <p class="text-base font-medium text-gray-700 dark:text-gray-300">Filtrar por:</p>
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-4 mt-3">
-                                <SelectSearch v-model="varView.pacientePDF" :Propiedades="{
-                                    placeholder: 'Paciente (opcional)',
+                                <SelectSearch v-model="file.id_cliente" :Propiedades="{
+                                    placeholder: 'Cliente (opcional)',
                                     tamaño: 'w-full',
-                                    id: 'paciente',
-                                    name: 'paciente',
-                                    label: 'Filtrar Paciente (opcional)',
-                                    options: pacientesStore.Pacientes,
-                                    opciones: [{ value: 'name' }, { text: 'Cédula', value: 'No_document' }],
-                                    seleccionarItem: (item) => {
-                                        file.id_paciente = item.id_paciente
-                                    },
+                                    id: 'Cliente',
+                                    name: 'Cliente',
+                                    label: 'Filtrar Cliente (opcional)',
+                                    options: clienteStore.Clientes,
                                     upperCase: true,
                                 }" />
-                                <SelectSearch v-model="file.profesionalPDF" :Propiedades="{
-                                    placeholder: 'Profesional (opcional)',
+                                <SelectSearch v-model="file.id_tecnico" :Propiedades="{
+                                    placeholder: 'Tecnico (opcional)',
                                     tamaño: 'w-full',
-                                    id: 'profesional',
-                                    name: 'profesional',
-                                    label: 'Filtrar Profesional (opcional)',
-                                    options: profesionalStore.Medicos,
-                                    opciones: [{ value: 'name' }, { text: 'Cédula', value: 'No_document' }],
-                                    seleccionarItem: (item) => {
-                                        file.id_profesional = item.id_profesional
-                                    },
+                                    id: 'Tecnico',
+                                    name: 'Tecnico',
+                                    label: 'Filtrar Tecnico (opcional)',
+                                    options: tecnicoStore.Tecnicos,
                                     upperCase: true,
                                 }" />
                             </div>
@@ -368,13 +307,13 @@ const enviarPDFs = async () => {
                     <!-- Botones -->
                     <div class="w-full flex justify-center items-center gap-4 px-4 mt-6">
                         <ButtonForm
-                            color="bg-gray-500 hover:bg-gray-600 text-white font-semibold md:w-[200px] sm:w-[2/3] w-full shadow-md transition-all duration-300"
+                            class="bg-gray-500 hover:bg-gray-600 text-white font-semibold md:w-50 sm:w-[2/3] w-full shadow-md transition-all duration-300" color="primary"
                             @click="cerrar">
                             <i class="fa-solid fa-xmark mr-2"></i> {{ cancelarPDFs ? 'Cancelando...' : 'Cancelar' }}
                         </ButtonForm>
 
                         <ButtonForm
-                            color="bg-blue-600 hover:bg-blue-700 text-white font-semibold md:w-[200px] sm:w-[2/3] w-full shadow-md transition-all duration-300"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold md:w-50 sm:w-[2/3] w-full shadow-md transition-all duration-300" color="primary"
                             @click="validarform" :disabled="generandoPDFs">
                             <i class="fa-solid fa-file-export mr-2"></i> {{ generandoPDFs ? 'Procesando...' : 'Generar'
                             }}

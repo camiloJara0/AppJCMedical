@@ -6,6 +6,7 @@ import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
 import FondoBlur from "~/components/atoms/Fondos/FondoBlur.vue";
 import { imprimirReporte } from "~/Core/Reportes/ImpirmirReporte";
+import ExportarPDFs from "~/components/paginas/ExportarPDFs.vue";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
@@ -85,11 +86,17 @@ const columns = [
 
 const propiedadesTabla = computed(() => {
     return {
-        titulo: 'Reportes de Equipos',
+        titulo: 'Reportes de Mantenimientos',
         data: reportes,
         columns: columns,
+        excel: true,
+        buttons: [
+            { texto: 'Exportar', icon: 'lucide-file-text', accion: () => {varView.showExportarPDFs = true}}
+        ],
         filtros: [
-            {columna: 'estado', placeholder: 'Estado'}
+            { columna: 'fecha_mes', columnaReal: 'fecha', placeholder: 'Mes', tipo: 'mes' },
+            { columna: 'fecha_año', columnaReal: 'fecha', placeholder: 'Año', tipo: 'año' },
+            {columna: 'estado', placeholder: 'Estado'},
         ],
     }
 })
@@ -278,4 +285,5 @@ const reporte = computed(() => storeReportes.Formulario)
             </div>
         </FondoBlur>
     </FondoDefault>
+    <ExportarPDFs v-if="varView.showExportarPDFs"></ExportarPDFs>
 </template>

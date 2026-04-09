@@ -145,7 +145,7 @@ const propiedadesTabla = computed(() => {
         data: tipo_equipos,
         columns: columns,
         filtros: [
-            {columna: 'estado', placeholder: 'Estado'}
+            {columna: 'estado', placeholder: 'Estado', value: 'activo'}
         ],
     }
 })

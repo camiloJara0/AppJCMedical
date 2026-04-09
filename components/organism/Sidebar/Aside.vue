@@ -1,5 +1,4 @@
 <script setup>
-import ButtonAside from './ButtonAside.vue';
 import { useShowNavbar } from '~/stores/navbarResponsive.js';
 import { useButtonsAside } from '~/stores/ButtonActive';
 import ButtonRounded from '~/components/atoms/Buttons/ButtonRounded.vue';
@@ -9,17 +8,17 @@ const buttons = ref([]);
 const varView = useVarView()
 const footer = useSeccionFooter();
 const router = useRouter()
-
+const rol = ref('')
 
 onMounted(() => {
     storeAside.sessionActive();
     const login = varView.getUser
-    console.log(login)
+    rol.value = varView.getRol
     if(!login || Object.keys(login).length === 0) {
-        router.push('/Home')
+        router.push('/')
     }
     const permisosStore = varView.getPermisos
-    buttons.value = storeAside.getbuttons(permisosStore);
+    buttons.value = storeAside.getbuttons(rol.value);
 });
 
 // Funcion para Responsive, si aside esta activo se oculta navbar
@@ -34,7 +33,6 @@ function accesoRapidoSelected(nombre) {
     switch (nombre) {
         case 'Categorias': {
             const button = buttons.value.find(btn => btn.nombre === 'Productos');
-            console.log(button, buttons.value);
             if (button) {
                 console.log(button.secciones);
                 footer.cambiarSecciones(button.secciones);
@@ -156,7 +154,7 @@ function accesoRapidoSelected(nombre) {
                     </ButtonRounded>
 
                     <!-- Navegación por íconos -->
-                    <nav class="flex md:flex-col flex-row items-center gap-6" @click="cambiarEstadoFalse()">
+                    <nav v-if="rol == 'Admin'" class="flex md:flex-col flex-row items-center gap-6" @click="cambiarEstadoFalse()">
                         <!-- <ButtonAside v-for="button in buttons" :key="button.nombre" :data="button" /> -->
                         <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
                             <ButtonRounded tooltip="Agenda" tooltip-position="right"
@@ -190,6 +188,40 @@ function accesoRapidoSelected(nombre) {
                         </NuxtLink>
                     </nav>
 
+                    <nav v-else class="flex md:flex-col flex-row items-center gap-6" @click="cambiarEstadoFalse()">
+                        <!-- <ButtonAside v-for="button in buttons" :key="button.nombre" :data="button" /> -->
+                        <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
+                            <ButtonRounded tooltip="Agenda" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-calendar-day text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                        <NuxtLink to="/Datos" @click="accesoRapidoSelected('Componentes')">
+                            <ButtonRounded tooltip="Componentes" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-microchip text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                        <NuxtLink to="/Datos/Sistemas" @click="accesoRapidoSelected('Sistemas')">
+                            <ButtonRounded tooltip="Sistemas" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-network-wired text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                        <NuxtLink to="/Historial" @click="accesoRapidoSelected('Reportes')">
+                            <ButtonRounded tooltip="Reportes" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-file-lines text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                        <NuxtLink to="/Productos/Equipos" @click="accesoRapidoSelected('Equipos')">
+                            <ButtonRounded tooltip="Equipos" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-white md:text-gray-300 md:dark:text-black transition py-5">
+                                <i class="fa-solid fa-desktop text-lg"></i>
+                            </ButtonRounded>
+                        </NuxtLink>
+                    </nav>
+
                     <!-- Perfil / Logout -->
                     <a href="/" class="flex-col items-center gap-3 md:flex flex-none">
                         <i
@@ -217,26 +249,8 @@ function accesoRapidoSelected(nombre) {
                         <p class="text-gray-400 dark:text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">
                             Secciones</p>
 
-                        <!-- Items dinámicos -->
-                        <!-- <div v-for="button in buttons" :key="button.nombre"
-                        @click="() => { storeAside.activeButton(button.id); footer.cambiarIdActivo(0) }"
-                        class="menu-item py-2 border-b border-gray-600 dark:border-gray-100 rounded-md transition">
-                        <a class="flex items-center justify-between gap-2 mb-2"
-                            :href="`/${button.nombre}/${button.secciones[0].titulo}`"
-                            @click="footer.cambiarSecciones(button.secciones)">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">{{
-                                button.nombre }}</span>
-                            <i class="fa-solid text-lg text-gray-400 dark:text-gray-600 transition"
-                                :class="button.icon"></i>
-                        </a>
-                    </div> -->
-
-                        <!-- Sección Explorar -->
-                        <!-- <p class="text-gray-400 dark:text-gray-500 text-xs font-semibold uppercase tracking-wider my-2">
-                        Acceso Rapido</p> -->
-
                         <!-- Navegación por íconos -->
-                        <div @click="cambiarEstadoFalse()">
+                        <div v-if="rol == 'Admin'" @click="cambiarEstadoFalse()">
 
                         <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Citas"
                             @click="accesoRapidoSelected('Citas')">
@@ -302,6 +316,46 @@ function accesoRapidoSelected(nombre) {
                             @click="accesoRapidoSelected('Productos')">
                             <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Productos</span>
                             <i class="fa-solid fa-store text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        </div>
+
+                        <div v-else @click="cambiarEstadoFalse()">
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Citas"
+                            @click="accesoRapidoSelected('Citas')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Agenda</span>
+                            <i class="fa-solid fa-calendar-day text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos"
+                            @click="accesoRapidoSelected('Componentes')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Componentes</span>
+                            <i class="fa-solid fa-microchip text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Equipos"
+                            @click="accesoRapidoSelected('Equipos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Equipos</span>
+                            <i class="fa-solid fa-desktop text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Historial"
+                            @click="accesoRapidoSelected('Reportes')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Reportes</span>
+                            <i class="fa-solid fa-file-lines text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Datos/Sistemas"
+                            @click="accesoRapidoSelected('Sistemas')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Sistemas</span>
+                            <i class="fa-solid fa-network-wired text-lg text-gray-400 dark:text-gray-600 transition"></i>
+                        </NuxtLink>
+
+                        <NuxtLink class="flex items-center justify-between gap-2 py-2" to="/Productos/Tipo_equipos"
+                            @click="accesoRapidoSelected('TipoEquipos')">
+                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Tipo Equipos</span>
+                            <i class="fa-solid fa-screwdriver-wrench text-lg text-gray-400 dark:text-gray-600 transition"></i>
                         </NuxtLink>
 
                         </div>

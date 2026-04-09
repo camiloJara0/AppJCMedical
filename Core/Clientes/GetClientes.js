@@ -13,6 +13,7 @@ export async function traerClientes() {
     });
 
     if (!response.ok) {
+      
       throw new Error(`Error en la petición: ${response.status}`);
     }
 

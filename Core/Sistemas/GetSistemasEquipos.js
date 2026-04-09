@@ -12,6 +12,7 @@ export async function traerSistemasEquipos(id) {
     });
 
     if (!response.ok) {
+      
       throw new Error(`Error en la petición: ${response.status}`);
     }
 

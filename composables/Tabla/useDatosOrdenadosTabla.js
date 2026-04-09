@@ -10,6 +10,10 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
     const indiceBusquedaGlobal = ref([]);
     const cacheOrdenes = {};
 
+    columnas.forEach(col => {
+        filtros.value[col.columna] = col.value ?? '';  // si existe col.value lo asigna
+    });
+
     watch(datos, (nuevosDatos) => {
         // Reindexar cada vez que cambian los datos
         if (!nuevosDatos || nuevosDatos.length === 0) return;
@@ -72,7 +76,7 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
         const filtroFecha = { mes: null, año: null };
 
         for (const [columna, valorFiltro] of Object.entries(filtros.value)) {
-            if (valorFiltro && valorFiltro !== "") {
+            if (valorFiltro && valorFiltro !== "" && valorFiltro !== "all") {
                 columnaOrden.value = '';
                 menorAMayor.value = true;
                 Object.keys(cacheOrdenes).forEach(k => delete cacheOrdenes[k]);

@@ -12,6 +12,7 @@ export async function traerSecciones() {
     });
 
     if (!response.ok) {
+      
       throw new Error(`Error en la petición: ${response.status}`);
     }
 

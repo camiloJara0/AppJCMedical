@@ -30,20 +30,22 @@ const mergedProps = computed(() => {
 
 <template>
   <!-- Usar UButton de NuxtUI -->
-  <UButton
-    :icon="mergedProps.icon"
-    :color="mergedProps.color"
-    :variant="mergedProps.variant"
-    :size="mergedProps.size"
-    :disabled="mergedProps.disabled"
-    :loading="mergedProps.loading"
-    :ui="{ rounded: 'rounded-2xl' }"
-    :class="['flex justify-center',mergedProps.class]"
-    @click="Propiedades.events?.onClick"
-  >
-    {{ mergedProps.label }}
-    <slot />
-  </UButton>
+   <div class="w-full" :class="Propiedades.tamaño">
+    <UButton
+      :icon="mergedProps.icon"
+      :color="mergedProps.color"
+      :variant="mergedProps.variant"
+      :size="mergedProps.size"
+      :disabled="mergedProps.disabled"
+      :loading="mergedProps.loading"
+      :ui="{ rounded: 'rounded-2xl' }"
+      :class="['w-full flex justify-center', mergedProps.class]"
+      @click="Propiedades.events?.onClick"
+    >
+      {{ mergedProps.label }}
+      <slot />
+    </UButton>
+  </div>
 
   <!-- Fallback si Propiedades no tiene estructura UButton -->
   <button 

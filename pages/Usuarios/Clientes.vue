@@ -138,7 +138,7 @@ const propiedadesTabla = computed(() => {
         data: clientes,
         columns: columns,
         filtros: [
-            {columna: 'estado', placeholder: 'Estado'}
+            {columna: 'estado', placeholder: 'Estado', value: 'activo'}
         ],
     }
 })

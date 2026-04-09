@@ -181,7 +181,8 @@ const propiedadesTabla = computed(() => {
         data: cotizaciones,
         columns: columns,
         filtros: [
-            { columna: 'estado', placeholder: 'Estado' }
+            { columna: 'nombre', placeholder: 'Nombre' },
+            { columna: 'estado', placeholder: 'Estado' },
         ],
     }
 })

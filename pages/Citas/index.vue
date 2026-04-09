@@ -377,8 +377,10 @@ const propiedadesTabla = computed(() => {
             { icon: 'lucide-table', accion: showFila, texto: 'En lista'}
         ],
         filtros: [
-            {columna: 'estado', placeholder: 'Estado'},
+            {columna: 'nombre_cliente', placeholder: 'Cliente'},
             {columna: 'tipo', placeholder: 'Tipo'},
+            {columna: 'estado', placeholder: 'Estado'},
+            {columna: 'nombre_equipo', placeholder: 'Equipo'},
         ]
     }
 })

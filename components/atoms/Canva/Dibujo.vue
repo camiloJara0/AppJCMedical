@@ -33,16 +33,58 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 let ctx: CanvasRenderingContext2D | null = null;
 let drawing = false;
 
-onMounted(() => {
-  if (canvasRef.value) {
+const resizeCanvas = () => {
+    if (!canvasRef.value) return;
+
+    // Guardar lo dibujado antes de cambiar tamaño
+    const oldData = ctx?.getImageData(
+      0,
+      0,
+      canvasRef.value.width,
+      canvasRef.value.height
+    );
+
+    const rect = canvasRef.value.getBoundingClientRect();
+    const oldWidth = canvasRef.value.width;
+    const oldHeight = canvasRef.value.height;
+
+    // Ajustar tamaño interno al tamaño visual
+    canvasRef.value.width = rect.width;
+    canvasRef.value.height = rect.height;
+
     ctx = canvasRef.value.getContext('2d');
     if (ctx) {
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
       ctx.strokeStyle = '#000';
+
+      // Si había dibujo previo, reescalarlo
+      if (oldData) {
+        // Crear un canvas temporal con el contenido viejo
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = oldWidth;
+        tempCanvas.height = oldHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx?.putImageData(oldData, 0, 0);
+
+        // Dibujar la imagen vieja escalada al nuevo tamaño
+        ctx.drawImage(tempCanvas, 0, 0, oldWidth, oldHeight, 0, 0, rect.width, rect.height);
+      }
     }
-  }
+  };
+
+onMounted(() => {
+  // Inicializar
+  resizeCanvas();
+
+  // Escuchar cambios de tamaño
+  window.addEventListener('resize', resizeCanvas);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeCanvas);
+});
+
 
 const startDrawing = (event: MouseEvent | TouchEvent) => {
   drawing = true;

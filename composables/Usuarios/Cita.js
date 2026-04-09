@@ -82,8 +82,7 @@ export function useCitaActions({
     options.background = "#d33";
 
     cerrar();
-    await llamadatos();
-    refresh.value++;
+    window.location.reload()
   }
 
   /* =========================
@@ -183,16 +182,9 @@ export function useCitaActions({
 
     prepararRegistro(cita, equipo)
 
-    // const servicios = await servicioStore.listServicios()
-    // varView.tipoConsulta = servicios.find(s => s.id === cita.id_servicio)
-
-    // if (!varView.tipoConsulta) {
-    //     options.icono = 'warning'
-    //     options.titulo = 'No se encontro el tipo de servicio'
-    //     options.tiempo = 3000
-    //     simple()
-    //     return
-    // }
+    if(cita.tipo === 'Preventivo'){
+      reporteStore.Formulario.actividades = 'SE REALIZA LIMPIEZA DEL EQUPO DE MANERA INTERNA Y EXTERNA, SE HACE INSPECCION VISUAL Y ESTRUCTURAL DEL EQUIPO Y SE CONFIRMA QUE EL EQUIPO EN TERMINOS GENERALES SE ENCUENTRAN EN BUEN ESTADO, SE EVIDENCIA MUCHO POLVO INTERNAMENTE EN CONTCATO CON TARJETAS ELECTRONICAS, SE EVIDENCIA QUE UN SOCKET ESTE QUEMADO Y EL CONTROLADOR DEL VENTILADOR ESTA EN MAL ESTADO, POR LO QUE SE DEBEN REEMPLAZAR, SE HACEN PRUEBAS DE FUNCIONAMIENTO GENERAL. SE DEJA INHANILITADO DOS BOMBILLOS DE UVA MIENTRAS SE CAMBIA EL SOCKET YA QUE ESTE PUEDE GENERAR UN CORTO ELECTRICO, EL EQUIPO ESTA PARCIALMENTE OPERATIVO.'
+    }
 
     resolverPlantilla(cita, equipo, horaActual)
     varView.showNuevoRegistro = true

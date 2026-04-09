@@ -1,15 +1,18 @@
-export async function eliminarSistema(sistema) {
+export async function enviarFirma(data) {
     try {
+        const varView = useVarView()
+        const router = useRouter()
+
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
-
-        const response = await fetch(`${config.public.api}/${config.public.sistema}/${sistema.id}`, {
-            method: 'DELETE',
+        const response = await fetch(`${config.public.api}/${config.public.recibido_firma}`, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(sistema)
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {
@@ -26,10 +29,13 @@ export async function eliminarSistema(sistema) {
             notificacionesStore.simple();
         }
 
-        const data = await response.json();
+        const dataRes = await response.json();
+
+        localStorage.removeItem('token')
+        router.push('/')
         return true;
     } catch (error) {
-        console.error('Error al eliminar sistema:', error);
+        console.error('Error al enviar componente:', error);
         throw error;
     }
 }

@@ -27,7 +27,12 @@ export const useReporteStore = defineStore('Reportes', {
             actividades: '',
             cita: {},
             reporte: {},
-            firma: ''
+            recibido: {
+                firma: '',
+                nombre: '',
+                cargo: '',
+                correo: '',
+            }
         },
         ReporteSeleccionado: null,
     }),

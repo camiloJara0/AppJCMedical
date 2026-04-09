@@ -50,7 +50,7 @@ export function useLoginBuilder({
       type: 'email',
       id: 'correo-user',
       name: 'correo-user',
-      tamaño: 'lg:w-1/3 w-full justify-self-center',
+      tamaño: 'lg:w-2/3 w-full justify-self-center mx-auto',
       estilo: 'text-white!',
       vmodel: 'Usuario.correo',
       icon: 'i-lucide-mail',
@@ -64,7 +64,7 @@ export function useLoginBuilder({
       type: !mostrarContraseña.value ? 'password' : 'text',
       id: 'password',
       name: 'contraseña',
-      tamaño: 'lg:w-2/3 w-full justify-self-center',
+      tamaño: 'lg:w-2/3 w-full justify-self-center mx-auto',
       estilo: 'text-white!',
       vmodel: 'Usuario.contraseña',
       icon: 'i-lucide-lock',
@@ -80,7 +80,8 @@ export function useLoginBuilder({
       component: 'Button',
       texto: 'Ingresar',
       color: 'primary',
-      class: 'col-span-2 lg:w-2/3 w-full mx-auto bg-gradient-to-r from-[var(--color-default)] to-[var(--color-default-700)] text-white font-bold py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer active:scale-95',
+      class: 'w-full bg-gradient-to-r from-[var(--color-default)] to-[var(--color-default-700)] text-white font-bold py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer active:scale-95',
+      tamaño: 'col-span-2 lg:w-2/3 w-full mx-auto',
       events: {
         onClick: () => login(usuarioStore.Formulario)
       }

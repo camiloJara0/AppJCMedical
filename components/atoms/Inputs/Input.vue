@@ -78,7 +78,7 @@ const getMergedProps = () => {
 const mergedProps = computed(() => getMergedProps());
 </script>
 <template>
-  <div class="w-full">
+  <div class="w-full" :class="Propiedades.tamaño">
     <UFormField 
       v-if="Propiedades.label || Propiedades.name" 
       :label="Propiedades.label" 

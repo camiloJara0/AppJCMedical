@@ -81,17 +81,19 @@ function agenda() {
                 :class="{ 'mostrarResponsive': showNavbarBurguer, 'ocultarResponsive': !showNavbarBurguer }">
                 <li>
                     <Breadcrumb />
+                    <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden" @click="varView.showBreadCrumb = !varView.showBreadCrumb">
+                        <span v-if="!varView.showBreadCrumb">Secciones <i class="fa-solid fa-angle-right ml-1"></i></span>
+                        <span v-else> <i class="fa-solid fa-angle-left ml-2"></i></span>
+                    </p>
                 </li>
                 <li>
                     <DropdownNavbar icon="fa-bell" nombre="Notificaciones" :submenu="submenuNotificaciones" />
-                    <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
-                        :class="{ 'mr-6': aplicarMargen }">Notificaciones</p>
+                    <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden">Notificaciones</p>
                 </li>
                 <li>
                     <DropdownNavbar icon="fa-circle-user" nombre="Iniciar sesion" :submenu="submenuSesion" />
                     <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
-                        :class="{ 'mr-6': aplicarMargen }">{{ usuario
-                        }}</p>
+                        :class="{ 'mr-6': aplicarMargen }">{{ usuario }}</p>
                 </li>
                 <li>
 

@@ -41,6 +41,7 @@ export const useCategoriasStore = defineStore('Categorias', {
         // Funcion para listar Pacientes GET
         async traer(online = true, filtrar) {
             const categorias = await traerCategorias()
+            
             this.Categorias = categorias
             return categorias
         },

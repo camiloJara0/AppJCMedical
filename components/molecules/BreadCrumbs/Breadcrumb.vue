@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 const route = useRoute()
+const varView = useVarView()
 
 const breadCrumbs = computed(() => {
   const path = route.fullPath
@@ -33,19 +34,19 @@ const breadcrumbItems = computed(() => {
 
 <template>
   <!-- Desktop View with Breadcrumb -->
-  <div class="hidden md:flex items-center gap-1">
-    <UBreadcrumb :items="breadcrumbItems" :ui="{ link: 'text-gray-400 dark:text-gray-300 text-xs' }" />
+  <div v-if="varView.showBreadCrumb" class="flex items-center gap-1">
+    <UBreadcrumb :items="breadcrumbItems" :ui="{ link: 'text-gray-300 text-xs', separatorIcon: 'text-gray-400' }" />
   </div>
 
   <!-- Mobile View with Dropdown -->
-  <div class="md:hidden">
+  <div v-else>
     <UDropdownMenu :items="[[...breadcrumbItems.map(item => ({
       label: item.label,
       to: item.to,
       icon: item.icon
     }))]]">
       <UButton
-        icon="i-lucide-menu"
+        icon="i-lucide-home"
         color="gray"
         variant="ghost"
         size="sm"

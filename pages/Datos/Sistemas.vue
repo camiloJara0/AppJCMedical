@@ -16,59 +16,79 @@ const active = ref(false);
 const isEditing = ref(false);
 
 async function llamadatos() {
-    sistemas.value = await storeSistemas.traer();
-    varView.datosActualizados()
+  sistemas.value = await storeSistemas.traer();
+  varView.datosActualizados()
 }
 
 const {
-    agregarSistema,
-    verSistema,
-    cerrar,
-    eliminarSistemas
+  agregarSistema,
+  verSistema,
+  cerrar,
+  eliminarSistemas
 } = useSistemaActions({
-    storeSistemas,
-    varView,
-    notificaciones,
-    llamadatos,
-    refresh,
-    show: active,
-    isEditing
+  storeSistemas,
+  varView,
+  notificaciones,
+  llamadatos,
+  refresh,
+  show: active,
+  isEditing
 });
 
 watch(() => active.value,
-    async (estado) => {
-        if (!estado && varView.cambioEnApi) {
-            await llamadatos();
-            refresh.value++;
-        }
+  async (estado) => {
+    if (!estado && varView.cambioEnApi) {
+      await llamadatos();
+      refresh.value++;
     }
+  }
 );
 
 onMounted(async () => {
-    sistemas.value = await storeSistemas.traer();
-    await llamadatos();
-    console.log(sistemas.value)
+  sistemas.value = await storeSistemas.traer();
+  await llamadatos();
+  console.log(sistemas.value)
 });
 
-const propiedadesFormulario = computed(() => 
+const propiedadesFormulario = computed(() =>
   useSistemasBuilder({
-      storeId: "RegistroSistema",
-      storePinia: "Sistemas",
-      cerrar: cerrar,
-      active,
-      isEditing,
+    storeId: "RegistroSistema",
+    storePinia: "Sistemas",
+    cerrar: cerrar,
+    active,
+    isEditing,
   })
 )
 
 const columns = [
   { accessorKey: 'id', header: 'ID' },
   { accessorKey: 'nombre', header: 'Nombre' },
-//   {
-//     accessorKey: 'componentes',
-//     header: 'componentes',
-//     cell: ({ row }) =>
-//       h('div', { class: 'max-w-[250px] truncate' }, row.getValue('componentes') || '-')
-//   },
+  //   {
+  //     accessorKey: 'componentes',
+  //     header: 'componentes',
+  //     cell: ({ row }) =>
+  //       h('div', { class: 'max-w-[250px] truncate' }, row.getValue('componentes') || '-')
+  //   },
+  {
+    accessorKey: 'estado',
+    header: 'Estado',
+    cell: ({ row }) => {
+      const estado = row.getValue('estado')
+
+      const color =
+        estado === 'activo'
+          ? 'success'
+          : estado === 'inactivo'
+            ? 'neutral'
+            : 'warning'
+
+      return h(
+        UBadge,
+        { variant: 'subtle', color, class: 'capitalize' },
+        () => estado
+      )
+    }
+  },
   {
     id: 'actions',
     cell: ({ row }) =>
@@ -113,18 +133,21 @@ function getRowItems(row) {
 }
 
 const propiedadesTabla = computed(() => {
-    return {
-        titulo: 'Gestionar Sistemas',
-        agregar: agregarSistema,
-        data: sistemas,
-        columns: columns,
-    }
+  return {
+    titulo: 'Gestionar Sistemas',
+    agregar: agregarSistema,
+    data: sistemas,
+    columns: columns,
+    filtros: [
+        {columna: 'estado', placeholder: 'Estado', value: 'activo'},
+    ]
+  }
 })
 </script>
 
 <template>
-    <FondoDefault>
-        <Form :Propiedades="propiedadesFormulario"></Form>
-        <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
-    </FondoDefault>
+  <FondoDefault>
+    <Form :Propiedades="propiedadesFormulario"></Form>
+    <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
+  </FondoDefault>
 </template>

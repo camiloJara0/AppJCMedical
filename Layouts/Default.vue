@@ -50,6 +50,8 @@ onMounted(async() => {
     console.log('La app ya está instalada como PWA')
   }
 
+  
+
     window.addEventListener('online', manejarCambioRed);
     // Opcional: iniciar si ya está en línea al cargar
     if (navigator.onLine) {

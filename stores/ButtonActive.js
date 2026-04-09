@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { buttons } from '../data/Buttons'
+import { buttonsTecnicos } from "../data/Buttons";
 
 // Store para botones del Aside
 export const useButtonsAside = defineStore('ButtonsAside', {
@@ -10,8 +11,7 @@ export const useButtonsAside = defineStore('ButtonsAside', {
     getters: {
         getbuttons: (state) => (permisosUsuario) => {
             // Normalizamos los permisos: quitamos el "_view"
-            const permisosLimpiados = permisosUsuario.map(p => p.replace(/_view$/, ''));
-
+console.log(permisosUsuario)
             // return state.buttons.map(button => {
             //     // Verificamos si el botón debe incluirse
             //     const incluirBoton = permisosLimpiados.includes(button.nombre);
@@ -39,7 +39,7 @@ export const useButtonsAside = defineStore('ButtonsAside', {
             //     } : null;
             // }).filter(Boolean);
 
-            return state.buttons
+            return permisosUsuario == 'Admin' ? state.buttons : buttonsTecnicos
         }
 
     },

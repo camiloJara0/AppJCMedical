@@ -19,61 +19,75 @@ const active = ref(false);
 const isEditing = ref(false);
 
 async function llamadatos() {
-    componentes.value = await storeComponentes.traer();
-    varView.datosActualizados()
+  componentes.value = await storeComponentes.traer();
+  varView.datosActualizados()
 }
 
 const {
-    agregarComponente,
-    verComponente,
-    cerrar,
-    eliminarComponentes
+  agregarComponente,
+  verComponente,
+  cerrar,
+  eliminarComponentes
 } = useComponenteActions({
-    storeComponentes,
-    varView,
-    notificaciones,
-    llamadatos,
-    refresh,
-    show: active,
-    isEditing
+  storeComponentes,
+  varView,
+  notificaciones,
+  llamadatos,
+  refresh,
+  show: active,
+  isEditing
 });
 
 watch(() => active.value,
-    async (estado) => {
-        if (!estado && varView.cambioEnApi) {
-            await llamadatos();
-            refresh.value++;
-        }
+  async (estado) => {
+    if (!estado && varView.cambioEnApi) {
+      await llamadatos();
+      refresh.value++;
     }
+  }
 );
 
 onMounted(async () => {
-    componentes.value = await storeComponentes.traer();
-    const listaSistemas = await storeSistemas.traer();
-    sistemas.value = listaSistemas.map(c => { return {label: c.nombre, value: c.id}})
-    await llamadatos();
+  componentes.value = await storeComponentes.traer();
+  const listaSistemas = await storeSistemas.traer();
+  sistemas.value = listaSistemas.map(c => { return { label: c.nombre, value: c.id } })
+  await llamadatos();
 });
 
-const propiedadesFormulario = computed(() => 
+const propiedadesFormulario = computed(() =>
   useComponentesBuilder({
-      storeId: "RegistroComponente",
-      storePinia: "Componentes",
-      cerrar: cerrar,
-      active,
-      isEditing,
-      sistemas: sistemas.value
+    storeId: "RegistroComponente",
+    storePinia: "Componentes",
+    cerrar: cerrar,
+    active,
+    isEditing,
+    sistemas: sistemas.value
   })
 )
 
 const columns = [
   { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'sistema_id', header: 'Sistema ID' },
+  { accessorKey: 'sistema.nombre', header: 'Sistema' },
   { accessorKey: 'nombre', header: 'Nombre' },
   {
-    accessorKey: 'descripcion',
-    header: 'Descripción',
-    cell: ({ row }) =>
-      h('div', { class: 'max-w-[250px] truncate' }, row.getValue('descripcion') || '-')
+    accessorKey: 'estado',
+    header: 'Estado',
+    cell: ({ row }) => {
+      const estado = row.getValue('estado')
+
+      const color =
+        estado === 'activo'
+          ? 'success'
+          : estado === 'inactivo'
+            ? 'neutral'
+            : 'warning'
+
+      return h(
+        UBadge,
+        { variant: 'subtle', color, class: 'capitalize' },
+        () => estado
+      )
+    }
   },
   {
     id: 'actions',
@@ -119,18 +133,21 @@ function getRowItems(row) {
 }
 
 const propiedadesTabla = computed(() => {
-    return {
-        titulo: 'Gestionar Componentes',
-        agregar: agregarComponente,
-        data: componentes,
-        columns: columns,
-    }
+  return {
+    titulo: 'Gestionar Componentes',
+    agregar: agregarComponente,
+    data: componentes,
+    columns: columns,
+    filtros: [
+        {columna: 'estado', placeholder: 'Estado', value: 'activo'},
+    ]
+  }
 })
 </script>
 
 <template>
-    <FondoDefault>
-        <Form :Propiedades="propiedadesFormulario"></Form>
-        <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
-    </FondoDefault>
+  <FondoDefault>
+    <Form :Propiedades="propiedadesFormulario"></Form>
+    <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
+  </FondoDefault>
 </template>

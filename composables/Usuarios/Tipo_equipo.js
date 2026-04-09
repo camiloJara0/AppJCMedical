@@ -28,7 +28,7 @@ export function useTipo_equipoActions({
   const verTipo_equipo = async (Tipo_equipo) => {
     store.Formulario.Tipo_equipo.id = Tipo_equipo.id;
     store.Formulario.Tipo_equipo.nombre = Tipo_equipo.nombre;
-    const sistemas = Tipo_equipo.sistemas.map(s => s.nombre)
+    const sistemas = Tipo_equipo.sistemas.map(s => s.id)
     store.Formulario.Tipo_equipo.sistemas = sistemas
     show.value = true
     isEditing.value = true;

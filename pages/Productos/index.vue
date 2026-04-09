@@ -60,6 +60,7 @@ watch(() => active.value,
 // Cargar los Productos desde el store
 onMounted(async () => {
     productos.value = await storeProductos.traer();
+    console.log(productos.value)
     const listaCategorias = await storeCategorias.traer();
     categorias.value = listaCategorias.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
@@ -197,9 +198,6 @@ const propiedadesTabla = computed(() => {
         agregar: agregarProducto,
         data: productos,
         columns: columns,
-        filtros: [
-            {columna: 'estado', placeholder: 'Estado'}
-        ],
     }
 })
 </script>

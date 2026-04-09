@@ -2,7 +2,7 @@ export async function enviarTecnicos(isEditing, tecnico) {
     try {
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
-        const method = isEditing ? 'PUT' : 'POST'
+        const method = isEditing ? 'POST' : 'POST'
         const url = isEditing ?
             `${config.public.api}/${config.public.tecnico}/${tecnico.id}` :
             `${config.public.api}/${config.public.tecnico}`
@@ -22,7 +22,7 @@ export async function enviarTecnicos(isEditing, tecnico) {
         }
 
         if (isEditing) {
-            // formData.append("_method", "PUT");
+            formData.append("_method", "PUT");
             formData.append("id", tecnico.id);
         }
 
@@ -36,7 +36,17 @@ export async function enviarTecnicos(isEditing, tecnico) {
         });
 
         if (!response.ok) {
-            throw new Error(`Error en la petición: ${response.status}`);
+            const notificacionesStore = useNotificacionesStore()
+            const errorData = await response.json();
+            const mensajeCompleto = errorData.message || 'Error en la solicitud';
+            const mensajeCorto = mensajeCompleto.split('(')[0].trim();
+
+            // Notificación con el mensaje del backend o fallback
+            notificacionesStore.options.icono = 'warning';
+            notificacionesStore.options.titulo = '¡Ha ocurrido un problema!';
+            notificacionesStore.options.texto = mensajeCorto;
+            notificacionesStore.options.tiempo = 5000;
+            notificacionesStore.simple();
         }
 
         const data = await response.json();

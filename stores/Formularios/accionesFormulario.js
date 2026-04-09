@@ -26,6 +26,7 @@ import { enviarReporte } from '~/Core/Reporte/PostReporte';
 import { enviarSistemas } from '~/Core/Sistemas/PostSistemas';
 // Componentes
 import { enviarComponentes } from '~/Core/Componentes/PostComponentes';
+import { enviarFirma } from '~/Core/Reporte/PostFirmaReporte';
 
 
 // Importa accion de cada formulario desde el core
@@ -95,4 +96,8 @@ export const accionesFormularios = {
         const respuesta = await enviarComponentes(varView.isEditing, data.Componente)
         return respuesta
     },
+    RegistrarFirma: async (data) => {
+        const respuesta = await enviarFirma(data)
+        return respuesta
+    }
 };

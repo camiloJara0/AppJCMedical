@@ -33,11 +33,21 @@ export async function enviarReporte(data) {
         });
 
         if (!response.ok) {
-            throw new Error(`Error en la petición: ${response.status}`);
+            const notificacionesStore = useNotificacionesStore()
+            const errorData = await response.json();
+            const mensajeCompleto = errorData.message || 'Error en la solicitud';
+            const mensajeCorto = mensajeCompleto.split('(')[0].trim();
+
+            // Notificación con el mensaje del backend o fallback
+            notificacionesStore.options.icono = 'warning';
+            notificacionesStore.options.titulo = '¡Ha ocurrido un problema!';
+            notificacionesStore.options.texto = mensajeCorto;
+            notificacionesStore.options.tiempo = 5000;
+            notificacionesStore.simple();
         }
 
         const dataRes = await response.json();
-        console.log(dataRes)
+
         varView.propiedadesPDF = dataRes.ids.Reporte.id
         varView.showPDFServicio = true
         return true;
