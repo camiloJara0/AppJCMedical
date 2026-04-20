@@ -1,12 +1,16 @@
 <script setup>
 import ButtonRounded from "~/components/atoms/Buttons/ButtonRounded.vue";
-import { ref, onMounted, watch, h, resolveComponent } from "vue";
+import DatosExcel from '~/components/organism/Forms/DatosExcel.vue';
+import { ref, h } from "vue";
+
 
 import { useOrdenamiento } from "~/composables/Tabla/useDatosOrdenadosTabla";
 import { usePaginacion } from "~/composables/Tabla/usePaginacion";
 
 const mostrarFiltros = ref(false)
 const mostrarFiltrosAvanzados = ref(false)
+const varView = useVarView()
+const excelRef = ref(null)
 
 const props = defineProps({
     Propiedades: {
@@ -14,7 +18,7 @@ const props = defineProps({
         requiered: true,
         default: {}
     }
-}); console.log(props.Propiedades)
+});
 
 const data = ref(props.Propiedades.data);
 // Acomodar datos de menor a mayor segun columna, filtros
@@ -43,40 +47,74 @@ const {
     datosPaginados,
 } = usePaginacion(datosOrdenados);
 
+const items = ref([
+    {
+        label: 'Descargar',
+        icon: 'i-lucide-file',
+        onSelect: () => {
+            // Dispara el click directamente sobre el enlace generado
+            excelRef.value?.$el.click()
+
+        }
+    },
+    {
+        label: 'Configurar',
+        icon: 'i-lucide-settings',
+        onSelect: () => {
+            varView.showDatosExcel = true
+        }
+    }
+])
+
+const columns = props.Propiedades.columns.map(col => {
+  if (col.sorted) {
+    return {
+      ...col,
+      header: ({ column }) =>
+        h(UButton, {
+          color: "neutral",
+          variant: "ghost",
+          label: col.header || col.accessorKey,
+          icon: "i-lucide-arrow-up-down",
+          class: "-mx-2.5",
+          onClick: () => sortedItems(col.accessorKey)
+        })
+    }
+  }
+  return col
+})
+
 </script>
 
 <template>
+    <!-- Titulo, Acciones y Filtros -->
     <UCard class="mb-3">
         <template #header>
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-lg">{{ props.Propiedades.titulo }}</h3>
                 <div class="flex gap-2">
-                    <UButton v-for="button in props.Propiedades.buttons" variant="soft" color="primary" loading-auto
-                        :trailing-icon="button.icon" size="md" @click="button.accion">
+                    <UButton v-for="button in props.Propiedades.buttons" :variant="button.variant" :color="button.color"
+                        loading-auto :trailing-icon="button.icon" size="md" @click="button.accion">
                         {{ button.texto }}
                     </UButton>
+
                     <client-only v-if="Propiedades.excel">
-                        <UDropdownMenu>
-                            <UButton variant="solid" color="primary" trailing-icon="lucide-table" size="md">
+                        <UDropdownMenu :items="items">
+                            <UButton label="Open" variant="subtle" color="secondary" trailing-icon="lucide-table"
+                                size="md">
                                 Exportar
                             </UButton>
-
-                            <template #profile-trailing>
-                                <div class="flex flex-col gap-2 p-2">
-                                    <download-excel class="flex gap-1 hover:text-white"
-                                        :data="Array.isArray(datosOrdenados) ? unref(datosOrdenados) : unref(props.Propiedades.data)"
-                                        :name="props.Propiedades.titulo" type="xlsx">
-                                        <i class="fa-solid fa-download"></i>
-                                        <p class="text-xs">Descargar</p>
-                                    </download-excel>
-
-                                    <div class="flex gap-1 hover:text-white" @click="varView.showDatosExcel = true">
-                                        <i class="fa-solid fa-gear"></i>
-                                        <p class="text-xs">Configurar</p>
-                                    </div>
-                                </div>
-                            </template>
                         </UDropdownMenu>
+
+                        <div>
+                            <!-- Dropdown con tus items -->
+                            <download-excel ref="excelRef"
+                                :data="Array.isArray(datosOrdenados) ? datosOrdenados : props.Propiedades.data"
+                                :name="props.Propiedades.titulo" type="xlsx" style="display: none;">
+                                .
+                            </download-excel>
+                        </div>
+                        
                     </client-only>
 
                     <UButton @click="() => { mostrarFiltros = !mostrarFiltros }" variant="solid" color="primary"
@@ -140,8 +178,10 @@ const {
             </div>
         </template>
     </UCard>
-    <UTable sticky :data="datosPaginados" :columns="Propiedades.columns" :loading="!props.Propiedades.data"
+    <!-- Tabla -->
+    <UTable sticky :loading="!props.Propiedades.data || varView.cargando || varView.actualizando" loading-color="primary" loading-animation="carousel" :data="datosPaginados" :columns="columns"
         class="flex-1 max-h-[62vh]" />
+    <!-- Paginador -->
     <div class="flex justify-between mt-3">
         <UPagination v-model:page="paginaActual" active-color="primary" active-variant="subtle" :sibling-count="1"
             :total="datosOrdenados.length" :items-per-page="itemsPorPagina"></UPagination>
@@ -151,4 +191,6 @@ const {
             <span class="text-gray-500">de {{ datosOrdenados.length }}</span>
         </p>
     </div>
+
+    <DatosExcel v-if="varView.showDatosExcel" :datos="datosOrdenados" :tabla="props.Propiedades.titulo" />
 </template>

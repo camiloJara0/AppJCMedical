@@ -25,7 +25,7 @@ onMounted(() => {
     } else {
         usuario.value = 'Usuario'
     }
-    const permisosStore = varView.getPermisos
+    const permisosStore = varView.getRol
     buttons.value = storeAside.getbuttons(permisosStore);
 })
 

@@ -58,7 +58,7 @@ watch(() => active.value,
 
 // Cargar los cotizaciones desde el store
 onMounted(async () => {
-    cotizaciones.value = await storeCotizaciones.traer();
+    cotizaciones.value = await storeCotizaciones.traer(false);
     await llamadatos();
 });
 

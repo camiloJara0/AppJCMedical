@@ -145,7 +145,7 @@ export const useApiRest = defineStore('apiRest', {
 
             const permisosTemporales = JSON.parse(localStorage.getItem('permisosTemporales') ?? "[]");
 
-            if(!permisosUsuario.length && metodo === 'GET'){
+            if (!permisosUsuario.length && metodo === 'GET') {
                 return true
             }
             // Normalizar URL (quita base si viene completa)
@@ -385,13 +385,8 @@ export const useApiRest = defineStore('apiRest', {
                         datos = await respuesta.data;
                         // guardar en IndexedDB para uso offline
                         if (almacen !== '') {
-                            const store = useIndexedDBStore();
-                            store.almacen = almacen;
-                            await store.bulkPut(datos)
+                            this.postOfflineData(almacen)
                         };
-                        // for (const item of datos) {
-                        //     await store.actualiza({ ...item })
-                        // };
                     }
 
                 } catch (error) {
@@ -414,5 +409,11 @@ export const useApiRest = defineStore('apiRest', {
             const todosLosDatos = await store.leerdatos();
             return todosLosDatos
         },
+
+        async postOfflineData(almacen, datos) {
+            const store = useIndexedDBStore();
+            store.almacen = almacen;
+            await store.bulkPut(datos)
+        }
     }
 })

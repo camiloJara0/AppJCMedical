@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useIndexedDBStore } from "../indexedDB";
+import { useApiRest } from "../apiRest";
 import { enviarProductos } from "~/Core/Productos/PostProductos";
 import { eliminarProductos } from "~/Core/Productos/DeleteProductos";
 import { traerProductos } from "~/Core/Productos/GetProductos";
@@ -43,9 +44,18 @@ export const useProductosStore = defineStore('Productos', {
             return await eliminarProductos(datos);
         },
 
-        // Funcion para listar Pacientes GET
+        // Funcion para listar Productos GET
         async traer(online = true, filtrar) {
-            const productos = await traerProductos()
+            const apiRest = useApiRest()
+            let productos
+
+            if(online){
+                productos = await traerProductos()
+                await apiRest.postOfflineData('productos', productos)
+            } else {
+                productos = await apiRest.getOfflineData('productos')
+            }
+
             this.Productos = productos
             return productos
         },

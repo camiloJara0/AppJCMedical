@@ -97,8 +97,9 @@ const filtrarReportePorFecha = (reportes, fechaInicio, fechaFin, id_cliente = ''
     fin.setHours(23, 59, 59, 999); // incluir hasta el final del día
 
     const resultado = [];
+
     for (const item of reportes) {
-        let fechaCreacion = item.fecha;
+        let fechaCreacion = new Date(item.fecha);
 
         const condicionFecha = fechaCreacion >= inicio && fechaCreacion <= fin;
         const condicionTecnico = id_tecnico ? parseInt(id_tecnico) === parseInt(item.tecnico_id) : true;
@@ -120,7 +121,7 @@ const enviarPDFs = async () => {
 
         // Cargar datos necesarios
         varView.cargando = true;
-        const reportes = reporteStore.traer()
+        const reportes = await reporteStore.traer()
         varView.cargando = false;
 
         // Filtrar reportes por rango de fechas

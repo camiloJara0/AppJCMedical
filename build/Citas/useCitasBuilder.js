@@ -17,7 +17,7 @@ export function useCitasBuilder({
         .setStorePinia(storePinia)
         .setFormularioFondo(true)
         .setFormularioShow(active)
-        .setFormulariotamaño('MD')
+        .setFormulariotamaño('XS')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
             { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },

@@ -22,6 +22,7 @@ async function llamadatos() {
 
 const {
     verReporte,
+    eliminarReportes,
     cerrar
 } = useReporteActions({
     varView,
@@ -46,42 +47,42 @@ onMounted(async () => {
 });
 
 const columns = [
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'equipo.nombre', header: 'Equipo' },
-  { accessorKey: 'tecnico.nombre', header: 'Técnico' },
-  { accessorKey: 'cliente.nombre', header: 'Cliente' },
-  { accessorKey: 'fecha', header: 'Fecha' },
-  {
-    accessorKey: 'estado',
-    header: 'Estado',
-    cell: ({ row }) => {
-      const estado = row.getValue('estado')
-      const color = 
-        estado === 'realizada' ? 'success' :
-        estado === 'pendiente' ? 'warning' :
-        'error'
-      return h(UBadge, { variant: 'subtle', color, class: 'capitalize' }, () => estado)
+    { accessorKey: 'id', header: 'ID' },
+    { accessorKey: 'equipo.nombre', header: 'Equipo' },
+    { accessorKey: 'tecnico.nombre', header: 'Técnico' },
+    { accessorKey: 'cliente.nombre', header: 'Cliente' },
+    { accessorKey: 'fecha', header: 'Fecha', sorted: true},
+    {
+        accessorKey: 'estado',
+        header: 'Estado',
+        cell: ({ row }) => {
+            const estado = row.getValue('estado')
+            const color =
+                estado === 'realizada' ? 'success' :
+                    estado === 'En Revisión' ? 'warning' :
+                        'error'
+            return h(UBadge, { variant: 'subtle', color, class: 'capitalize' }, () => estado)
+        }
+    },
+    {
+        id: 'actions',
+        cell: ({ row }) =>
+            h(
+                'div',
+                { class: 'text-right' },
+                h(
+                    UButton,
+                    {
+                        icon: 'i-lucide-eye',
+                        color: 'primary',
+                        variant: 'ghost',
+                        label: 'open',
+                        onClick: () => verReporte(row.original)
+                    },
+                    () => 'Ver'
+                )
+            )
     }
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) =>
-      h(
-        'div',
-        { class: 'text-right' },
-        h(
-          UButton,
-          {
-            icon: 'i-lucide-eye',
-            color: 'primary',
-            variant: 'ghost',
-            label: 'open',
-            onClick: () => verReporte(row.original)
-          },
-          () => 'Ver'
-        )
-      )
-  }
 ]
 
 const propiedadesTabla = computed(() => {
@@ -91,12 +92,12 @@ const propiedadesTabla = computed(() => {
         columns: columns,
         excel: true,
         buttons: [
-            { texto: 'Exportar', icon: 'lucide-file-text', accion: () => {varView.showExportarPDFs = true}}
+            { texto: 'Exportar', icon: 'lucide-file-text', accion: () => { varView.showExportarPDFs = true }, color: 'primary', variant: 'subtle' }
         ],
         filtros: [
             { columna: 'fecha_mes', columnaReal: 'fecha', placeholder: 'Mes', tipo: 'mes' },
             { columna: 'fecha_año', columnaReal: 'fecha', placeholder: 'Año', tipo: 'año' },
-            {columna: 'estado', placeholder: 'Estado'},
+            { columna: 'estado', placeholder: 'Estado' },
         ],
     }
 })
@@ -107,28 +108,22 @@ const reporte = computed(() => storeReportes.Formulario)
 <template>
     <FondoDefault>
         <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
-        
+
         <!-- Modal Reportes con Nuxt UI -->
-         <FondoBlur v-if="showModal">
+        <FondoBlur v-if="showModal">
             <div class="rounded-lg shadow-lg animate-fadeIn w-[60%]">
                 <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800 ' }">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-bold">Detalle del Reporte</h2>
-                            <div>
-                                <UButton 
-                                    color="gray" 
-                                    variant="ghost" 
-                                    icon="i-lucide-printer"
-                                    loading-auto
-                                    @click="imprimirReporte(reporte.Reporte?.id)"
-                                />
-                                <UButton 
-                                    color="gray" 
-                                    variant="ghost" 
-                                    icon="i-heroicons-x-mark-20-solid"
-                                    @click="cerrar()"
-                                />
+                            <div class="flex gap-1">
+                                <UButton v-if="reporte.Reporte.estado !== 'eliminada'" color="error" variant="ghost"
+                                    icon="i-lucide-trash" class="cursor-pointer" loading-auto
+                                    @click="eliminarReportes(reporte.Reporte)" />
+                                <UButton color="primary" variant="ghost" icon="i-lucide-printer" class="cursor-pointer"
+                                    loading-auto @click="imprimirReporte(reporte.Reporte?.id)" />
+                                <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark-20-solid"
+                                    class="cursor-pointer" @click="cerrar()" />
                             </div>
                         </div>
                     </template>
@@ -167,12 +162,16 @@ const reporte = computed(() => storeReportes.Formulario)
                             <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Nombre</p>
                                 <p class="font-bold text-lg">{{ reporte.equipo.nombre || '-' }}</p>
-                                <p class="text-md font-medium">Marca: {{ reporte.equipo.marca || '-' }}, Modelo: {{ reporte.equipo.modelo || '-' }}, Serie: {{ reporte.equipo.serie || '-' }}, Placa: {{ reporte.equipo.placa || '-' }}</p>
+                                <p class="text-md font-medium">Marca: {{ reporte.equipo.marca || '-' }}, Modelo: {{
+                                    reporte.equipo.modelo ||
+                                    '-' }}, Serie: {{ reporte.equipo.serie || '-' }}, Placa: {{ reporte.equipo.placa ||
+                                    '-' }}</p>
                                 <p class="text-md">Estado: {{ reporte.equipo.estado || '-' }}</p>
 
                                 <p class="text-sm text-gray-600 dark:text-gray-400 pt-3">Cliente</p>
                                 <p class="font-bold text-lg">{{ reporte.cliente?.nombre || '-' }}</p>
-                                <p class="font-semibold">{{ reporte.cliente?.telefono || '-' }} - {{ reporte.cliente?.correo || '-' }}</p>
+                                <p class="font-semibold">{{ reporte.cliente?.telefono || '-' }} - {{
+                                    reporte.cliente?.correo || '-' }}</p>
                             </div>
                         </div>
 
@@ -184,15 +183,15 @@ const reporte = computed(() => storeReportes.Formulario)
                             <div class="grid grid-cols-2 gap-3">
                                 <div v-for="(comp, id) in reporte.componentes" :key="id" class="border rounded-lg p-3">
                                     <div class="flex items-center justify-between mb-2">
-                                        <p class="font-semibold text-sm">{{comp.componente?.nombre}} - {{ comp.id }}</p>
-                                        <UBadge 
+                                        <p class="font-semibold text-sm">{{ comp.componente?.nombre }} - {{ comp.id }}</p>
+                                        <UBadge
                                             :color="comp.estado === 'bueno' ? 'success' : comp.estado === 'regular' ? 'warning' : 'error'"
-                                            variant="subtle"
-                                        >
+                                            variant="subtle">
                                             {{ comp.estado || '-' }}
                                         </UBadge>
                                     </div>
-                                    <p v-if="comp.observacion" class="text-xs text-gray-600 italic">{{ comp.observacion }}</p>
+                                    <p v-if="comp.observacion" class="text-xs text-gray-600 italic">{{ comp.observacion
+                                        }}</p>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +210,8 @@ const reporte = computed(() => storeReportes.Formulario)
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(mat, idx) in reporte.materiales" :key="idx" class="border-b hover:bg-gray-50">
+                                        <tr v-for="(mat, idx) in reporte.materiales" :key="idx"
+                                            class="border-b hover:bg-gray-50">
                                             <td class="py-2">{{ mat.descripcion }}</td>
                                             <td class="text-right font-semibold">{{ mat.cantidad }}</td>
                                         </tr>
@@ -236,7 +236,8 @@ const reporte = computed(() => storeReportes.Formulario)
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(med, idx) in reporte.mediciones" :key="idx" class="border-b hover:bg-gray-50">
+                                        <tr v-for="(med, idx) in reporte.mediciones" :key="idx"
+                                            class="border-b hover:bg-gray-50">
                                             <td class="py-2">{{ med.variable }}</td>
                                             <td class="text-center">{{ med.unidad }}</td>
                                             <td class="text-center font-semibold">{{ med.valor_medido }}</td>
@@ -272,11 +273,7 @@ const reporte = computed(() => storeReportes.Formulario)
 
                     <template #footer>
                         <div class="flex justify-end gap-3">
-                            <UButton 
-                                color="gray"
-                                variant="solid"
-                                @click="cerrar()"
-                            >
+                            <UButton color="neutral" variant="soft" @click="cerrar()">
                                 Cerrar
                             </UButton>
                         </div>
@@ -284,6 +281,7 @@ const reporte = computed(() => storeReportes.Formulario)
                 </UCard>
             </div>
         </FondoBlur>
+
     </FondoDefault>
     <ExportarPDFs v-if="varView.showExportarPDFs"></ExportarPDFs>
 </template>

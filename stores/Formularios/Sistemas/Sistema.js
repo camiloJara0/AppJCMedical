@@ -35,8 +35,17 @@ export const useSistemasStore = defineStore('Sistemas', {
             return await eliminarSistema(datos);
         },
 
-        async traer(online = true, filtrar) {
-            const sistemas = await traerSistemas()
+        async traer(online = true) {
+            const apiRest = useApiRest()
+            let sistemas
+
+            if(online){
+                sistemas = await traerSistemas()
+                await apiRest.postOfflineData('sistemas', sistemas)
+            } else {
+                sistemas = await apiRest.getOfflineData('sistemas')
+            }
+
             this.Sistemas = sistemas
             return sistemas
         },

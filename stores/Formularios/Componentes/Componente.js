@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useApiRest } from "../../apiRest";
 import { enviarComponentes } from "~/Core/Componentes/PostComponentes";
 import { eliminarComponente } from "~/Core/Componentes/DeleteComponentes";
 import { traerComponentes } from "~/Core/Componentes/GetComponentes";
@@ -35,7 +36,16 @@ export const useComponentesStore = defineStore('Componentes', {
         },
 
         async traer(online = true, filtrar) {
-            const componentes = await traerComponentes()
+            const apiRest = useApiRest()
+            let componentes
+
+            if(online){
+                componentes = await traerComponentes()
+                await apiRest.postOfflineData('componentes', componentes)
+            } else {
+                componentes = await apiRest.getOfflineData('componentes')
+            }
+
             this.Componentes = componentes
             return componentes
         },

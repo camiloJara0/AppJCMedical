@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useApiRest } from "../../apiRest";
 import { enviarReportes } from "~/Core/Reportes/PostReportes";
 import { eliminarReporte } from "~/Core/Reportes/DeleteReportes";
 import { traerReportes } from "~/Core/Reportes/GetReportes";
@@ -32,6 +33,10 @@ export const useReporteStore = defineStore('Reportes', {
                 nombre: '',
                 cargo: '',
                 correo: '',
+            },
+            estado: {
+                estado: '',
+                observacion: ''
             }
         },
         ReporteSeleccionado: null,
@@ -54,8 +59,16 @@ export const useReporteStore = defineStore('Reportes', {
             return await eliminarReporte(datos);
         },
 
-        async traer(online = true, filtrar) {
-            const reportes = await traerReportes()
+        async traer(online = true) {
+            const apiRest = useApiRest()
+
+            let reportes
+            if(online){
+                reportes = await traerReportes()
+            } else {
+                reportes = await apiRest.getOfflineData('reportes')
+            }
+
             this.Reportes = reportes
             return reportes
         },

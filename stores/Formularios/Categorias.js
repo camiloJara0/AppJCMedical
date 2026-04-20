@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useIndexedDBStore } from "../indexedDB";
+import { useApiRest } from "../apiRest";
 import { enviarCategorias } from "~/Core/Categorias/PostCategorias";
 import { eliminarCategoria } from "~/Core/Categorias/DeleteCategoria";
 import { traerCategorias } from "~/Core/Categorias/GetCategorias";
@@ -38,10 +39,18 @@ export const useCategoriasStore = defineStore('Categorias', {
             return await eliminarCategoria(datos);
         },
 
-        // Funcion para listar Pacientes GET
+        // Funcion para listar Categorías GET
         async traer(online = true, filtrar) {
-            const categorias = await traerCategorias()
-            
+            const apiRest = useApiRest()
+            let categorias
+
+            if(online){
+                categorias = await traerCategorias()
+                await apiRest.postOfflineData('categorias', categorias)
+            } else {
+                categorias = await apiRest.getOfflineData('categorias')
+            }
+
             this.Categorias = categorias
             return categorias
         },

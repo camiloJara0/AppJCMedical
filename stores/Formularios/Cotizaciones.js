@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useIndexedDBStore } from "../indexedDB";
+import { useApiRest } from "../apiRest";
 import { enviarCotizacion } from "~/Core/Cotizaciones/PostCotizacion";
 import { eliminarCotizacion } from "~/Core/Cotizaciones/DeleteCotizaciones";
 import { traerCotizaciones } from "~/Core/Cotizaciones/GetCotizaciones";
@@ -42,11 +43,20 @@ export const useCotizacionesStore = defineStore('Cotizaciones', {
             return await eliminarCotizacion(datos);
         },
 
-        // Funcion para listar Pacientes GET
+        // Funcion para listar Cotizaciones GET
         async traer(online = true, filtrar) {
-            const categorias = await traerCotizaciones()
-            this.Categorias = categorias
-            return categorias
+            const apiRest = useApiRest()
+            let cotizaciones
+
+            if(online){
+                cotizaciones = await traerCotizaciones()
+                await apiRest.postOfflineData('solicitudes_cotizacions', cotizaciones)
+            } else {
+                cotizaciones = await apiRest.getOfflineData('solicitudes_cotizacions')
+            }
+
+            this.Cotizaciones = cotizaciones
+            return cotizaciones
         },
 
         // Funcion para listar datos de un paciente en especifico

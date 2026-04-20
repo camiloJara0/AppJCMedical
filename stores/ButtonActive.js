@@ -10,34 +10,6 @@ export const useButtonsAside = defineStore('ButtonsAside', {
 
     getters: {
         getbuttons: (state) => (permisosUsuario) => {
-            // Normalizamos los permisos: quitamos el "_view"
-console.log(permisosUsuario)
-            // return state.buttons.map(button => {
-            //     // Verificamos si el botón debe incluirse
-            //     const incluirBoton = permisosLimpiados.includes(button.nombre);
-
-            //     const seccionesFiltradas = button.secciones?.map(seccion => {
-            //         // Filtrar subSecciones si existen
-            //         let subSeccionesFiltradas = seccion.subSecciones?.filter(sub =>
-            //             permisosLimpiados.includes(sub.titulo)
-            //         );
-
-            //         // Verificar si se incluye la sección
-            //         const incluirSeccion = subSeccionesFiltradas?.length > 0 ||
-            //             permisosLimpiados.includes(seccion.titulo);
-
-            //         return incluirSeccion ? {
-            //             ...seccion,
-            //             ...(subSeccionesFiltradas && { subSecciones: subSeccionesFiltradas })
-            //         } : null;
-            //     }).filter(Boolean);
-
-            //     // Incluir el botón si tiene secciones visibles o permiso directo
-            //     return seccionesFiltradas.length > 0 || incluirBoton ? {
-            //         ...button,
-            //         secciones: seccionesFiltradas
-            //     } : null;
-            // }).filter(Boolean);
 
             return permisosUsuario == 'Admin' ? state.buttons : buttonsTecnicos
         }

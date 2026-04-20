@@ -45,9 +45,8 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-  sistemas.value = await storeSistemas.traer();
+  sistemas.value = await storeSistemas.traer(false);
   await llamadatos();
-  console.log(sistemas.value)
 });
 
 const propiedadesFormulario = computed(() =>

@@ -35,8 +35,17 @@ export const useTecnicosStore = defineStore('Tecnicos', {
             return await eliminarTecnico(datos);
         },
 
-        async traer(online = true, filtrar) {
-            const tecnicos = await traerTecnicos()
+        async traer(online = true) {
+            const apiRest = useApiRest()
+            let tecnicos
+
+            if(online){
+                tecnicos = await traerTecnicos()
+                await apiRest.postOfflineData('tecnicos', tecnicos)
+            } else {
+                tecnicos = await apiRest.getOfflineData('tecnicos')
+            }
+
             this.Tecnicos = tecnicos
             return tecnicos
         },

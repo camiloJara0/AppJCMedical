@@ -58,7 +58,7 @@ watch(() => active.value,
 
 // Cargar los Categorias desde el store
 onMounted(async () => {
-    categorias.value = await storeCategorias.traer();
+    categorias.value = await storeCategorias.traer(false);
     await llamadatos();
     console.log(categorias.value)
 });

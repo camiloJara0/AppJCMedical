@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useIndexedDBStore } from "../indexedDB";
+import { useApiRest } from "../apiRest";
 import { enviarClientes } from "~/Core/Clientes/PostClientes";
 import { eliminarCliente } from "~/Core/Clientes/DeleteClientes";
 import { traerClientes } from "~/Core/Clientes/GetClientes";
@@ -40,9 +41,18 @@ export const useClientesStore = defineStore('Clientes', {
             return await eliminarCliente(datos);
         },
 
-        // Funcion para listar Pacientes GET
+        // Funcion para listar Clientes GET
         async traer(online = true, filtrar) {
-            const Clientes = await traerClientes()
+            const apiRest = useApiRest()
+            let Clientes
+
+            if(online){
+                Clientes = await traerClientes()
+                await apiRest.postOfflineData('clientes', Clientes)
+            } else {
+                Clientes = await apiRest.getOfflineData('clientes')
+            }
+
             this.Clientes = Clientes
             return Clientes
         },

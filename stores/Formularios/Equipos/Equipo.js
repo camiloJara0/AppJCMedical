@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useApiRest } from "../../apiRest";
 import { enviarEquipos } from "~/Core/Equipos/PostEquipos";
 import { eliminarEquipo } from "~/Core/Equipos/DeleteEquipos";
 import { traerEquipos } from "~/Core/Equipos/GetEquipos";
@@ -40,7 +41,16 @@ export const useEquiposStore = defineStore('Equipos', {
         },
 
         async traer(online = true, filtrar) {
-            const equipos = await traerEquipos()
+            const apiRest = useApiRest()
+            let equipos
+
+            if(online){
+                equipos = await traerEquipos()
+                await apiRest.postOfflineData('equipos', equipos)
+            } else {
+                equipos = await apiRest.getOfflineData('equipos')
+            }
+
             this.Equipos = equipos
             return equipos
         },

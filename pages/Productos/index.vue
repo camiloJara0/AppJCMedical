@@ -59,8 +59,7 @@ watch(() => active.value,
 
 // Cargar los Productos desde el store
 onMounted(async () => {
-    productos.value = await storeProductos.traer();
-    console.log(productos.value)
+    productos.value = await storeProductos.traer(false);
     const listaCategorias = await storeCategorias.traer();
     categorias.value = listaCategorias.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
@@ -95,7 +94,8 @@ const columns = [
 
   {
     accessorKey: 'nombre',
-    header: 'Nombre'
+    header: 'Nombre',
+    sorted: true
   },
 
   {

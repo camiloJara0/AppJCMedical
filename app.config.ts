@@ -2,8 +2,7 @@ export default defineAppConfig({
   ui: {
     colors: {
       primary: 'blue',
-      gray: 'stone',
-      muted: '#1f2937',
+      secondary: 'green'
     },
     breadcrumb: {
       slots: {

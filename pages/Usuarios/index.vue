@@ -68,9 +68,8 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    tecnicos.value = await storeTecnicos.traer();
+    tecnicos.value = await storeTecnicos.traer(false);
     secciones.value = await storeRol.traerSecciones()
-    console.log(secciones.value)
     await llamadatos();
 });
 

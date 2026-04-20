@@ -51,7 +51,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    equipos.value = await storeEquipos.traer();
+    equipos.value = await storeEquipos.traer(false);
     const listaTipoEquipos = await storeTipoEquipos.traer();
     tiposEquipos.value = listaTipoEquipos.map(c => { return {label: c.nombre, value: c.id}})
     const listaClientes = await storeClientes.traer();

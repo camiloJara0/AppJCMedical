@@ -1,4 +1,5 @@
 import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
+import { eliminarReporte } from "~/Core/Reportes/DeleteReportes";
 
 export function useReporteActions({
   varView,
@@ -24,12 +25,47 @@ export function useReporteActions({
     show.value = true;
   };
 
+  const eliminarReportes = async (reporte) => {
+    const Reporte = reporte;
+
+    notificaciones.options = {
+      icono: "warning",
+      titulo: "¿Estas seguro de eliminar el Reporte?",
+      html: `Se eliminará el Reporte: <span>${Reporte.tipo} - ${Reporte.fecha}</span>`,
+      confirmtext: "Sí, eliminar",
+      canceltext: "Atrás"
+    };
+
+    const respuesta = await notificaciones.alertRespuesta();
+
+    if (respuesta !== "confirmado") return;
+
+    const eliminado = await eliminarReporte(Reporte);
+
+    if (!eliminado) return;
+
+    notificaciones.options = {
+      position: "top-end",
+      texto: "Reporte eliminado con éxito.",
+      background: "#6bc517",
+      tiempo: 1500
+    };
+
+    notificaciones.mensaje();
+    notificaciones.options.background = "#d33";
+
+    cerrar();
+    await llamadatos();
+    refresh.value++;
+  };
+
   const cerrar = () => {
     show.value = false;
   };
 
   return {
     verReporte,
+    eliminarReportes,
     cerrar,
   };
 }

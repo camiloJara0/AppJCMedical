@@ -136,14 +136,14 @@ const getCoordinates = (event: MouseEvent | TouchEvent) => {
       :name="Propiedades.name"
     >
       <div
-        class="border rounded-md p-2 flex flex-col gap-2"
+        class="border border-gray-300 dark:border-gray-700 rounded-md p-2 flex flex-col gap-2"
         :class="[`u-${variant}`, `u-${color}`, `u-${size}`]"
       >
         <canvas
           ref="canvasRef"
           width="400"
           height="200"
-          class="border border-gray-300 rounded-md cursor-crosshair"
+          class="border border-gray-300 dark:border-gray-700 rounded-md cursor-crosshair"
           @mousedown="startDrawing"
           @mousemove="draw"
           @mouseup="stopDrawing"

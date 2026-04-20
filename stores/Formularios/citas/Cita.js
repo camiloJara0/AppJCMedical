@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useApiRest } from "../../apiRest";
 import { enviarCitas } from "~/Core/Citas/PostCitas";
 import { eliminarCita } from "~/Core/Citas/DeleteCitas";
 import { traerCitas } from "~/Core/Citas/GetCitas";
@@ -40,7 +41,16 @@ export const useCitasStore = defineStore('Citas', {
 
         async traer(online = true, filtrar) {
             const varView = useVarView()
-            const citas = await traerCitas()
+            const apiRest = useApiRest()
+            let citas
+
+            if(online){
+                citas = await traerCitas()
+                await apiRest.postOfflineData('citas', citas)
+            } else {
+                citas = await apiRest.getOfflineData('citas')
+            }
+
             let citasFiltradas = citas
             if(varView.getRol === 'Tecnico') {
                 const user = varView.getUser

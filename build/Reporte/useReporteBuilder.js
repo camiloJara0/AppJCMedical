@@ -23,7 +23,7 @@ export function useReporteBuilder({
         .setFormulariotamaño('MD')
         .setBotones([
             { type: 'enviar', text: 'Siguiente', color: 'primary' },
-            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Atras', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
         .nuevaSeccion('Checklist de componentes')
@@ -137,7 +137,7 @@ export function useReporteBuilder({
 
     builder.addCampo({
         component: 'Label',
-        text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,
+        text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 dark:text-gray-400 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,
         tamaño: 'w-full col-span-2'
     })
 

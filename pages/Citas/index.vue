@@ -28,7 +28,7 @@ const sistemas = ref([])
 const refresh = ref(1);
 
 onMounted(async () => {
-    citas.value = await citasStore.traer()
+    citas.value = await citasStore.traer(false)
     await llamadatos()
     // Rellenar fecha del formulario
     citasStore.Formulario.Cita.fecha = calendarioCitasStore.fecha.split('/').reverse().join('-')
@@ -374,7 +374,7 @@ const propiedadesTabla = computed(() => {
         data: citas,
         columns: columns,
         buttons: [
-            { icon: 'lucide-table', accion: showFila, texto: 'En lista'}
+            { icon: 'lucide-table', accion: showFila, texto: 'En lista', color: 'neutral', variant: 'subtle'}
         ],
         filtros: [
             {columna: 'nombre_cliente', placeholder: 'Cliente'},

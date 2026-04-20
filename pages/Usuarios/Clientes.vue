@@ -45,7 +45,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    clientes.value = await storeClientes.traer();
+    clientes.value = await storeClientes.traer(false);
     await llamadatos();
 });
 

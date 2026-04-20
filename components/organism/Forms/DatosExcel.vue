@@ -71,6 +71,7 @@ watch(tablaInsert, async (newValue) => {
 
     if (newValue.tabla !== '') {
         datosOptionsTabla.value = await storeExcel.obtenerCamposTabla(newValue.tabla)
+        console.log(datosOptionsTabla.value)
     }
     // Validacion
     const camposValidos = camposRequeridosInsert.every((campo) => tablaInsert.value[campo] !== '');
@@ -80,7 +81,7 @@ watch(tablaInsert, async (newValue) => {
 function agregarDB() {
     insertarTabla.value = !insertarTabla.value
     datosOptions.value = datos.value.map((dato) => {
-        return { text: dato, value: dato }
+        return { label: dato, value: dato }
     })
 }
 
@@ -166,7 +167,7 @@ function mostrar() {
                                 placeholder: 'Formato Hoja de calculo',
                                 id: 'tipoArchivo',
                                 name: 'tipoArchivo',
-                                options: [{ text: 'xlsx', value: 'xlsx' }, { text: 'xls', value: 'xls' }, { text: 'csv', value: 'csv' }],
+                                options: ['xlsx','xls','csv','csv'],
                             }">
                             </Select>
                             <Input v-model="excel.worksheet" :Propiedades="{
@@ -190,13 +191,15 @@ function mostrar() {
 
                     <div class="w-full flex justify-center items-center gap-4 px-4 mt-6">
                         <ButtonForm
-                            color="bg-gray-500 hover:bg-gray-600 text-white font-semibold md:w-[200px] sm:w-[2/3] w-full shadow-md transition-all duration-300"
+                            color="neutral"
+                            class="font-semibold md:w-50 sm:w-[2/3] w-full"
                             @click="cerrar">
                             Cancelar
                         </ButtonForm>
 
                         <ButtonForm
-                            color="bg-blue-600 hover:bg-blue-700 text-white font-semibold md:w-[200px] sm:w-[2/3] w-full shadow-md transition-all duration-300"
+                            color="primary"
+                            class="font-semibold md:w-50 sm:w-[2/3] w-full"
                             @click="validarform">
                             <download-excel v-if="varView.formComplete" :data="datosAExportar"
                                 :name="excel.nombreArchivo" :type="excel.tipoArchivo" :fields="jsonfields"

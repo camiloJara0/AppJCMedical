@@ -18,7 +18,6 @@ const varView = useVarView();
 const api = useApiRest()
 const config = useRuntimeConfig()
 const indexedDB = useIndexedDBStore();
-const storeCodigos = useCodigos();
 const mostrarContraseña = ref(false)
 
 onMounted(async () => {
@@ -28,18 +27,16 @@ onMounted(async () => {
         await indexedDB.initialize(); // tu lógica de inicialización
 
 
-        const isValid = await indexedDB.validateVersion('db-thesalus');
+        const isValid = await indexedDB.validateVersion('db-ananke');
         if (isValid) {
             console.log("✅ Versión válida, limpiando datos...");
-            await indexedDB.clearDatabase('db-thesalus');
+            await indexedDB.clearDatabase('db-ananke');
         } else {
             console.log("⚠️ Versión inválida o tabla faltante, eliminando...");
-            await indexedDB.deleteDatabase('db-thesalus');
+            await indexedDB.deleteDatabase('db-ananke');
             await indexedDB.initialize(); // recrea la base con la versión correcta
         }
 
-        await storeCodigos.initialize();
-        await storeCodigos.guardardatos()
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('Rol');

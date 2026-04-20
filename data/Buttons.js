@@ -140,6 +140,14 @@ export const buttonsTecnicos = ref([
         nombre: "Usuarios",
         secciones: [
             {
+                titulo: "Clientes",
+                ruta: '/Usuarios/Clientes'
+            },
+            {
+                titulo: "Tecnicos",
+                ruta: '/Usuarios'
+            },
+            {
                 titulo: "Agenda",
                 ruta: '/Citas'
             },
@@ -151,10 +159,4 @@ export const buttonsTecnicos = ref([
     },
 ]);
 
-export const secciones = ['Configuracion','Resoluciones','Inventarios','Datos','Usuarios','Negocios','Productos','Formas de pago','Impuestos','Cajas','Historias','Consultas','Análisis','Evoluciones','Notas','Tratamientos','Medicacion',
-    'Pacientes','Profesional','Citas','Crear','Rips','Reportes'];
-
-export const seccionesConAcciones = secciones.flatMap(seccion => {
-  const clave = seccion.replace(/\s+/g, '_'); // reemplaza espacios por guiones bajos
-  return [`${clave}_get`, `${clave}_post`, `${clave}_put`, `${clave}_delete`, `${clave}_view`];
-});
+export const secciones = ['Agenda','Categorias','Clientes','Componentes','Cotizaciones','Equipos','Reportes','Sistemas','Tipo Equipos','Tecnicos','Productos'];

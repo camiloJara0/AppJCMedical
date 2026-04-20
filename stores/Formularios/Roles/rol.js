@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useApiRest } from "../../apiRest";
 import { enviarRol } from "~/Core/Roles/POSTRol";
 import { eliminarRol } from "~/Core/Roles/DeleteRol";
 import { traerRol } from "~/Core/Roles/GETRol";
@@ -35,7 +36,16 @@ export const useRolStore = defineStore('Rol', {
         },
 
         async traer(online = true, filtrar) {
-            const roles = await traerRol()
+            const apiRest = useApiRest()
+            let roles
+
+            if(online){
+                roles = await traerRol()
+                await apiRest.postOfflineData('roles', roles)
+            } else {
+                roles = await apiRest.getOfflineData('roles')
+            }
+
             this.Roles = roles
             return roles
         },

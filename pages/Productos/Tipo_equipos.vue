@@ -48,7 +48,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    tipo_equipos.value = await storeTipo_equipos.traer();
+    tipo_equipos.value = await storeTipo_equipos.traer(false);
     await llamadatos();
 
     const listaSistemas = await storeSistemas.traer();
