@@ -35,6 +35,8 @@ const cancelarPDFs = ref(false);
 const progreso = ref(0);
 const clienteStore = useClientesStore()
 const tecnicoStore = useTecnicosStore()
+const clientesOptions = ref([])
+const tecnicosOptions = ref([])
 const reporteStore = useReporteStore()
 const calendarioCitasStore = useCalendarioCitas();
 
@@ -61,7 +63,8 @@ onMounted(() => {
     const fechaInicio = new Date(fechaActual);
     fechaInicio.setMonth(fechaInicio.getMonth() - 1);
     file.fechaInicio = fechaInicio.toISOString().split('T')[0];
-
+    clientesOptions.value = clienteStore.Clientes.map(c => { return {label: c.nombre, value: c.id}})
+    tecnicosOptions.value = tecnicoStore.Tecnicos.map(t => { return {label: t.nombre, value: t.id}})
 })
 
 watch(file, (newValue) => {
@@ -104,8 +107,9 @@ const filtrarReportePorFecha = (reportes, fechaInicio, fechaFin, id_cliente = ''
         const condicionFecha = fechaCreacion >= inicio && fechaCreacion <= fin;
         const condicionTecnico = id_tecnico ? parseInt(id_tecnico) === parseInt(item.tecnico_id) : true;
         const condicionCliente = id_cliente ? parseInt(id_cliente) === parseInt(item.cliente_id) : true;
+        const condicionEstado = item.estado == 'realizada'
 
-        if (condicionFecha && condicionTecnico && condicionCliente) {
+        if (condicionFecha && condicionTecnico && condicionCliente && condicionEstado) {
             resultado.push(item);
         }
     }
@@ -213,6 +217,7 @@ const enviarPDFs = async () => {
             options.tiempo = 2000;
             mensaje();
         }
+        generandoPDFs.value = false
         cerrar();
     } catch (error) {
         console.error('Error al exportar PDFs:', error);
@@ -277,7 +282,7 @@ const enviarPDFs = async () => {
                                     id: 'Cliente',
                                     name: 'Cliente',
                                     label: 'Filtrar Cliente (opcional)',
-                                    options: clienteStore.Clientes,
+                                    options: clientesOptions,
                                     upperCase: true,
                                 }" />
                                 <SelectSearch v-model="file.id_tecnico" :Propiedades="{
@@ -286,7 +291,7 @@ const enviarPDFs = async () => {
                                     id: 'Tecnico',
                                     name: 'Tecnico',
                                     label: 'Filtrar Tecnico (opcional)',
-                                    options: tecnicoStore.Tecnicos,
+                                    options: tecnicosOptions,
                                     upperCase: true,
                                 }" />
                             </div>

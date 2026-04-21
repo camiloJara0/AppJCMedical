@@ -103,9 +103,15 @@ const draw = (event: MouseEvent | TouchEvent) => {
 const stopDrawing = () => {
   drawing = false;
   if (canvasRef.value) {
-    const dataUrl = canvasRef.value.toDataURL('image/png');
-    emit('update:modelValue', dataUrl);
-    emit('change', dataUrl);
+    if (!isCanvasBlank(canvasRef.value)) {
+      const dataUrl = canvasRef.value.toDataURL('image/png');
+      emit('update:modelValue', dataUrl);
+      emit('change', dataUrl);
+    } else {
+      // Si está vacío, emitimos cadena vacía
+      emit('update:modelValue', '');
+      emit('change', '');
+    }
   }
 };
 
@@ -126,6 +132,14 @@ const getCoordinates = (event: MouseEvent | TouchEvent) => {
     return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
   }
 };
+
+function isCanvasBlank(canvas: HTMLCanvasElement) {
+  const blank = document.createElement('canvas');
+  blank.width = canvas.width;
+  blank.height = canvas.height;
+  return canvas.toDataURL() === blank.toDataURL();
+}
+
 </script>
 
 <template>

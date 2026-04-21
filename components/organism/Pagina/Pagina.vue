@@ -39,7 +39,7 @@ const components = {
 
 <template>
     <component :is="fondos[Propiedades.fondo]" :class="Propiedades.estilos">
-        <div v-if="Propiedades.header.titulo !== ''" class="md:pb-6 pb-4 flex md:flex-row flex-col gap-3 items-center justify-between">
+        <div v-if="Propiedades.header.titulo !== ''" class="md:pb-6 pb-4 px-3 flex md:flex-row flex-col gap-3 items-center justify-between">
             <div>
                 <h2 class="md:text-2xl text-xl font-semibold">{{ Propiedades.header.titulo }}</h2>
                 <p class="text-gray-600 dark:text-gray-200 mt-1">{{ Propiedades.header.descripcion }}</p>
@@ -47,11 +47,10 @@ const components = {
 
             <div v-if="Propiedades.header.button" class="flex gap-3 items-center cursor-pointer">
 
-                <UButton v-for="button in Propiedades.header.button"
-                    class="flex gap-2 items-center px-3 py-2 rounded-2xl text-white font-semibold transition-all duration-300 cursor-pointer active:scale-95" :class="button.color"
+                <UButton v-for="button in Propiedades.header.button" :color="button.color" :variant="button.variant"
                     @click="button.action">
-                    <i class="text-lg" :class="button.icon"></i>
                     <p class="md:flex hidden text-base">{{ button.text }}</p>
+                    <i class="text-md mr-1" :class="button.icon"></i>
                 </UButton>
 
             </div>

@@ -15,9 +15,8 @@ onMounted(() => {
     const login = varView.getUser
     rol.value = varView.getRol
     if(!login || Object.keys(login).length === 0) {
-        router.push('/')
+        // router.push('/')
     }
-    const permisosStore = varView.getPermisos
     buttons.value = storeAside.getbuttons(rol.value);
 });
 

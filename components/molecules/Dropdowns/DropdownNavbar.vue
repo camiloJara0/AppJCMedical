@@ -6,19 +6,21 @@
       color="gray"
       variant="ghost"
       size="sm"
-      class="text-gray-300 hover:text-white transition-colors"
-    />
+      class="text-gray-300 hover:text-white transition-colors">
+    
+      <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden">{{ nombre }}</p>
+      </UButton>
 
     <!-- Dropdown Menu usando UMenu o estructura HTML mejorada -->
     <div
-      class="absolute top-full -left-10 mt-0 bg-gray-900 dark:bg-gray-950 rounded-lg shadow-xl p-1 min-w-38
+      class="absolute top-full -left-2 mt-0 bg-gray-900 dark:bg-gray-950 rounded-lg shadow-xl p-1 min-w-32
              opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200
              z-50"
     >
       <UButton
         v-for="(item, idx) in submenu"
         :key="idx"
-        :icon="`i-lucide-${item.icon.split('-').pop()}`"
+        :icon="item.icon"
         color="gray"
         variant="ghost"
         size="sm"
@@ -50,14 +52,14 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   nombre: String,
   icon: String,
   submenu: {
     type: Array,
     default: () => []
   }
-})
+});
 </script>
 
 <style scoped>

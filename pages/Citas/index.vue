@@ -207,9 +207,9 @@ const propiedades = computed(() => {
                 titulo: 'Calendario de tu Agenda',
                 descripcion: 'Visualiza y administra la agenda de citas.',
                 button: [
-                    { text: 'Calendario', icon: 'fa-solid fa-calendar', color: varView.showCalendario ? 'bg-blue-700' : 'bg-gray-700', action: showCalendario },
-                    { text: 'En Lista', icon: 'fa-solid fa-table', color: 'bg-gray-700', action: showFila },
-                    puedePost ? { text: 'Agendar', icon: 'fa-solid fa-plus', color: 'bg-blue-500', action: agregarCita } : '',
+                    { text: 'En Lista', icon: 'fa-solid fa-table', color: 'neutral', variant: 'subtle', action: showFila },
+                    { text: 'Calendario', icon: 'fa-solid fa-calendar', color: varView.showCalendario ? 'primary' : 'neutral', variant: 'subtle', action: showCalendario },
+                    puedePost ? { text: 'Agendar', icon: 'fa-solid fa-plus', color: 'primary', action: agregarCita } : '',
                 ]
             })
             .addComponente('Citas', builderCitas
@@ -343,6 +343,17 @@ const columns = [
 
 function getRowItems(row) {
     const cita = row.original
+    if(cita.estado !== 'inactiva') {
+        return [
+            { type: 'label', label: 'Acciones' },
+            {
+                label: 'Observacion',
+                onSelect() {
+                    cita.estado === 'realizada' ? showObservacion(cita) : showMotivoCancelacion(cita)
+                }
+            },
+        ]
+    }
     return [
         { type: 'label', label: 'Acciones' },
         {
@@ -363,7 +374,13 @@ function getRowItems(row) {
             onSelect() {
                 eliminarCita(cita)
             }
-        }
+        },
+        cita.ultimo_estado ? {
+            label: 'Motivo Edicion',
+            onSelect() {
+                showMotivoEdicion(cita)
+            }
+        } : ''
     ]
 }
 

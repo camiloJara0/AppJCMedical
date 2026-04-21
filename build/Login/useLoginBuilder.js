@@ -81,7 +81,7 @@ export function useLoginBuilder({
       texto: 'Ingresar',
       color: 'primary',
       class: 'w-full bg-gradient-to-r from-[var(--color-default)] to-[var(--color-default-700)] text-white font-bold py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer active:scale-95',
-      tamaño: 'col-span-2 lg:w-2/3 w-full mx-auto',
+      tamaño: 'col-span-2 lg:w-2/3 w-full mx-auto cursor-pointer',
       events: {
         onClick: () => login(usuarioStore.Formulario)
       }

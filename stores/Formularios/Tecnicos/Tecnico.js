@@ -35,7 +35,7 @@ export const useTecnicosStore = defineStore('Tecnicos', {
             return await eliminarTecnico(datos);
         },
 
-        async traer(online = true) {
+        async traer(online = true, filtrar) {
             const apiRest = useApiRest()
             let tecnicos
 
@@ -44,6 +44,10 @@ export const useTecnicosStore = defineStore('Tecnicos', {
                 await apiRest.postOfflineData('tecnicos', tecnicos)
             } else {
                 tecnicos = await apiRest.getOfflineData('tecnicos')
+            }
+
+            if(filtrar){
+                tecnicos = tecnicos.filter(t => t.estado == 'activo')
             }
 
             this.Tecnicos = tecnicos

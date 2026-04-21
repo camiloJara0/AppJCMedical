@@ -87,13 +87,12 @@ function agenda() {
                     </p>
                 </li>
                 <li>
-                    <DropdownNavbar icon="fa-bell" nombre="Notificaciones" :submenu="submenuNotificaciones" />
-                    <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden">Notificaciones</p>
+                    <DropdownNavbar icon="fa-bell" nombre="Notificaciones" :submenu="submenuNotificaciones"/>
                 </li>
                 <li>
-                    <DropdownNavbar icon="fa-circle-user" nombre="Iniciar sesion" :submenu="submenuSesion" />
-                    <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
-                        :class="{ 'mr-6': aplicarMargen }">{{ usuario }}</p>
+                    <DropdownNavbar icon="fa-circle-user" :nombre="usuario" :submenu="submenuSesion" />
+                    <!-- <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
+                        :class="{ 'mr-6': aplicarMargen }">{{ usuario }}</p> -->
                 </li>
                 <li>
 

@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       SECRET_KEY: 'THESALUS943875PL',
-      // api: 'https://api.ctsantaisabel.com',
+      // api: 'https://app.jycmedical.com',
       api: 'http://127.0.0.1:8000',
       login: 'api/login',
       categoria: 'api/categorias',

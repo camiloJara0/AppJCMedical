@@ -11,7 +11,7 @@
       <!-- Texto animado -->
       <div class="text-center">
         <p class="text-white dark:text-gray-100 text-lg font-semibold animate-pulse">
-          Cargando sistema médico...
+          Cargando sistema Ananké...
         </p>
         <div class="mt-2 flex gap-1 justify-center">
           <span class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s;" />

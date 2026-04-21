@@ -35,7 +35,6 @@ export const useReporteStore = defineStore('Reportes', {
                 correo: '',
             },
             estado: {
-                estado: '',
                 observacion: ''
             }
         },

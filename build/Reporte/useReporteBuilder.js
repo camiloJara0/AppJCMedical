@@ -132,13 +132,39 @@ export function useReporteBuilder({
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
         tamaño: 'col-span-2 w-full',
-        rows: 5
+        rows: 8
     })
 
     builder.addCampo({
+        component: 'Select',
+        label: 'Estado del reporte (opcional)',
+        placeholder: 'Estado',
+        name: 'estado',
+        id: 'estado',
+        options: [
+            'En proceso',
+            'Esperando repuestos',
+            {label: 'Finalizado', value:'realizada'},
+            {label: 'Cancelado', value:'eliminada'},
+        ],
+        vmodel: 'Reporte.estado'
+    })
+    .addCampo({
+        component: 'Input',
+        type: 'text',
+        label: 'Observacion de estado*',
+        placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
+        id: 'observacion',
+        name: 'observacion',
+        tamaño: 'w-full',
+        vmodel: 'estado.observacion',
+    })
+
+    .nuevaSeccion('Recibido')
+    builder.addCampo({
         component: 'Label',
         text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 dark:text-gray-400 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,
-        tamaño: 'w-full col-span-2'
+        tamaño: 'w-full col-span-2 pt-1'
     })
 
         .addCampo({
@@ -148,14 +174,14 @@ export function useReporteBuilder({
             placeholder: 'Correo del que recibe',
             id: 'correo',
             name: 'correo',
-            tamaño: 'w-full col-span-2',
+            tamaño: 'w-full',
             vmodel: 'recibido.correo',
         })
 
         .addCampo({
             component: 'Input',
             type: 'text',
-            label: 'Nombre (opcional)',
+            label: 'Nombre *',
             placeholder: 'Juan Perez',
             id: 'nombre',
             name: 'nombre',

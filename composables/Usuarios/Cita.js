@@ -51,24 +51,32 @@ export function useCitaActions({
      CANCELAR CITA
   ========================= */
   async function cancelarCita(cita) {
-    console.log(cita)
     store.Formulario.Cita = cita;
     const Cita = store.Formulario.Cita;
-    varView.showActualizarCita = true
 
     options.icono = "warning"
     options.titulo = "¿Deseas eliminar la Cita?"
-    options.html = `Se eliminará la Cita programada para: <span>${Cita.nombre_equipo}</span>`
+    options.html = `Se cancelará la Cita programada para: <span>${Cita.nombre_equipo}</span>`
+    options.input = 'text'
+    options.inputAtributes = { placeholder: 'Motivo de cancelacion' }
     options.confirmtext = "Sí, eliminar"
     options.canceltext = "Atrás";
 
-    const respuesta = await alertRespuesta();
+    const respuesta = await alertRespuestaInput();
 
-    if (respuesta !== "confirmado") {
-      varView.showActualizarCita = false
+    if (respuesta.estado !== "confirmado") {
       return
     };
 
+    if (!respuesta.valor) {
+      options.position = 'top-end'
+      options.texto = 'Ingrese un motivo de cancelacion.'
+      options.background = '#d33'
+      options.tiempo = 1500
+      mensaje()
+      return
+    }
+    Cita.motivo_cancelacion = respuesta.valor
     const eliminado = await eliminarCita(Cita);
 
     if (!eliminado) return;
@@ -109,7 +117,7 @@ export function useCitaActions({
   function showMotivoCancelacion(cita) {
     options.icono = 'info'
     options.titulo = 'Motivo de cancelacion'
-    options.texto = cita.motivo_cancelacion || 'Cita cancelada!'
+    options.texto = cita.ultima_observacion || 'Cita cancelada!'
     options.tiempo = 5000
     simple()
   }
@@ -117,7 +125,7 @@ export function useCitaActions({
   function showMotivoEdicion(cita) {
     options.icono = 'info'
     options.titulo = 'Motivo de edición'
-    options.texto = cita.motivo_edicion || 'La cita ha sido editada!'
+    options.texto = cita.ultima_observacion || 'La cita ha sido editada!'
     options.tiempo = 5000
     simple()
   }
@@ -129,7 +137,7 @@ export function useCitaActions({
 
     options.icono = 'info'
     options.titulo = 'Observacion del Profesional'
-    options.texto = 'Cita Realizada con exito!'
+    options.texto = cita.ultima_observacion || 'Cita Realizada con exito!'
     options.tiempo = 5000
     simple()
   }
@@ -182,7 +190,7 @@ export function useCitaActions({
 
     prepararRegistro(cita, equipo)
 
-    if(cita.tipo === 'Preventivo'){
+    if (cita.tipo === 'Preventivo') {
       reporteStore.Formulario.actividades = 'SE REALIZA LIMPIEZA DEL EQUPO DE MANERA INTERNA Y EXTERNA, SE HACE INSPECCION VISUAL Y ESTRUCTURAL DEL EQUIPO Y SE CONFIRMA QUE EL EQUIPO EN TERMINOS GENERALES SE ENCUENTRAN EN BUEN ESTADO, SE EVIDENCIA MUCHO POLVO INTERNAMENTE EN CONTCATO CON TARJETAS ELECTRONICAS, SE EVIDENCIA QUE UN SOCKET ESTE QUEMADO Y EL CONTROLADOR DEL VENTILADOR ESTA EN MAL ESTADO, POR LO QUE SE DEBEN REEMPLAZAR, SE HACEN PRUEBAS DE FUNCIONAMIENTO GENERAL. SE DEJA INHANILITADO DOS BOMBILLOS DE UVA MIENTRAS SE CAMBIA EL SOCKET YA QUE ESTE PUEDE GENERAR UN CORTO ELECTRICO, EL EQUIPO ESTA PARCIALMENTE OPERATIVO.'
     }
 

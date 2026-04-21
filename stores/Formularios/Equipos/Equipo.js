@@ -51,6 +51,10 @@ export const useEquiposStore = defineStore('Equipos', {
                 equipos = await apiRest.getOfflineData('equipos')
             }
 
+            if(filtrar){
+                equipos = equipos.filter(e => e.estado == 'activo')
+            }
+
             this.Equipos = equipos
             return equipos
         },

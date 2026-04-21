@@ -7,10 +7,14 @@ import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
 import FondoBlur from "~/components/atoms/Fondos/FondoBlur.vue";
 import { imprimirReporte } from "~/Core/Reportes/ImpirmirReporte";
 import ExportarPDFs from "~/components/paginas/ExportarPDFs.vue";
+import { useClientesStore } from '~/stores/Formularios/Clientes';
+import { useTecnicosStore } from '~/stores/Formularios/Tecnicos/Tecnico';
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeReportes = useReporteStore()
+const clienteStore = useClientesStore()
+const tecnicoStore = useTecnicosStore()
 const reportes = ref([]);
 const refresh = ref(1);
 const showModal = ref(false);
@@ -43,6 +47,8 @@ watch(() => showModal.value,
 
 onMounted(async () => {
     reportes.value = await storeReportes.traer();
+    await clienteStore.traer(true)
+    await tecnicoStore.traer(true)
     await llamadatos();
 });
 
@@ -60,7 +66,8 @@ const columns = [
             const color =
                 estado === 'realizada' ? 'success' :
                     estado === 'En Revisión' ? 'warning' :
-                        'error'
+                        estado === 'eliminada' ? 'error' :
+                            'neutral'
             return h(UBadge, { variant: 'subtle', color, class: 'capitalize' }, () => estado)
         }
     },
@@ -70,6 +77,18 @@ const columns = [
             h(
                 'div',
                 { class: 'text-right' },
+                row.original.estado !== 'realizada' && row.original.estado !== 'En Revisión' && row.original.estado !== 'eliminada' ?
+                h(
+                    UButton,
+                    {
+                        icon: 'i-lucide-pencil',
+                        color: 'warning',
+                        variant: 'ghost',
+                        label: 'open',
+                        onClick: () => verReporte(row.original)
+                    },
+                    () => 'Editar'
+                ) :
                 h(
                     UButton,
                     {
@@ -80,7 +99,8 @@ const columns = [
                         onClick: () => verReporte(row.original)
                     },
                     () => 'Ver'
-                )
+                ),
+
             )
     }
 ]

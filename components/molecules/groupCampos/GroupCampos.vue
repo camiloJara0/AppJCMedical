@@ -287,8 +287,8 @@ const itemsCompletos = computed(() =>
         </div>
 
         <!-- Vacío -->
-        <p v-else @click="showCampos = !showCampos" class="text-center text-gray-400 py-4 cursor-pointer">
-            No hay registros agregados.
+        <p v-else @click="showCampos = !showCampos" class="text-center text-gray-400 py-4 cursor-pointer hover:underline">
+            No hay registros agregados. Agregar
         </p>
 
     </div>

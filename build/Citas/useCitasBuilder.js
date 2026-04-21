@@ -12,7 +12,7 @@ export function useCitasBuilder({
 }) {
     const builder = new FormularioBuilder()
 
-    return builder
+    builder
         .setStoreId(storeId)
         .setStorePinia(storePinia)
         .setFormularioFondo(true)
@@ -106,5 +106,18 @@ export function useCitasBuilder({
             tamaño: 'w-full',
             vmodel: 'Cita.hora',
         })
-        .build()
+        if(isEditing) {
+            builder.addCampo({
+                component: 'Input',
+                type: 'text',
+                label: 'Motivo de edición *',
+                placeholder: 'El motivo por el cual se esta editando la cita',
+                id: 'motivo_edicion',
+                name: 'motivo_edicion',
+                tamaño: 'w-full col-span-2',
+                vmodel: 'Cita.motivo_edicion',
+            })
+        }
+
+        return builder.build()
 }

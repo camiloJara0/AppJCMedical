@@ -3,13 +3,18 @@ export async function eliminarCita(cita) {
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
-        const response = await fetch(`${config.public.api}/${config.public.cita}/${cita.id}`, {
-            method: 'DELETE',
+        const response = await fetch(`${config.public.api}/api/eliminarCita`, {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(cita)
+            body: JSON.stringify({
+                id: cita.id,
+                tecnico_id: cita.tecnico_id,
+                motivo_cancelacion: cita.motivo_cancelacion
+            })
         });
 
         if (!response.ok) {

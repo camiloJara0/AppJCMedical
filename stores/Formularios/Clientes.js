@@ -53,6 +53,10 @@ export const useClientesStore = defineStore('Clientes', {
                 Clientes = await apiRest.getOfflineData('clientes')
             }
 
+            if(filtrar) {
+                Clientes = Clientes.filter(c => c.estado == 'activo')
+            }
+
             this.Clientes = Clientes
             return Clientes
         },

@@ -37,6 +37,7 @@ const {
     actualizarCita,
     showMotivoCancelacion,
     showObservacion,
+    showMotivoEdicion,
     activarCita,
     agregarCita,
     cerrar,
@@ -68,7 +69,6 @@ const citasFiltradas = computed(() => {
         }
     });
 });
-
 
 // Pendientes
 const pendientes = computed(() => {
@@ -126,12 +126,12 @@ function changeShowPendientes() {
             <p class="text-xl font-semibold">
                 {{ calendarioCitasStore.diaSemana }}, {{ dias }} {{ mes }}
             </p>
-            <ButtonRounded
+            <!-- <ButtonRounded
                 :color="!showPendientes ? 'bg-gray-400 dark:bg-gray-800 text-gray-700 dark:text-gray-400 w-fit! flex gap-1 px-2' : 'bg-blue-500 hover:bg-blue-600 text-white w-fit! flex gap-1 px-2'"
                 tooltip="Mostrar/Ocultar Pendientes" tooltipPosition="top" @click="changeShowPendientes">
                 <i :class="!showPendientes ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i> {{
                     pendientes.length.toLocaleString('es-ES') }}
-            </ButtonRounded>
+            </ButtonRounded> -->
         </div>
 
 
@@ -140,6 +140,7 @@ function changeShowPendientes() {
             :class="{ 'xl:grid-cols-3 lg:grid-cols-2': varView.showEnFila || !varView.showCalendario, 'xl:grid-cols-2 lg:grid-cols-1': !varView.showEnFila }">
             <!-- Card Citas -->
 
+            <!-- Skeleton -->
             <template v-if="!unref(props.Propiedades.citas)">
                 <div v-for="i in 2" :key="i" :class="Propiedades.tamaño"
                     class="w-full p-4 shadow-md bg-white dark:bg-gray-700 flex flex-col gap-4 animate-pulse">
@@ -166,10 +167,12 @@ function changeShowPendientes() {
 
             <div v-for="cita in citasFiltradas" :key="cita.id"
                 class="transition-all duration-300">
-                <UCard class="hover:shadow-xl hover:-translate-y-1 border-l-4" :class="[
+
+                <!-- Card Citas -->
+                <UCard class="hover:shadow-xl hover:-translate-y-1 border-l-4 h-50" :class="[
                     cita.estado === 'cancelada' && 'border-red-500 bg-red-50 dark:bg-red-900/30',
                     vencida(cita) && cita.estado === 'Inactiva' && 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20'
-                ]">
+                    ]">
 
                     <!-- HEADER -->
                     <div class="flex justify-between items-center">
@@ -228,11 +231,11 @@ function changeShowPendientes() {
                                 icon="i-heroicons-check" @click="activarCita(cita)" />
                         </div>
 
-                        <UButton v-if="cita.motivo_edicion || cita.estado !== 'inactiva'" size="xs" color="neutral"
+                        <UButton v-if="cita.ultimo_estado || cita.estado !== 'inactiva'" size="xs" color="neutral"
                             variant="ghost" icon="i-heroicons-information-circle" @click="
-                                cita.estado === 'cancelada'
+                                cita.ultimo_estado === 'cancelada'
                                     ? showMotivoCancelacion(cita)
-                                    : cita.estado === 'Realizada'
+                                    : cita.ultimo_estado === 'realizada'
                                         ? showObservacion(cita)
                                         : showMotivoEdicion(cita)
                                 " />
