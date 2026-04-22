@@ -16,6 +16,7 @@ const { showNavbarBurguer, cambiarEstado } = useShowNavbar();
 const usuario = ref();
 const varView = useVarView();
 const buttons = ref()
+const rol = ref()
 
 onMounted(() => {
     // Obtener y parsear el usuario
@@ -25,8 +26,8 @@ onMounted(() => {
     } else {
         usuario.value = 'Usuario'
     }
-    const permisosStore = varView.getRol
-    buttons.value = storeAside.getbuttons(permisosStore);
+    rol.value = varView.getRol
+    buttons.value = storeAside.getbuttons(rol.value);
 })
 
 function obtenerFechaFormateada() {
@@ -55,7 +56,7 @@ function agenda() {
     const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
     if (button) {
         footer.cambiarSecciones(button.secciones);
-        footer.cambiarIdActivo(2)
+        footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0)
     }
 }
 
@@ -78,7 +79,7 @@ function agenda() {
             </div>
 
             <ul class="navbar__content__list" @click="removeStorage()"
-                :class="{ 'mostrarResponsive': showNavbarBurguer, 'ocultarResponsive': !showNavbarBurguer }">
+                :class="{ 'mostrarResponsive': showNavbarBurguer, 'ocultarResponsive': !showNavbarBurguer, 'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico' }">
                 <li>
                     <Breadcrumb />
                     <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden" @click="varView.showBreadCrumb = !varView.showBreadCrumb">
@@ -91,11 +92,8 @@ function agenda() {
                 </li>
                 <li>
                     <DropdownNavbar icon="fa-circle-user" :nombre="usuario" :submenu="submenuSesion" />
-                    <!-- <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
-                        :class="{ 'mr-6': aplicarMargen }">{{ usuario }}</p> -->
                 </li>
                 <li>
-
                     <nuxtLink to="/Citas" @click="agenda()" class="flex items-center">
                         <UButton icon="i-lucide-calendar" color="gray" variant="ghost" size="sm"
                             class="text-gray-300 hover:text-white transition-colors" />

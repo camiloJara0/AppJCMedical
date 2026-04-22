@@ -18,20 +18,20 @@ export function useIngresoContraseñaBuilder({
     .setFormularioFondo(true)
     .setFormularioShow(show)
     .setBotones([
-      { text: 'Crear cuenta', color: 'dark:bg-white dark:text-black! dark:hover:bg-gray-100 bg-blue-500 hover:bg-[var(--color-default)]! hover:text-white! ', type: 'enviar', },
-      { text: 'Cancelar', color: '¨primary0', type: 'cerrar', accion: cerrar },
+      { text: 'Crear cuenta', color: 'primary', type: 'enviar', },
+      { text: 'Cancelar', color: 'neutral', variant: 'subtle', type: 'cerrar', accion: cerrar },
     ])
     .nuevaSeccion('')
     .addCampo({
       component: 'Imagen',
       src: CrossImg,
-      tamaño: 'w-20 h-20 logo mt-8 mb-3 select-none',
+      tamaño: 'w-20 h-20 logo mt-3 mb-3 select-none',
       contenedor: 'flex justify-center w-full col-span-2'
     })
     .addCampo({
       component: 'Label',
       text: `
-            <div class="flex flex-col justify-center items-center gap-2 pt-4 pb-8 text-center">
+            <div class="flex flex-col justify-center items-center gap-2 pt-1 pb-4 text-center">
                 <h3 class="text-(--color-default) text-3xl font-bold tracking-wide">ANANKE</h3>
                 <p class="text-gray-600 dark:text-gray-300 max-w-md">
                   Ingresa el código enviado a tu correo y crea una contraseña segura para tu cuenta.

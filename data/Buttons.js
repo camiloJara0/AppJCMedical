@@ -140,14 +140,6 @@ export const buttonsTecnicos = ref([
         nombre: "Usuarios",
         secciones: [
             {
-                titulo: "Clientes",
-                ruta: '/Usuarios/Clientes'
-            },
-            {
-                titulo: "Tecnicos",
-                ruta: '/Usuarios'
-            },
-            {
                 titulo: "Agenda",
                 ruta: '/Citas'
             },

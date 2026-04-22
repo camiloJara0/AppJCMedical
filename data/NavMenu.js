@@ -6,5 +6,10 @@ export const submenuNotificaciones = [
 
 export const submenuSesion = [
     { id: 1, nombre: 'Iniciar Sesión', icon: 'lucide-user', link: '/' },
-    { id: 2, nombre: 'Cerrar Sesión', icon: 'i-lucide-arrow-left-to-line', link: '/', accion: () => { localStorage.removeItem('seccion')} },
+    { id: 2, nombre: 'Cerrar Sesión', icon: 'i-lucide-arrow-left-to-line', link: '/', accion: () => { 
+            localStorage.removeItem('rol')
+            localStorage.removeItem('seccion')
+            localStorage.removeItem('ultimaSincronizacion')
+        } 
+    },
 ]

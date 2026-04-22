@@ -11,16 +11,16 @@ export function useRecibidoBuilder({
     builder
         .setStoreId(storeId)
         .setStorePinia(storePinia)
+        .setFormulariotamaño('MD')
         .setFormularioFondo(false)
         .setFormularioShow(true)
-        .setFormularioTituloFormulario('Registrar Reporte de Mantenimiento')
-        .setFormularioTipo('Wizard')
-        .setFormulariotamaño('MD')
-        .setFormularioEstilos('w-[100%]!')
-        .setBotones([
-            { type: 'enviar', text: 'Siguiente', color: 'primary' },
-        ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
+        .setFormularioTituloFormulario('Registrar Reporte de Mantenimiento')
+        .setFormularioTipo('form')
+        .setFormularioEstilos('w-full!')
+        .setBotones([
+            { type: 'enviar', text: 'Enviar', color: 'primary' },
+        ])
 
 
     builder.nuevaSeccion('Actividades y observaciones')
@@ -59,10 +59,11 @@ export function useRecibidoBuilder({
 
     builder.addCampo({
         component: 'Dibujo',
-        label: 'Realizado por, Dibuja tu firma',
+        label: 'Recibido por: "Dibuja tu firma"',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: ' w-full',
+        tamaño: ' w-full col-span-2 flex justify-center',
+        // tamañoCanva: 'w-1/2',
         rows: 5,
         vmodel: 'recibido.firma'
     })

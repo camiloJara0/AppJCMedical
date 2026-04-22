@@ -26,49 +26,52 @@ export function useReporteBuilder({
             { type: 'cerrar', text: 'Atras', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
-        .nuevaSeccion('Checklist de componentes')
-    for (let i = 0; i < sistemas.length; i++) {
-
-        builder.addCampo({
-            component: 'Label',
-            text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
-            tamaño: 'w-full col-span-2'
-        })
-
-        for (let j = 0; j < sistemas[i].componentes.length; j++) {
-
-            const componente = sistemas[i].componentes[j]
-
-            // Inicializar estructura reactiva
-            if (!reporteStore.Formulario.componentes[componente.id]) {
-                reporteStore.Formulario.componentes[componente.id] = {
-                    estado: null,
-                    observacion: ''
+        if(!isEditing){
+            builder
+            .nuevaSeccion('Checklist de componentes')
+        for (let i = 0; i < sistemas.length; i++) {
+    
+            builder.addCampo({
+                component: 'Label',
+                text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
+                tamaño: 'w-full col-span-2'
+            })
+    
+            for (let j = 0; j < sistemas[i].componentes.length; j++) {
+    
+                const componente = sistemas[i].componentes[j]
+    
+                // Inicializar estructura reactiva
+                if (!reporteStore.Formulario.componentes[componente.id]) {
+                    reporteStore.Formulario.componentes[componente.id] = {
+                        estado: null,
+                        observacion: ''
+                    }
                 }
+    
+                builder.addCampo({
+                    component: 'Radio',
+                    label: componente.nombre + ': ',
+                    vmodel: `componentes.${componente.id}.estado`,
+                    tamaño: 'w-full',
+                    options: [
+                        { label: 'Bueno', value: 'bueno' },
+                        { label: 'Malo', value: 'malo' },
+                        { label: 'Regular', value: 'regular' }
+                    ]
+                })
+    
+                builder.addCampo({
+                    component: 'Input',
+                    label: `Observación ${componente.nombre} (opcional)`,
+                    // placeholder: `Observación ${componente.nombre}`,
+                    placeholder: '...',
+                    vmodel: `componentes.${componente.id}.observacion`,
+                    tamaño: 'w-full'
+                })
             }
-
-            builder.addCampo({
-                component: 'Radio',
-                label: componente.nombre + ': ',
-                vmodel: `componentes.${componente.id}.estado`,
-                tamaño: 'w-full',
-                options: [
-                    { label: 'Bueno', value: 'bueno' },
-                    { label: 'Malo', value: 'malo' },
-                    { label: 'Regular', value: 'regular' }
-                ]
-            })
-
-            builder.addCampo({
-                component: 'Input',
-                label: `Observación ${componente.nombre} (opcional)`,
-                // placeholder: `Observación ${componente.nombre}`,
-                placeholder: '...',
-                vmodel: `componentes.${componente.id}.observacion`,
-                tamaño: 'w-full'
-            })
         }
-    }
+        }
 
     builder.nuevaSeccion('Elementos utilizados')
 
@@ -145,14 +148,13 @@ export function useReporteBuilder({
             'En proceso',
             'Esperando repuestos',
             {label: 'Finalizado', value:'realizada'},
-            {label: 'Cancelado', value:'eliminada'},
         ],
-        vmodel: 'Reporte.estado'
+        vmodel: 'reporte.estado'
     })
     .addCampo({
         component: 'Input',
         type: 'text',
-        label: 'Observacion de estado*',
+        label: 'Observacion de estado (opcional)',
         placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
         id: 'observacion',
         name: 'observacion',
@@ -209,7 +211,7 @@ export function useReporteBuilder({
         label: 'Firma del que Recibe: (opcional)',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: ' w-full',
+        tamaño: ' w-full col-span-2 flex justify-center',
         rows: 5,
         vmodel: 'recibido.firma'
     })

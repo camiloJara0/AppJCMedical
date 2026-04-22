@@ -98,10 +98,6 @@ const showCalendario = () => {
     varView.showCalendario = !varView.showCalendario
 };
 
-const showTabla = () => {
-    varView.showEnTabla = !varView.showEnTabla
-}
-
 function citaEliminada(cita) {
     if (cita.estado == 'Inactiva') {
         return 'borrar'
@@ -115,14 +111,6 @@ function isCancelarCita(cita) {
         showMotivoCancelacion(cita)
     } else {
         cancelarCita(cita)
-    }
-}
-
-function isCitaActualizada(cita) {
-    if (cita.estado == 'Inactiva' && cita.showMotivoEdicion) {
-        return 'observacion editada'
-    } else {
-        return ''
     }
 }
 

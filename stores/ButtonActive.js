@@ -6,12 +6,13 @@ import { buttonsTecnicos } from "../data/Buttons";
 export const useButtonsAside = defineStore('ButtonsAside', {
     state: () => ({
         buttons: buttons,
+        buttonsTecnicos: buttonsTecnicos
     }),
 
     getters: {
         getbuttons: (state) => (permisosUsuario) => {
 
-            return permisosUsuario == 'Admin' ? state.buttons : buttonsTecnicos
+            return permisosUsuario == 'Admin' ? state.buttons : state.buttonsTecnicos
         }
 
     },

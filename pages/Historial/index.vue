@@ -9,6 +9,7 @@ import { imprimirReporte } from "~/Core/Reportes/ImpirmirReporte";
 import ExportarPDFs from "~/components/paginas/ExportarPDFs.vue";
 import { useClientesStore } from '~/stores/Formularios/Clientes';
 import { useTecnicosStore } from '~/stores/Formularios/Tecnicos/Tecnico';
+import Reporte from "~/components/paginas/Reporte.vue";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
@@ -27,6 +28,7 @@ async function llamadatos() {
 const {
     verReporte,
     eliminarReportes,
+    editarReporte,
     cerrar
 } = useReporteActions({
     varView,
@@ -45,10 +47,19 @@ watch(() => showModal.value,
     }
 );
 
+watch(() => varView.showNuevoRegistro,
+    async (estado) => {
+        if (!estado && varView.cambioEnApi) {
+            await llamadatos();
+            refresh.value++;
+        }
+    }
+);
+
 onMounted(async () => {
     reportes.value = await storeReportes.traer();
-    await clienteStore.traer(true)
-    await tecnicoStore.traer(true)
+    await clienteStore.traer(true, true)
+    await tecnicoStore.traer(true, true)
     await llamadatos();
 });
 
@@ -85,7 +96,7 @@ const columns = [
                         color: 'warning',
                         variant: 'ghost',
                         label: 'open',
-                        onClick: () => verReporte(row.original)
+                        onClick: () => editarReporte(row.original)
                     },
                     () => 'Editar'
                 ) :
@@ -303,5 +314,6 @@ const reporte = computed(() => storeReportes.Formulario)
         </FondoBlur>
 
     </FondoDefault>
+    <Reporte v-if="varView.showNuevoRegistro"></Reporte>
     <ExportarPDFs v-if="varView.showExportarPDFs"></ExportarPDFs>
 </template>

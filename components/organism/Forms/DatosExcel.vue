@@ -71,7 +71,6 @@ watch(tablaInsert, async (newValue) => {
 
     if (newValue.tabla !== '') {
         datosOptionsTabla.value = await storeExcel.obtenerCamposTabla(newValue.tabla)
-        console.log(datosOptionsTabla.value)
     }
     // Validacion
     const camposValidos = camposRequeridosInsert.every((campo) => tablaInsert.value[campo] !== '');

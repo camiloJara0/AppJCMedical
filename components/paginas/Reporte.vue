@@ -14,7 +14,7 @@ const propiedades = computed(() =>
         storePinia: "Reportes",
         cerrar: cerrar,
         active : varView.showNuevoRegistro,
-        isEditing: false,
+        isEditing: varView.isEditing,
     })
 )
 

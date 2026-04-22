@@ -5,13 +5,22 @@
       <div class="relative w-24 h-24 flex items-center justify-center">
         <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-400 border-r-blue-400 animate-spin" />
         <div class="absolute inset-2 rounded-full border-4 border-transparent border-b-blue-300 animate-spin" style="animation-direction: reverse;" />
-        <i class="fa-solid fa-notes-medical text-4xl text-blue-400 dark:text-blue-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 100 100" 
+              width="60" height="60" 
+              fill="none" stroke="currentColor" stroke-width="6">
+
+            <!-- Cruz médica en el centro -->
+            <rect x="45" y="30" width="10" height="40" fill="currentColor"/>
+            <rect x="30" y="45" width="40" height="10" fill="currentColor"/>
+          </svg>
+
       </div>
 
       <!-- Texto animado -->
       <div class="text-center">
         <p class="text-white dark:text-gray-100 text-lg font-semibold animate-pulse">
-          Cargando sistema Ananké...
+          Cargando sistema ANANKE...
         </p>
         <div class="mt-2 flex gap-1 justify-center">
           <span class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s;" />
@@ -58,4 +67,5 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
 </style>

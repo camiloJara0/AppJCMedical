@@ -1,11 +1,13 @@
-export async function enviarReporte(data) {
+export async function enviarReporte(isEditing, data) {
     try {
         const varView = useVarView()
-        data.componentes = Object.entries(data.componentes).map(([id, value]) => ({
-            componente_id: id,
-            estado: value.estado,
-            observacion: value.observacion,
-        }));
+        if(!isEditing){
+            data.componentes = Object.entries(data.componentes).map(([id, value]) => ({
+                componente_id: id,
+                estado: value.estado,
+                observacion: value.observacion,
+            }));
+        }
 
         data.materiales = data.materiales.filter(d => {
             return d && Object.values(d).some(v => v !== '' && v != null);
@@ -20,10 +22,16 @@ export async function enviarReporte(data) {
             return d && Object.values(d).some(v => v !== '' && v != null);
         });
 
+
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
-        const response = await fetch(`${config.public.api}/${config.public.reporte}`, {
-            method: 'POST',
+
+        const method = isEditing ? 'PUT' : 'POST'
+        const url = isEditing ?
+            `${config.public.api}/${config.public.reporte}/${data.Reporte.id}` :
+            `${config.public.api}/${config.public.reporte}`
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -48,6 +56,7 @@ export async function enviarReporte(data) {
 
         const dataRes = await response.json();
 
+        if(isEditing) return true
         varView.propiedadesPDF = dataRes.ids.Reporte.id
         varView.showPDFServicio = true
         return true;

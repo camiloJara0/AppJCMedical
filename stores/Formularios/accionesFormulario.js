@@ -83,7 +83,8 @@ export const accionesFormularios = {
         return respuesta
     },
     enviarReporte: async (data) => {
-        const respuesta = await enviarReporte(data)
+        const varView = useVarView()
+        const respuesta = await enviarReporte(varView.isEditing, data)
         return respuesta
     },
     RegistroSistema: async (data) => {

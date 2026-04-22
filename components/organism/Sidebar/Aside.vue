@@ -15,7 +15,7 @@ onMounted(() => {
     const login = varView.getUser
     rol.value = varView.getRol
     if(!login || Object.keys(login).length === 0) {
-        // router.push('/')
+        router.push('/')
     }
     buttons.value = storeAside.getbuttons(rol.value);
 });
@@ -59,7 +59,7 @@ function accesoRapidoSelected(nombre) {
             const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
             if (button) {
                 footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(2);
+                footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0);
             }
             break;
         }
@@ -83,7 +83,7 @@ function accesoRapidoSelected(nombre) {
             const button = buttons.value.find(btn => btn.nombre === 'Productos');
             if (button) {
                 footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(2);
+                footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0);
             }
             break;
         }
@@ -91,7 +91,7 @@ function accesoRapidoSelected(nombre) {
             const button = buttons.value.find(btn => btn.nombre === 'Productos');
             if (button) {
                 footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(3);
+                footer.cambiarIdActivo(rol == 'Admin' ? 3 : 1);
             }
             break;
         }
@@ -141,7 +141,7 @@ function accesoRapidoSelected(nombre) {
 
                 <!-- Estado colapsado -->
                 <div v-if="!varView.expandido"
-                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2">
+                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2" :class="{'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico'}"> 
 
                     <!-- Botón expandir -->
                     <ButtonRounded @click="() => {

@@ -14,6 +14,7 @@ export function useCitaActions({
 
   const store = useCitasStore()
   const citasStore = useCitasStore()
+  const calendarioStore = useCalendarioCitas()
   const reporteStore = useReporteStore()
   const equipoStore = useEquiposStore()
   const varView = useVarView()
@@ -35,6 +36,7 @@ export function useCitaActions({
 
   const agregarCita = () => {
     show = true;
+    citasStore.Formulario.Cita.fecha = calendarioStore.fecha.split('/').reverse().join('-')
     varView.soloVer = false;
     varView.isEditing = false
     varView.showNuevaCita = true
@@ -232,6 +234,7 @@ export function useCitaActions({
       }))
     }))
 
+    varView.isEditing = false
     varView.sistemasBuilder = sistemasBuilder
 
   }
