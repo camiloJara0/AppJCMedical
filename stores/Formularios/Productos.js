@@ -45,11 +45,14 @@ export const useProductosStore = defineStore('Productos', {
         },
 
         // Funcion para listar Productos GET
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('productos')
+
             let productos
 
-            if(online){
+            if((online && refrescar) || cambio){
                 productos = await traerProductos()
                 await apiRest.postOfflineData('productos', productos)
             } else {

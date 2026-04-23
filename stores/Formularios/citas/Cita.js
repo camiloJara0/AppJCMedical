@@ -39,12 +39,14 @@ export const useCitasStore = defineStore('Citas', {
             return await eliminarCita(datos);
         },
 
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const varView = useVarView()
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('citas')
             let citas
 
-            if(online){
+            if((online && refrescar) || cambio){
                 citas = await traerCitas()
                 await apiRest.postOfflineData('citas', citas)
             } else {

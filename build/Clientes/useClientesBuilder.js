@@ -17,7 +17,7 @@ export function useClientesBuilder({
         .setFormulariotamaño('SM')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
-            { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setCamposRequeridos(['Cliente.nombre', 'Cliente.telefono', 'Cliente.correo'])
         .setFormularioContenedorCampos('flex! flex-col gap-5')

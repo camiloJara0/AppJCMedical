@@ -18,7 +18,7 @@ export function useCategoriasBuilder({
         .setFormulariotamaño('SM')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
-            { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setCamposRequeridos(['Categoria.nombre', 'Categoria.descripcion',,])
         .setFormularioContenedorCampos('flex! flex-col gap-5')

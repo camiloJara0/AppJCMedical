@@ -15,8 +15,8 @@ const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 
-async function llamadatos() {
-  sistemas.value = await storeSistemas.traer();
+async function llamadatos(cambio = false) {
+  sistemas.value = await storeSistemas.traer(true, false, cambio);
   varView.datosActualizados()
 }
 
@@ -38,7 +38,7 @@ const {
 watch(() => active.value,
   async (estado) => {
     if (!estado && varView.cambioEnApi) {
-      await llamadatos();
+      await llamadatos(true);
       refresh.value++;
     }
   }

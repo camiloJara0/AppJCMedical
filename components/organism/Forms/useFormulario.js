@@ -251,7 +251,7 @@ export function mapCamposLimpios(pinia) {
             if (typeof valor === 'string') {
                 pinia[key] = '';
             } else if (typeof valor === 'number') {
-                pinia[key] = 0;
+                pinia[key] = '';
             } else if (typeof valor === 'boolean') {
                 pinia[key] = false;
             } else if (Array.isArray(valor)) {

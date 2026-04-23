@@ -18,8 +18,8 @@ const active = ref(false);
 const isEditing = ref(false);
 const sistemas = ref([])
 
-async function llamadatos() {
-    tipo_equipos.value = await storeTipo_equipos.traer();
+async function llamadatos(cambio = false) {
+    tipo_equipos.value = await storeTipo_equipos.traer(true, false, cambio);
     varView.datosActualizados()
 }
 
@@ -41,7 +41,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }
@@ -51,7 +51,7 @@ onMounted(async () => {
     tipo_equipos.value = await storeTipo_equipos.traer(false);
     await llamadatos();
 
-    const listaSistemas = await storeSistemas.traer();
+    const listaSistemas = await storeSistemas.traer(true, true);
     sistemas.value = listaSistemas.map(c => { return {label: c.nombre, value: c.id}})
 });
 

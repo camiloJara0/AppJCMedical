@@ -18,8 +18,8 @@ const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 
-async function llamadatos() {
-  componentes.value = await storeComponentes.traer();
+async function llamadatos(cambio = false) {
+  componentes.value = await storeComponentes.traer(true, false, cambio);
   varView.datosActualizados()
 }
 
@@ -41,7 +41,7 @@ const {
 watch(() => active.value,
   async (estado) => {
     if (!estado && varView.cambioEnApi) {
-      await llamadatos();
+      await llamadatos(true);
       refresh.value++;
     }
   }
@@ -49,7 +49,7 @@ watch(() => active.value,
 
 onMounted(async () => {
   componentes.value = await storeComponentes.traer(false);
-  const listaSistemas = await storeSistemas.traer();
+  const listaSistemas = await storeSistemas.traer(true, true);
   sistemas.value = listaSistemas.map(c => { return { label: c.nombre, value: c.id } })
   await llamadatos();
 });

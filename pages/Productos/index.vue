@@ -27,8 +27,8 @@ const {
     alertRespuestaInput
 } = useNotificacionesStore();
 
-async function llamadatos() {
-    productos.value = await storeProductos.traer();
+async function llamadatos(cambio = false) {
+    productos.value = await storeProductos.traer(true, false, cambio);
     varView.datosActualizados()
 }
 
@@ -51,7 +51,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }
@@ -60,7 +60,7 @@ watch(() => active.value,
 // Cargar los Productos desde el store
 onMounted(async () => {
     productos.value = await storeProductos.traer(false);
-    const listaCategorias = await storeCategorias.traer();
+    const listaCategorias = await storeCategorias.traer(true, true);
     categorias.value = listaCategorias.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
 });

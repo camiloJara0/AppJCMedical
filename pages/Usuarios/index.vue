@@ -22,8 +22,8 @@ const activeRol = ref(false)
 const isEditing = ref(false);
 const secciones = ref([])
 
-async function llamadatos() {
-    tecnicos.value = await storeTecnicos.traer();
+async function llamadatos(cambio = false) {
+    tecnicos.value = await storeTecnicos.traer(true, false, cambio);
     roles.value = await storeRol.traer();
     varView.datosActualizados()
 }
@@ -61,7 +61,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }

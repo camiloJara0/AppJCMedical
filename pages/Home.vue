@@ -2,7 +2,8 @@
 import FondoDefault from '~/components/atoms/Fondos/FondoDefault.vue';
 
 import { onMounted, ref } from 'vue';
-import { ca } from '@nuxt/ui/runtime/locale/index.js';
+import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
+import { traerDashboard } from '~/composables/Usuarios/Dashboard';
 
 const varView = useVarView()
 const apiRest = useApiRest()
@@ -10,6 +11,9 @@ const showCita = ref(false)
 const refresh = ref(1)
 const footer = useSeccionFooter();
 const rol = ref('')
+const storeReportes = useReporteStore()
+const reportes = ref([]);
+const datos = ref([])
 
 watch(() => showCita.value,
   async (estado) => {
@@ -23,12 +27,23 @@ watch(() => showCita.value,
   }
 );
 
+async function llamadatos() {
+    const ultimosReportes = await storeReportes.traer(false);
+    reportes.value = ultimosReportes.slice(0,3)
+    varView.datosActualizados()
+}
+
 onMounted(async () => {
   varView.cargando = true;
+  const ultimosReportes = await storeReportes.traer();
+  reportes.value = ultimosReportes.slice(0,3)
   rol.value = varView.getRol
   sessionStorage.removeItem('activeButton');
   sessionStorage.removeItem('seccionIdActivo')
   footer.cambiarSecciones([]);
+
+  llamadatos()
+  datos.value = await traerDashboard()
   varView.cargando = false;
 });
 
@@ -87,18 +102,25 @@ const estadoData = [
 ]
 
 const columns = [
-  { accessorKey: 'equipo', header: 'equipo' },
-  { accessorKey: 'tipo', header: 'tipo' },
-  { accessorKey: 'estado', header: 'estado' },
-  { accessorKey: 'fecha', header: 'fecha' }
+    { accessorKey: 'id', header: 'ID' },
+    { accessorKey: 'equipo.nombre', header: 'Equipo' },
+    { accessorKey: 'tipo', header: 'Tipo' },
+    { accessorKey: 'cliente.nombre', header: 'Cliente' },
+    { accessorKey: 'fecha', header: 'Fecha', sorted: true},
+    {
+        accessorKey: 'estado',
+        header: 'Estado',
+        cell: ({ row }) => {
+            const estado = row.getValue('estado')
+            const color =
+                estado === 'realizada' ? 'success' :
+                    estado === 'En Revisión' ? 'warning' :
+                        estado === 'eliminada' ? 'error' :
+                            'neutral'
+            return h(UBadge, { variant: 'subtle', color, class: 'capitalize' }, () => estado)
+        }
+    },
 ]
-
-const rows = [
-  { equipo: 'Monitor Cardíaco', tipo: 'Diagnóstico', estado: 'Operativo', fecha: '2026-03-20' },
-  { equipo: 'Ventilador', tipo: 'Soporte Vital', estado: 'Mantenimiento', fecha: '2026-03-18' },
-  { equipo: 'Rayos X', tipo: 'Imagenología', estado: 'Fuera de Servicio', fecha: '2026-03-15' }
-]
-
 
 // tecnicos
 const chartDataT = [
@@ -161,7 +183,7 @@ const columnsT = [
           <div class="flex justify-between">
             <div>
               <p class="text-sm text-gray-500 dark:text-gray-300">Equipos Totales</p>
-              <h2 class="text-2xl font-bold">128</h2>
+              <h2 class="text-2xl font-bold">{{ datos.equipos }}</h2>
             </div>
             <UIcon name="i-heroicons-cpu-chip" class="text-primary text-3xl" />
           </div>
@@ -171,7 +193,7 @@ const columnsT = [
           <div class="flex justify-between">
             <div>
               <p class="text-sm text-gray-500 dark:text-gray-300">Mantenimientos Pendientes</p>
-              <h2 class="text-2xl font-bold text-warning">23</h2>
+              <h2 class="text-2xl font-bold text-warning">{{ datos.mantenimientosPendientes }}</h2>
             </div>
             <UIcon name="i-heroicons-wrench-screwdriver" class="text-warning text-3xl" />
           </div>
@@ -181,7 +203,7 @@ const columnsT = [
           <div class="flex justify-between">
             <div>
               <p class="text-sm text-gray-500 dark:text-gray-300">Cotizaciones Activas</p>
-              <h2 class="text-2xl font-bold text-info">15</h2>
+              <h2 class="text-2xl font-bold text-info">{{ datos.cotizaciones }}</h2>
             </div>
             <UIcon name="i-heroicons-document-text" class="text-info text-3xl" />
           </div>
@@ -191,7 +213,7 @@ const columnsT = [
           <div class="flex justify-between">
             <div>
               <p class="text-sm text-gray-500 dark:text-gray-300">Equipos Críticos</p>
-              <h2 class="text-2xl font-bold text-danger">5</h2>
+              <h2 class="text-2xl font-bold text-danger">{{ datos.equiposCriticos }}</h2>
             </div>
             <UIcon name="i-heroicons-exclamation-triangle" class="text-danger text-3xl" />
           </div>
@@ -202,14 +224,14 @@ const columnsT = [
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <UCard>
           <h3 class="font-semibold mb-4">Mantenimientos por Mes</h3>
-          <LineChart :data="chartData" :height="300" y-label="Mantenimientos" :x-num-ticks="6" :y-num-ticks="4"
+          <LineChart :data="datos.chartData || chartData" :height="300" y-label="Mantenimientos" :x-num-ticks="6" :y-num-ticks="4"
             :categories="categories" :x-formatter="xFormatter" :y-grid-line="true" :curve-type="CurveType.Linear"
             :legend-position="LegendPosition.TopRight" :hide-legend="false" />
         </UCard>
 
         <UCard>
           <h3 class="font-semibold mb-4">Estado de Equipos</h3>
-          <BarChart :data="estadoData" :height="300" y-label="Cantidad" :categories="estadoCategories"
+          <BarChart :data="datos.estadoData || estadoData" :height="300" y-label="Cantidad" :categories="estadoCategories"
             :y-axis="['cantidad']" :radius="4" />
         </UCard>
       </div>
@@ -221,7 +243,7 @@ const columnsT = [
           <UInput placeholder="Buscar..." />
         </div>
 
-        <UTable :data="rows" :columns="columns" />
+        <UTable :data="reportes" :columns="columns" />
       </UCard>
     </div>
 

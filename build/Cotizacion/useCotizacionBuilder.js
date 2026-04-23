@@ -17,7 +17,7 @@ export function useCotizacionBuilder({
         .setFormulariotamaño('SM')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
-            { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
         .nuevaSeccion('Responder Cotización')

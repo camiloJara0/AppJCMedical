@@ -414,6 +414,9 @@ export const useApiRest = defineStore('apiRest', {
             const store = useIndexedDBStore();
             store.almacen = almacen;
             await store.bulkPut(datos)
+
+            store.almacen = 'LastUpdate'
+            await store.actualiza({ store: almacen, lastUpdate: Date.now() })
         }
     }
 })

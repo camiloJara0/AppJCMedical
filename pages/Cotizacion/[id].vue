@@ -54,8 +54,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
-            refresh.value++;
+            
         }
     }
 );

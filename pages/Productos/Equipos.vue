@@ -21,8 +21,8 @@ const isEditing = ref(false);
 const tiposEquipos = ref([])
 const clientes = ref([])
 
-async function llamadatos() {
-    equipos.value = await storeEquipos.traer();
+async function llamadatos(cambio = false) {
+    equipos.value = await storeEquipos.traer(true, false, cambio);
     varView.datosActualizados()
 }
 
@@ -44,7 +44,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }
@@ -52,9 +52,9 @@ watch(() => active.value,
 
 onMounted(async () => {
     equipos.value = await storeEquipos.traer(false);
-    const listaTipoEquipos = await storeTipoEquipos.traer();
+    const listaTipoEquipos = await storeTipoEquipos.traer(true, true);
     tiposEquipos.value = listaTipoEquipos.map(c => { return {label: c.nombre, value: c.id}})
-    const listaClientes = await storeClientes.traer();
+    const listaClientes = await storeClientes.traer(true, true);
     clientes.value = listaClientes.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
 });

@@ -17,7 +17,8 @@ export const useEquiposStore = defineStore('Equipos', {
                 modelo: '',
                 serie: '',
                 ubicacion: '',
-                placa: ''
+                placa: '',
+                registro_sanitario: ''
             }
         },
         EquipoSeleccionado: null,
@@ -40,11 +41,13 @@ export const useEquiposStore = defineStore('Equipos', {
             return await eliminarEquipo(datos);
         },
 
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('equipos')
             let equipos
 
-            if(online){
+            if((online && refrescar) || cambio){
                 equipos = await traerEquipos()
                 await apiRest.postOfflineData('equipos', equipos)
             } else {

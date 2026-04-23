@@ -58,12 +58,15 @@ export const useReporteStore = defineStore('Reportes', {
             return await eliminarReporte(datos);
         },
 
-        async traer(online = true) {
+        async traer(online = true, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('reportes')
 
             let reportes
-            if(online){
+            if((online && refrescar) || cambio){
                 reportes = await traerReportes()
+                await apiRest.postOfflineData('reportes', reportes)
             } else {
                 reportes = await apiRest.getOfflineData('reportes')
             }

@@ -1,7 +1,7 @@
 import { useNotificacionesStore } from '~/stores/notificaciones.js'
 import { useApiRest } from '~/stores/apiRest.js';
 import { encryptData } from '~/composables/Formulario/crypto.js';
-import { traerDatos } from '../BDload';
+import { iniciar } from '~/composables/Formulario/InicializarDB';
 // Funcion para validar conexion a internet y enviar fomulario a API
 export const login = async (datos) => {
     const notificacionesStore = useNotificacionesStore();
@@ -29,7 +29,7 @@ export const login = async (datos) => {
                 body: bodyF
             });
 
-            console.log(respuesta)
+
             const data = await respuesta.json();
             if (data.success) {
                 varView.cargando = false
@@ -45,7 +45,7 @@ export const login = async (datos) => {
                 localStorage.setItem('rol', rolEncrypt);
                 localStorage.setItem('user', userEncrypt);
 
-                await traerDatos((porcentaje, texto) => {
+                await iniciar((porcentaje, texto) => {
                     actualizarProgreso(porcentaje, texto);
                 });
                 actualizarProgreso(100, 'completado')

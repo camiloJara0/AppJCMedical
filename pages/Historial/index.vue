@@ -20,8 +20,8 @@ const reportes = ref([]);
 const refresh = ref(1);
 const showModal = ref(false);
 
-async function llamadatos() {
-    reportes.value = await storeReportes.traer();
+async function llamadatos(cambio = false) {
+    reportes.value = await storeReportes.traer(true, false, cambio);
     varView.datosActualizados()
 }
 
@@ -41,7 +41,7 @@ const {
 watch(() => showModal.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }
@@ -50,7 +50,7 @@ watch(() => showModal.value,
 watch(() => varView.showNuevoRegistro,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }
@@ -66,6 +66,7 @@ onMounted(async () => {
 const columns = [
     { accessorKey: 'id', header: 'ID' },
     { accessorKey: 'equipo.nombre', header: 'Equipo' },
+    { accessorKey: 'tipo', header: 'Tipo' },
     { accessorKey: 'tecnico.nombre', header: 'Técnico' },
     { accessorKey: 'cliente.nombre', header: 'Cliente' },
     { accessorKey: 'fecha', header: 'Fecha', sorted: true},

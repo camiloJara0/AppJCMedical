@@ -35,13 +35,13 @@ export const useRolStore = defineStore('Rol', {
             return await eliminarRol(datos);
         },
 
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
             let roles
 
             if(online){
                 roles = await traerRol()
-                await apiRest.postOfflineData('roles', roles)
+                // await apiRest.postOfflineData('roles', roles)
             } else {
                 roles = await apiRest.getOfflineData('roles')
             }

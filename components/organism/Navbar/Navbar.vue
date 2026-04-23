@@ -66,11 +66,11 @@ function agenda() {
     <div class="navbar">
         <div class="navbar__content">
 
-            <a href="/Home"
+            <NuxtLink to="/Home"
                 class="seccionLogo text-white md:text-xl font-extrabold py-2 px-3 md:w-[20%] w-[40%] h-fit bg-(--color-default-100) shadow-xl flex items-center gap-2">
                 <UIcon name="i-lucide-image" size="xl"></UIcon>
                 Ananké
-            </a>
+            </NuxtLink>
             <p class="text-xs text-white mr-10 mt-2 md:hidden block">{{ usuario }}</p>
             <div class="menuResponsive" @click="cambiarEstado()">
                 <div :class="{ 'text-white': !showNavbarBurguer, 'text-gray-300': showNavbarBurguer }">
@@ -94,13 +94,13 @@ function agenda() {
                     <DropdownNavbar icon="fa-circle-user" :nombre="usuario" :submenu="submenuSesion" />
                 </li>
                 <li>
-                    <nuxtLink to="/Citas" @click="agenda()" class="flex items-center">
+                    <NuxtLink to="/Citas" @click="agenda()" class="flex items-center">
                         <UButton icon="i-lucide-calendar" color="gray" variant="ghost" size="sm"
                             class="text-gray-300 hover:text-white transition-colors" />
                         <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
                             :class="{ 'mr-6': aplicarMargen }">{{ fechaActualFormateada
                             }}</p>
-                    </nuxtLink>
+                    </NuxtLink>
                 </li>
             </ul>
 

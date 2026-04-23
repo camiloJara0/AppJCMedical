@@ -40,15 +40,22 @@ export const useCategoriasStore = defineStore('Categorias', {
         },
 
         // Funcion para listar Categorías GET
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('categorias')
+            
             let categorias
 
-            if(online){
+            if((online && refrescar) || cambio){
                 categorias = await traerCategorias()
                 await apiRest.postOfflineData('categorias', categorias)
             } else {
                 categorias = await apiRest.getOfflineData('categorias')
+            }
+
+            if(filtrar) {
+                categorias = categorias.filter(c => c.estado == 'activo')
             }
 
             this.Categorias = categorias

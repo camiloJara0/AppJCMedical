@@ -42,11 +42,13 @@ export const useClientesStore = defineStore('Clientes', {
         },
 
         // Funcion para listar Clientes GET
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('clientes')
             let Clientes
 
-            if(online){
+            if((online && refrescar) || cambio){
                 Clientes = await traerClientes()
                 await apiRest.postOfflineData('clientes', Clientes)
             } else {

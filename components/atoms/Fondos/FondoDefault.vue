@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue'
-
 defineProps({
   noPadding: {
     type: Boolean,
@@ -11,6 +9,8 @@ defineProps({
     default: false
   }
 })
+
+const storeFooter = useSeccionFooter()
 </script>
 
 <template>
@@ -18,7 +18,8 @@ defineProps({
     class="w-full min-h-[calc(100%-40px)] rounded-lg overflow-y-auto scrollForm bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
     :class="{
       'py-8 md:pl-15 px-4': !noPadding,
-      'bg-linear-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800': gradient
+      'bg-linear-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800': gradient,
+      'rounded-[8px_8px_8px_0]!' : storeFooter.secciones?.length
     }"
   >
     <slot />

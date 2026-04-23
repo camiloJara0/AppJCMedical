@@ -19,7 +19,7 @@ export function useEquiposBuilder({
         .setFormulariotamaño('MD')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
-            { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setCamposRequeridos(['Equipo.cliente_id', 'Equipo.tipo_equipo_id', 'Equipo.nombre'])
         .setFormularioContenedorCampos('grid md:grid-cols-2! grid-cols-1 ')
@@ -44,7 +44,7 @@ export function useEquiposBuilder({
         .addCampo({
             component: 'Select',
             type: 'number',
-            label: 'Selecciona el tipo de Equipo',
+            label: 'Selecciona el tipo de Equipo *',
             placeholder: 'ID del tipo de equipo',
             id: 'tipo_equipo_id',
             name: 'tipo_equipo_id',
@@ -59,7 +59,7 @@ export function useEquiposBuilder({
             placeholder: 'Nombre del equipo',
             id: 'nombre',
             name: 'nombre',
-            tamaño: 'w-full',
+            tamaño: 'w-full col-span-2',
             minlength: 3,
             vmodel: 'Equipo.nombre',
             upperCase: true
@@ -113,6 +113,16 @@ export function useEquiposBuilder({
             name: 'placa',
             tamaño: 'w-full',
             vmodel: 'Equipo.placa',
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Registro Sanitario',
+            placeholder: 'Registro Sanitario del equipo',
+            id: 'registro_sanitario',
+            name: 'registro_sanitario',
+            tamaño: 'w-full',
+            vmodel: 'Equipo.registro_sanitario',
         })
         .build()
 }

@@ -25,8 +25,8 @@ const {
     alertRespuestaInput
 } = useNotificacionesStore();
 
-async function llamadatos() {
-    categorias.value = await storeCategorias.traer();
+async function llamadatos(cambio = false) {
+    categorias.value = await storeCategorias.traer(true, false, cambio);
     varView.datosActualizados()
 }
 
@@ -50,7 +50,7 @@ const {
 watch(() => active.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
-            await llamadatos();
+            await llamadatos(true);
             refresh.value++;
         }
     }

@@ -218,7 +218,8 @@ export function useCitaActions({
   }
 
   async function resolverPlantilla(cita, equipo, horaActual) {
-    const sistemas = await storeSistemas.traerSistemasPorEquipo(equipo.id);
+
+    const sistemas = await storeSistemas.traerSistemasPorEquipo(equipo.tipo_equipo_id);
     const fechaForm = fecha?.value
       ? fecha.value.split('/').reverse().join('-')
       : cita.fecha

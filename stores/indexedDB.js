@@ -54,6 +54,15 @@ export const useIndexedDBStore = defineStore("indexeddb", {
                         versionStore.put({ id: 1, version: this.EXPECTED_VERSION });
                     }
 
+                    // Tabla de control de actualizaciones
+                    if (!db.objectStoreNames.contains("LastUpdate")) {
+                        const updateStore = db.createObjectStore("LastUpdate", { keyPath: "store" });
+                        // Insertar cada store con lastUpdated = 0 por defecto
+                        stores.forEach(name => {
+                            updateStore.put({ store: name, lastUpdated: 0 });
+                        });
+                    }
+
                 }
 
                 request.onerror = (event) => {
@@ -66,8 +75,6 @@ export const useIndexedDBStore = defineStore("indexeddb", {
                     resolve(this.bd)
                 }
             })
-
-
 
         },
 
@@ -88,6 +95,23 @@ export const useIndexedDBStore = defineStore("indexeddb", {
                     resolve(event.target.result)
                 }
             })
+        },
+
+        async necesitaRefrescar(storeName, limiteMs = 5 * 60 * 1000) {
+            if (!this.bd) {
+                await this.initialize()
+            }
+            const tx = this.bd.transaction("LastUpdate", "readonly");
+            const store = tx.objectStore("LastUpdate");
+            const req = store.get(storeName);
+
+            return new Promise(resolve => {
+                req.onsuccess = () => {
+                    const info = req.result;
+                    const ahora = Date.now();
+                    resolve(!info || (ahora - info.lastUpdated) > limiteMs);
+                };
+            });
         },
 
         async guardardatos(aguardar) {
@@ -262,7 +286,6 @@ export const useIndexedDBStore = defineStore("indexeddb", {
             if (!this.bd) {
                 await this.initialize()
             }
-            console.log(this.bd)
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(dbName);
 

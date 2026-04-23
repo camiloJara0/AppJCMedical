@@ -35,6 +35,7 @@ export function useEquipoActions({
     store.Formulario.Equipo.serie = Equipo.serie;
     store.Formulario.Equipo.ubicacion = Equipo.ubicacion;
     store.Formulario.Equipo.placa = Equipo.placa;
+    store.Formulario.Equipo.registro_sanitario = Equipo.registro_sanitario;
     show.value = true
     isEditing.value = true;
     varView.isEditing = true

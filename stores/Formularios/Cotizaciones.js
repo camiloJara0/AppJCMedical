@@ -44,11 +44,14 @@ export const useCotizacionesStore = defineStore('Cotizaciones', {
         },
 
         // Funcion para listar Cotizaciones GET
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('solicitudes_cotizacions')
+
             let cotizaciones
 
-            if(online){
+            if((online && refrescar) || cambio){
                 cotizaciones = await traerCotizaciones()
                 await apiRest.postOfflineData('solicitudes_cotizacions', cotizaciones)
             } else {

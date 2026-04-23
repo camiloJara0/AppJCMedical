@@ -20,7 +20,7 @@ export function useCitasBuilder({
         .setFormulariotamaño('XS')
         .setBotones([
             { type: 'enviar', text: 'Enviar', color: 'primary'},
-            { type: 'cancelar', text: 'Cancelar', color: 'neutral', accion: cerrar },
+            { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setCamposRequeridos(['Cita.tecnico_id', 'Cita.cliente_id', 'Cita.equipo_id', 'Cita.fecha', 'Cita.hora'])
         .setFormularioContenedorCampos('grid md:grid-cols-2! grid-cols-1 ')

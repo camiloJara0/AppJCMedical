@@ -34,15 +34,21 @@ export const useTipo_equiposStore = defineStore('Tipo_equipos', {
             return await eliminarTipo_equipo(datos);
         },
 
-        async traer(online = true, filtrar) {
+        async traer(online = true, filtrar, cambio) {
             const apiRest = useApiRest()
+            const indexedDB = useIndexedDBStore()   
+            const refrescar = await indexedDB.necesitaRefrescar('tipo_equipos')
             let tipo_equipos
 
-            if(online){
+            if((online && refrescar) || cambio){
                 tipo_equipos = await traerTipo_equipos()
                 await apiRest.postOfflineData('tipo_equipos', tipo_equipos)
             } else {
                 tipo_equipos = await apiRest.getOfflineData('tipo_equipos')
+            }
+
+            if(filtrar) {
+                tipo_equipos = tipo_equipos.filter(t => t.estado == 'activo')
             }
 
             this.Tipo_equipos = tipo_equipos
