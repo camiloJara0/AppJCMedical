@@ -17,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex w-full items-center">
+    <div class="flex w-full items-center overflow-x-auto scrollForm">
         <nuxt-link v-for="(pagina, key) in subSeccion" :to="pagina.ruta"
             class="subSeccion select-none cursor-pointer py-2 md:min-w-50 min-w-28 flex justify-center text-xs bg-(--color-default-700) md:text-base hover:bg-(--color-default-600) hover:text-white"
             :class="{ 'active dark:bg-gray-900 bg-gray-50 dark:text-white text-black font-semibold pointer-events-none': footer.idActivo === key, 'text-white' : footer.idActivo !== key }" @click="footer.cambiarIdActivo(key)">

@@ -15,7 +15,7 @@ onMounted(() => {
     const login = varView.getUser
     rol.value = varView.getRol
     if(!login || Object.keys(login).length === 0) {
-        router.push('/')
+        // router.push('/')
     }
     buttons.value = storeAside.getbuttons(rol.value);
 });
@@ -141,7 +141,7 @@ function accesoRapidoSelected(nombre) {
 
                 <!-- Estado colapsado -->
                 <div v-if="!varView.expandido"
-                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2" :class="{'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico'}"> 
+                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2 overflow-y-auto" :class="{'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico'}"> 
 
                     <!-- Botón expandir -->
                     <ButtonRounded @click="() => {
@@ -230,7 +230,7 @@ function accesoRapidoSelected(nombre) {
 
                 <!-- Estado expandido -->
                 <div v-else
-                    class="menu-expandido dark:bg-(--color-default-claro) bg-(--color-default-700) flex flex-col justify-between w-full h-full shadow-lg rounded-lg py-4 px-3">
+                    class="menu-expandido dark:bg-(--color-default-claro) bg-(--color-default-700) flex flex-col justify-between w-full h-full shadow-lg rounded-lg py-4 px-3 overflow-y-auto scrollAside">
                     <!-- Header -->
                     <div>
                         <div
@@ -387,7 +387,7 @@ function accesoRapidoSelected(nombre) {
     /* ancho colapsado */
     grid-area: aside;
     width: 50px;
-    height: 80vh;
+    height: 85vh;
     padding: 10px 0;
     transition: width 0.4s ease, transform 0.6s ease, opacity 0.6s ease;
 
@@ -395,7 +395,6 @@ function accesoRapidoSelected(nombre) {
 
 .section-asidebar.expandido {
     /* ancho expandido */
-    /* width: 100%; */
     width: 180px;
     padding: 10px 5px 10px 0;
 }
@@ -449,6 +448,15 @@ function accesoRapidoSelected(nombre) {
 
 .submenu-link:hover {
     color: var(--color-warning);
+}
+
+.scrollAside {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-default-500) transparent;
+}
+
+.scrollAside::-webkit-scrollbar {
+    width: 3px;
 }
 
 /* Responsive móvil */

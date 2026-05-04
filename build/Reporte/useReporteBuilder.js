@@ -34,7 +34,7 @@ export function useReporteBuilder({
             builder.addCampo({
                 component: 'Label',
                 text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
-                tamaño: 'w-full col-span-2'
+                tamaño: 'w-full md:col-span-2'
             })
     
             for (let j = 0; j < sistemas[i].componentes.length; j++) {
@@ -134,7 +134,7 @@ export function useReporteBuilder({
         label: 'Actividades realizadas',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: 'col-span-2 w-full',
+        tamaño: 'md:col-span-2 w-full',
         rows: 8
     })
 
@@ -166,7 +166,7 @@ export function useReporteBuilder({
     builder.addCampo({
         component: 'Label',
         text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 dark:text-gray-400 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,
-        tamaño: 'w-full col-span-2 pt-1'
+        tamaño: 'w-full md:col-span-2 pt-1'
     })
 
         .addCampo({
@@ -211,7 +211,7 @@ export function useReporteBuilder({
         label: 'Firma del que Recibe: (opcional)',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: ' w-full col-span-2 flex justify-center',
+        tamaño: ' w-full md:col-span-2 flex justify-center',
         rows: 5,
         vmodel: 'recibido.firma'
     })

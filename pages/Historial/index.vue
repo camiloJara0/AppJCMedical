@@ -143,7 +143,7 @@ const reporte = computed(() => storeReportes.Formulario)
 
         <!-- Modal Reportes con Nuxt UI -->
         <FondoBlur v-if="showModal">
-            <div class="rounded-lg shadow-lg animate-fadeIn w-[60%]">
+            <div class="rounded-lg shadow-lg animate-fadeIn md:w-[60%] w-[90%]">
                 <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800 ' }">
                     <template #header>
                         <div class="flex items-center justify-between">
@@ -214,8 +214,8 @@ const reporte = computed(() => storeReportes.Formulario)
                             </h3>
                             <div class="grid grid-cols-2 gap-3">
                                 <div v-for="(comp, id) in reporte.componentes" :key="id" class="border rounded-lg p-3">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <p class="font-semibold text-sm">{{ comp.componente?.nombre }} - {{ comp.id }}</p>
+                                    <div class="flex items-center justify-between mb-2 w-full ">
+                                        <p class="font-semibold text-sm truncate">{{ comp.componente?.nombre }} - {{ comp.id }}</p>
                                         <UBadge
                                             :color="comp.estado === 'bueno' ? 'success' : comp.estado === 'regular' ? 'warning' : 'error'"
                                             variant="subtle">

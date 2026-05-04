@@ -95,14 +95,14 @@ const columns = props.Propiedades.columns.map(col => {
                 <div class="flex gap-2">
                     <UButton v-for="button in props.Propiedades.buttons" :variant="button.variant" :color="button.color"
                         loading-auto :trailing-icon="button.icon" size="md" @click="button.accion">
-                        {{ button.texto }}
+                        <span class="hidden md:block">{{ button.texto }}</span>
                     </UButton>
 
                     <client-only v-if="Propiedades.excel">
                         <UDropdownMenu :items="items">
                             <UButton label="Open" variant="subtle" color="secondary" trailing-icon="lucide-table"
                                 size="md">
-                                Exportar
+                                <span class="hidden md:block">Exportar</span>
                             </UButton>
                         </UDropdownMenu>
 
@@ -119,11 +119,11 @@ const columns = props.Propiedades.columns.map(col => {
 
                     <UButton @click="() => { mostrarFiltros = !mostrarFiltros }" variant="solid" color="primary"
                         trailing-icon="lucide-list-filter" size="md">
-                        Filtrar
+                        <span class="hidden md:block">Filtrar</span>
                     </UButton>
                     <UButton v-if="props.Propiedades.agregar" @click="props.Propiedades.agregar" variant="solid"
                         color="primary" trailing-icon="lucide-plus" size="md">
-                        Agregar
+                        <span class="hidden md:block">Agregar</span>
                     </UButton>
                 </div>
             </div>
@@ -163,7 +163,7 @@ const columns = props.Propiedades.columns.map(col => {
                     <UInput v-model="busqueda" placeholder="Buscar dato en la Tabla..." icon="lucide-search"
                     variant="outline" size="lg" class="md:w-90 w-full" />
 
-                <div class="flex flex-wrap justify-end gap-3">
+                <div class="md:flex flex-wrap justify-end gap-3 w-full md:w-fit grid grid-cols-2">
                     <USelect v-for="(filtro, key) in filtrosConOpciones.slice(0, 3)" :key="key"
                         v-model="filtros[filtro.columna]" :placeholder="filtro.placeholder"
                         :items="[{ label: 'Todos', value: 'all' }, ...filtro.datos,]" class="md:w-45 w-full" />

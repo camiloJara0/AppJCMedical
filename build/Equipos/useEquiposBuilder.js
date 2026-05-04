@@ -59,7 +59,7 @@ export function useEquiposBuilder({
             placeholder: 'Nombre del equipo',
             id: 'nombre',
             name: 'nombre',
-            tamaño: 'w-full col-span-2',
+            tamaño: 'w-full md:col-span-2',
             minlength: 3,
             vmodel: 'Equipo.nombre',
             upperCase: true

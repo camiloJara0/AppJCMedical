@@ -26,7 +26,8 @@ function editar() {
             <div class="flex gap-3 pt-1">
                 <p class="flex items-center text-gray-200 text-sm gap-1" v-for="(seccion, index) in Propiedades.secciones"
                 :class="{ 'text-white font-medium': index === props.SeccionActual }">
-                    {{ seccion.nombre }}
+                    <span class="block md:hidden">{{ index + 1 }}</span>
+                    <span class="hidden md:block">{{ seccion.nombre }}</span>
                     <i class="fa-solid fa-angle-right text-gray-300" v-if="index + 1 !== props.Propiedades.secciones.length"></i>
                 </p>
             </div>

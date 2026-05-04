@@ -131,5 +131,5 @@ export class FormularioBuilder {
 const tamañosDisponibles = {
   LG: 'lg:w-[70%] md:w-[85%] md:h-[85%] w-[95%] h-[80%]',
   XS: 'md:w-[65%] md:h-[70%] w-[95%] h-[80%]',
-  SM: 'lg:w-[45%] lg:max-h-[80%] md:w-[50%] md:max-h-[80%] w-[95%] h-[80%]',
+  SM: 'lg:w-[45%] lg:max-h-[80%] md:w-[50%] md:max-h-[80%] w-[95%] h-[70%]',
 }

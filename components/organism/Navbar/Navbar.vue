@@ -97,7 +97,7 @@ function agenda() {
                     <NuxtLink to="/Citas" @click="agenda()" class="flex items-center">
                         <UButton icon="i-lucide-calendar" color="gray" variant="ghost" size="sm"
                             class="text-gray-300 hover:text-white transition-colors" />
-                        <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden"
+                        <p class="text-gray-100 text-xs ml-1 font-semibold"
                             :class="{ 'mr-6': aplicarMargen }">{{ fechaActualFormateada
                             }}</p>
                     </NuxtLink>

@@ -114,7 +114,7 @@ export function useCitasBuilder({
                 placeholder: 'El motivo por el cual se esta editando la cita',
                 id: 'motivo_edicion',
                 name: 'motivo_edicion',
-                tamaño: 'w-full col-span-2',
+                tamaño: 'w-full md:col-span-2',
                 vmodel: 'Cita.motivo_edicion',
             })
         }

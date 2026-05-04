@@ -185,7 +185,7 @@ const columns = [
     { accessorKey: 'nombre_cliente', header: 'Cliente' },
     { accessorKey: 'nombre_equipo', header: 'Equipo' },
     { accessorKey: 'tipo', header: 'Tipo' },
-    { accessorKey: 'fecha', header: 'Fecha' },
+    { accessorKey: 'fecha', header: 'Fecha', sorted: true },
     { accessorKey: 'hora', header: 'Hora' },
     {
         accessorKey: 'estado',

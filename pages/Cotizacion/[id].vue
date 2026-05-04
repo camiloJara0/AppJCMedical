@@ -59,8 +59,30 @@ watch(() => active.value,
     }
 );
 
+// function esperarRol(timeout = 3000) {
+//     return new Promise((resolve, reject) => {
+//         const timer = setTimeout(() => {
+//             stop()
+//             reject(new Error('Timeout: rol no disponible'))
+//         }, timeout)
+
+//         const stop = watch(
+//             () => varView.getRol,
+//             (rol) => {
+//                 if (rol) {
+//                     clearTimeout(timer)
+//                     stop()
+//                     resolve(rol)
+//                 }
+//             },
+//             { immediate: true }
+//         )
+//     })
+// }
+
 // Cargar los cotizaciones desde el store
 onMounted(async () => {
+    // await esperarRol()
     const user = varView.getRol
     if (!user || user !== 'Admin') {
         options.position = 'top-end',
@@ -69,7 +91,7 @@ onMounted(async () => {
         options.tiempo = 1500,
         mensaje()
         localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
-        router.push('/Cotizacion')
+        // router.push('/')
     }
 
     await llamadatos()
