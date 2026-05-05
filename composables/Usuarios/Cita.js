@@ -1,5 +1,6 @@
 import { eliminarCita } from "~/Core/Citas/DeleteCitas";
 import { useCitasStore } from "~/stores/Formularios/citas/Cita";
+import { useClientesStore } from "~/stores/Formularios/Clientes";
 import { useEquiposStore } from '~/stores/Formularios/Equipos/Equipo';
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte';
 import { useSistemasStore } from '~/stores/Formularios/Sistemas/Sistema';
@@ -17,6 +18,7 @@ export function useCitaActions({
   const calendarioStore = useCalendarioCitas()
   const reporteStore = useReporteStore()
   const equipoStore = useEquiposStore()
+  const clienteStore = useClientesStore()
   const varView = useVarView()
   const storeSistemas = useSistemasStore()
 
@@ -176,9 +178,14 @@ export function useCitaActions({
     }
 
     let equipos = equipoStore.Equipos
+    let clientes = clienteStore.Clientes
 
     const equipo = equipos.find(
       p => p.id === cita.equipo_id
+    )
+
+    const cliente = clientes.find(
+      c => c.id === cita.cliente_id
     )
 
     if (!equipo) {
@@ -190,7 +197,7 @@ export function useCitaActions({
       return
     }
 
-    prepararRegistro(cita, equipo)
+    prepararRegistro(cita, equipo, cliente)
 
     if (cita.tipo === 'Preventivo') {
       reporteStore.Formulario.actividades = 'SE REALIZA LIMPIEZA DEL EQUPO DE MANERA INTERNA Y EXTERNA, SE HACE INSPECCION VISUAL Y ESTRUCTURAL DEL EQUIPO Y SE CONFIRMA QUE EL EQUIPO EN TERMINOS GENERALES SE ENCUENTRAN EN BUEN ESTADO, SE EVIDENCIA MUCHO POLVO INTERNAMENTE EN CONTCATO CON TARJETAS ELECTRONICAS, SE EVIDENCIA QUE UN SOCKET ESTE QUEMADO Y EL CONTROLADOR DEL VENTILADOR ESTA EN MAL ESTADO, POR LO QUE SE DEBEN REEMPLAZAR, SE HACEN PRUEBAS DE FUNCIONAMIENTO GENERAL. SE DEJA INHANILITADO DOS BOMBILLOS DE UVA MIENTRAS SE CAMBIA EL SOCKET YA QUE ESTE PUEDE GENERAR UN CORTO ELECTRICO, EL EQUIPO ESTA PARCIALMENTE OPERATIVO.'
@@ -203,9 +210,12 @@ export function useCitaActions({
   /* =========================
      HELPERS INTERNOS
   ========================= */
-  function prepararRegistro(cita, equipo) {
+  function prepararRegistro(cita, equipo, cliente) {
     reporteStore.Formulario.equipo.nombre = cita.nombre_equipo
     reporteStore.Formulario.equipo.id = equipo.id
+
+    reporteStore.Formulario.recibido.correo = cliente.correo
+    reporteStore.Formulario.recibido.nombre = cliente.nombre
 
     reporteStore.Formulario.reporte.cita_id = cita.id
     reporteStore.Formulario.reporte.tecnico_id = cita.tecnico_id

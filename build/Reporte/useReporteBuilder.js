@@ -90,7 +90,7 @@ export function useReporteBuilder({
 
     builder.addCampo({
         component: 'GroupCampos',
-        labelGroup: 'Materiales Utilizados',
+        labelGroup: 'Set/Equipo patron/Materiales Utilizados',
         value: [],
         vmodel: 'materiales',
         buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { descripcion: '', cantidad: '' } }],
@@ -131,7 +131,7 @@ export function useReporteBuilder({
 
     builder.addCampo({
         component: 'Textarea',
-        label: 'Actividades realizadas',
+        label: 'Actividades realizadas/Observaciones',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
         tamaño: 'md:col-span-2 w-full',
@@ -178,6 +178,7 @@ export function useReporteBuilder({
             name: 'correo',
             tamaño: 'w-full',
             vmodel: 'recibido.correo',
+            multiple: true,
         })
 
         .addCampo({

@@ -84,6 +84,20 @@ export const accionesFormularios = {
     },
     enviarReporte: async (data) => {
         const varView = useVarView()
+        const notificaciones = useNotificacionesStore()
+
+        notificaciones.options = {
+            icono: "warning",
+            titulo: "¿Deseas enviar este reporte?",
+            html: `Se enviará el reporte al cliente: <span>${data.recibido.correo}</span>`,
+            confirmtext: "Sí, enviar",
+            canceltext: "Atrás"
+        };
+
+        const res = await notificaciones.alertRespuesta();
+
+        if (res !== "confirmado") return;
+
         const respuesta = await enviarReporte(varView.isEditing, data)
         return respuesta
     },

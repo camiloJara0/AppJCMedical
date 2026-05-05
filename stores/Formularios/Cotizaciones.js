@@ -17,6 +17,7 @@ export const useCotizacionesStore = defineStore('Cotizaciones', {
                 monto: '',
                 correo: '',
                 nombre: '',
+                archivo: '',
                 productos: []
             }
         },

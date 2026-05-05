@@ -1,5 +1,6 @@
 // builders/useFormularioCitaBuilder.js
 import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
+import { useCotizacionesStore } from '~/stores/Formularios/Cotizaciones'
 
 export function useCotizacionBuilder({
     storeId,
@@ -8,6 +9,7 @@ export function useCotizacionBuilder({
     cerrar
 }) {
     const builder = new FormularioBuilder()
+    const store = useCotizacionesStore()
 
     return builder
         .setStoreId(storeId)
@@ -57,6 +59,21 @@ export function useCotizacionBuilder({
             tamaño: 'w-full',
             vmodel: 'Cotizacion.respuesta',
             upperCase: true
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'file',
+            label: 'Adjuntar Archivo (opcional)',
+            placeholder: 'Selecciona un archivo',
+            id: 'archivo',
+            name: 'archivo',
+            tamaño: 'w-full',
+            events: {
+                onChange: (event) => {
+                    const file = event.target.files[0];
+                    store.Formulario.Cotizacion.archivo = file
+                }
+            }
         })
         .build()
 }

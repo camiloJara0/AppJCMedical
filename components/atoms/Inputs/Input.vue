@@ -105,6 +105,7 @@ const mergedProps = computed(() => getMergedProps());
         :size="mergedProps.size"
         :loading="loading"
         :loading-icon="loadingIcon"
+        :multiple="Propiedades.multiple"
         class="w-full"
         @update:model-value="emit('update:modelValue', $event)"
         @blur="emit('blur', $event); Propiedades.events?.onBlur?.($event)"

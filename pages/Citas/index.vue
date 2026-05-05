@@ -14,6 +14,7 @@ import { useSistemasStore } from '~/stores/Formularios/Sistemas/Sistema'
 import TablaNuxt from '~/components/organism/Table/TablaNuxt.vue'
 import FondoDefault from '~/components/atoms/Fondos/FondoDefault.vue'
 import { eliminarCita } from '~/Core/Citas/DeleteCitas'
+import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte'
 
 const varView = useVarView()
 const citasStore = useCitasStore();
@@ -21,6 +22,7 @@ const citas = ref([]);
 
 const calendarioCitasStore = useCalendarioCitas();
 const storeSistemas = useSistemasStore()
+const storeReportes = useReporteStore()
 const show = ref(false);
 const sistemas = ref([])
 const refresh = ref(1);
@@ -82,6 +84,7 @@ watch(() => varView.showNuevoRegistro,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
             await llamadatos(true);
+            await storeReportes.traer(true, true);
         }
     }
 );

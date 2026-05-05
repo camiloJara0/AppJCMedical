@@ -107,8 +107,8 @@ export function useEquiposBuilder({
         .addCampo({
             component: 'Input',
             type: 'text',
-            label: 'Placa',
-            placeholder: 'Placa del equipo',
+            label: 'Activo fijo',
+            placeholder: 'Activo fijo del equipo',
             id: 'placa',
             name: 'placa',
             tamaño: 'w-full',

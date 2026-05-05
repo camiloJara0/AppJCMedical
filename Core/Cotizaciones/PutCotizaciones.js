@@ -2,20 +2,27 @@ export async function actualizarCotizaciones(cotizacion) {
     try {
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
+        const formData = new FormData();
+
+        formData.append('id', cotizacion.id)
+        formData.append('estado', cotizacion.estado)
+        formData.append('obervaciones_admin', cotizacion.respuesta)
+        formData.append('monto', cotizacion.monto)
+        formData.append('nombre', cotizacion.nombre)
+        formData.append('correo', cotizacion.correo)
+        formData.append("_method", "PUT");
+
+        if (cotizacion.archivo) {
+            formData.append('archivo', cotizacion.archivo);
+        }
+
         const response = await fetch(`${config.public.api}/api/solicitud_cotizacion/${cotizacion.id}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                id: cotizacion.id,
-                estado: cotizacion.estado,
-                observaciones_admin: cotizacion.respuesta,
-                nombre: cotizacion.nombre,
-                correo: cotizacion.correo,
-            })
+            body: formData
         });
 
         if (!response.ok) {

@@ -1,4 +1,6 @@
 import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
+import { useCitasStore } from '~/stores/Formularios/citas/Cita'
+import { watch } from 'vue'
 
 export function useCitasBuilder({
     storeId,
@@ -11,6 +13,19 @@ export function useCitasBuilder({
     equipos
 }) {
     const builder = new FormularioBuilder()
+    const store = useCitasStore()
+
+    function filtrarClientes() {
+        if(store.Formulario.Cita.equipo_id) {
+            clientes.value = clientes.value.map(c => c.id === store.Formulario.Cita.equipo_id)
+        }
+    }
+
+    function filtrarEquipos() {
+        if(store.Formulario.Cita.cliente_id) {
+            equipos.value = equipos.value.map(e => e.id === store.Formulario.Cita.cliente_id)
+        }
+    }
 
     builder
         .setStoreId(storeId)
@@ -51,7 +66,7 @@ export function useCitasBuilder({
             name: 'cliente_id',
             tamaño: 'w-full',
             vmodel: 'Cita.cliente_id',
-            options: clientes
+            options: clientes,
         })
         .addCampo({
             component: 'Select',
@@ -62,7 +77,7 @@ export function useCitasBuilder({
             name: 'equipo_id',
             tamaño: 'w-full',
             vmodel: 'Cita.equipo_id',
-            options: equipos
+            options: equipos,
         })
         .addCampo({
             component: 'Select',

@@ -185,12 +185,18 @@ const columns = props.Propiedades.columns.map(col => {
     <div class="flex justify-between mt-3">
         <UPagination v-model:page="paginaActual" active-color="primary" active-variant="subtle" :sibling-count="1"
             :total="datosOrdenados.length" :items-per-page="itemsPorPagina"></UPagination>
-        <p class="text-sm text-gray-500 md:flex gap-1 hidden">
+        <p class="text-sm text-gray-500 md:flex gap-1 hidden items-center">
             Mostrando
             <span class="text-gray-500">{{ ultimaPagina - itemsPorPagina + 1 }} al {{ ultimaPagina }}</span>
             <span class="text-gray-500">de {{ datosOrdenados.length }}</span>
+            <select name="numRegistros"
+                class="ml-3 text-sm bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                @change="cambiarItemsPorPagina($event.target.value)">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
         </p>
     </div>
-
     <DatosExcel v-if="varView.showDatosExcel" :datos="datosOrdenados" :tabla="props.Propiedades.titulo" />
 </template>
