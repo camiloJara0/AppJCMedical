@@ -12,9 +12,13 @@ export async function enviarProductos(isEditing, producto) {
         const formData = new FormData();
         formData.append("nombre", producto.nombre);
         formData.append("descripcion", producto.descripcion);
-        formData.append("precio_referencial", producto.precio || '');
+        formData.append("precio_referencial", producto.precio_referencial || '');
         formData.append("stock", producto.stock);
         formData.append("categoria_id", producto.categoria_id);
+        formData.append("marca", producto.marca || '');
+        formData.append("modelo", producto.modelo || '');
+        formData.append("compatibilidad", producto.compatibilidad || '');
+        formData.append("tipo_conector", producto.tipo_conector || '');
 
         // Si hay imagen seleccionada
         if (producto.imagen) {

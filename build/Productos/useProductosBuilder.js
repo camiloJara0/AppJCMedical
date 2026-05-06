@@ -67,13 +67,54 @@ export function useProductosBuilder({
         })
         .addCampo({
             component: 'Input',
-            type: 'number',
-            label: 'Precio',
-            placeholder: '0',
-            id: 'nombre',
-            name: 'nombre',
+            type: 'text',
+            label: 'Precio Referencial',
+            placeholder: '0.00',
+            id: 'precio_referencial',
+            name: 'precio_referencial',
             tamaño: 'w-full',
-            vmodel: 'Producto.precio',
+            vmodel: 'Producto.precio_referencial',
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Marca',
+            placeholder: 'Marca del producto',
+            id: 'marca',
+            name: 'marca',
+            tamaño: 'w-full',
+            vmodel: 'Producto.marca',
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Modelo',
+            placeholder: 'Modelo del producto',
+            id: 'modelo',
+            name: 'modelo',
+            tamaño: 'w-full',
+            vmodel: 'Producto.modelo',
+        })
+        
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Compatibilidad',
+            placeholder: 'Compatibilidad del producto',
+            id: 'compatibilidad',
+            name: 'compatibilidad',
+            tamaño: 'w-full',
+            vmodel: 'Producto.compatibilidad',
+        })
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Tipo de Conector',
+            placeholder: 'Tipo de conector del producto',
+            id: 'tipo_conector',
+            name: 'tipo_conector',
+            tamaño: 'w-full',
+            vmodel: 'Producto.tipo_conector',
         })
         .addCampo({
             component: 'Input',

@@ -18,6 +18,11 @@ export const useProductosStore = defineStore('Productos', {
                 precio: '',
                 stock: '',
                 imagen: '',
+                precio_referencial: '',
+                marca: '',
+                modelo: '',
+                compatibilidad: '',
+                tipo_conector: '',
             }
         },
         ProductoSeleccionada: null,
