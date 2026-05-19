@@ -142,7 +142,7 @@ const siguienteMes = () => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-2 ">
+    <div class="flex flex-col gap-2 " :class="props.Propiedades.estilos">
         <!-- Calendario principal -->
         <div
             class="flex flex-col gap-5 shadow-md rounded-xl p-5 h-[55vh] overflow-y-auto scrollForm bg-white dark:bg-gray-700 dark:text-white">

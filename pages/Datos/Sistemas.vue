@@ -135,6 +135,7 @@ const propiedadesTabla = computed(() => {
   return {
     titulo: 'Gestionar Sistemas',
     agregar: agregarSistema,
+    llamadatos: llamadatos,
     data: sistemas,
     columns: columns,
     filtros: [

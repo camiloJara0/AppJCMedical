@@ -154,8 +154,7 @@ const columnsT = [
 
   <FondoDefault>
     <!-- Header -->
-    <div class="relative mx-3 min-h-40 rounded-xl bg-cover bg-center flex items-center justify-center"
-      style="background-image: url('public/headerLogin.jpg');">
+    <div class="relative mx-3 min-h-40 rounded-xl bg-cover bg-center flex items-center justify-center">
 
       <!-- Overlay -->
       <span class="absolute inset-0 rounded-xl bg-linear-to-br from-blue-800/80 to-black/60"></span>
@@ -174,7 +173,7 @@ const columnsT = [
           <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Dashboard Biomédico</h1>
           <p class="text-sm text-gray-500 dark:text-gray-300">Gestión de inventario, cotizaciones y mantenimientos</p>
         </div>
-        <UButton color="primary" label="Nueva Cotización" />
+        <UButton color="primary" to="/Citas" label="Ver agendas" />
       </div>
 
       <!-- KPI Cards -->

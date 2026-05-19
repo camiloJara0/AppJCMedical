@@ -6,7 +6,8 @@ import { buttonsTecnicos } from "../data/Buttons";
 export const useButtonsAside = defineStore('ButtonsAside', {
     state: () => ({
         buttons: buttons,
-        buttonsTecnicos: buttonsTecnicos
+        buttonsTecnicos: buttonsTecnicos,
+        botonActivo: null,
     }),
 
     getters: {
@@ -19,6 +20,7 @@ export const useButtonsAside = defineStore('ButtonsAside', {
 
     actions: {
         activeButton(id) {
+            this.botonActivo = id;
             this.buttons.forEach(button => {
                 if (button.id == id) {
                     button.active = true;

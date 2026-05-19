@@ -135,6 +135,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestionar Clientes',
         agregar: agregarCliente,
+        llamadatos: llamadatos,
         data: clientes,
         columns: columns,
         filtros: [

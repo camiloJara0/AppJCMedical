@@ -121,6 +121,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Reportes de Mantenimientos',
         data: reportes,
+        llamadatos: llamadatos,
         columns: columns,
         excel: true,
         buttons: [

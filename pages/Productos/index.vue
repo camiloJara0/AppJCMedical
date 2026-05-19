@@ -176,7 +176,6 @@ function getRowItems(row) {
     {
       label: 'Editar',
       onSelect() {
-        console.log('editar', producto)
         verProducto(producto)
       }
     },
@@ -196,6 +195,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestionar Productos',
         agregar: agregarProducto,
+        llamadatos: llamadatos,
         data: productos,
         columns: columns,
     }

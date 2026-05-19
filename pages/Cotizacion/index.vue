@@ -179,6 +179,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestion de Cotizaciones',
         data: cotizaciones,
+        llamadatos: llamadatos,
         columns: columns,
         filtros: [
             { columna: 'nombre', placeholder: 'Nombre' },

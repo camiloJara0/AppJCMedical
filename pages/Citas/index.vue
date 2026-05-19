@@ -174,6 +174,7 @@ const propiedades = computed(() => {
             .setContenedor('grid lg:grid-cols-[1.7fr_1fr] md:grid-cols-[1fr_1fr] grid-cols-1 lg:gap-6 gap-3')
             .addComponente('Calendario', builderCalendario
                 .setCitas(citas)
+                .setEstilos('order-1')
             )
     } else {
         pagina
@@ -280,6 +281,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestionar Citas',
         agregar: agregarCita,
+        llamadatos: llamadatos,
         data: citas,
         columns: columns,
         buttons: [

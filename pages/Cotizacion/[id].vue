@@ -1,14 +1,16 @@
 <script setup>
 import Form from "~/components/organism/Forms/Form.vue";
 
-import { ref, onMounted, watch, h, resolveComponent } from "vue";
+import { ref, onMounted, watch, h, watchEffect } from "vue";
 
 import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
 
 import { useCotizacionesStore } from "~/stores/Formularios/Cotizaciones";
 import { useCotizacionActions } from "~/composables/Usuarios/Cotizacion";
 import { useCotizacionBuilder } from "~/build/Cotizacion/useCotizacionBuilder";
+import { storeToRefs } from "pinia";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
+import { get } from "@nuxt/ui/runtime/utils/index.js";
 
 const route = useRoute()
 const id = route.params.id
@@ -21,6 +23,7 @@ const config = useRuntimeConfig()
 const backendUrl = config.public.api
 const router = useRouter()
 
+const { getRol } = storeToRefs(varView)
 
 const active = ref(false);
 const isEditing = ref(false);
@@ -59,46 +62,48 @@ watch(() => active.value,
     }
 );
 
-// function esperarRol(timeout = 3000) {
-//     return new Promise((resolve, reject) => {
-//         const timer = setTimeout(() => {
-//             stop()
-//             reject(new Error('Timeout: rol no disponible'))
-//         }, timeout)
+watchEffect(async () => {
 
-//         const stop = watch(
-//             () => varView.getRol,
-//             (rol) => {
-//                 if (rol) {
-//                     clearTimeout(timer)
-//                     stop()
-//                     resolve(rol)
-//                 }
-//             },
-//             { immediate: true }
-//         )
-//     })
-// }
-
-// Cargar los cotizaciones desde el store
-onMounted(async () => {
-    // await esperarRol()
-    const user = varView.getRol
-    if (!user || user !== 'Admin') {
-        options.position = 'top-end',
-        options.background = '#d33',
-        options.texto = "Ingresa como Administrador",
-        options.tiempo = 1500,
-        mensaje()
-        localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
-        // router.push('/')
+    const localRol = localStorage.getItem('rol')
+    if (!localRol) {
+        
     }
+    const rol = varView.getRol
 
+  if (rol !== 'Admin' || !rol) {
+    options.position = 'top-end'
+    options.background = '#d33'
+    options.texto = "Ingresa como Administrador"
+    options.tiempo = 1500
+    mensaje()
+    localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
+    router.push('/')
+  } else {
     await llamadatos()
     if (id) {
-        cotizaciones.value = cotizaciones.value.filter(c => c.id === parseInt(id))
+      cotizaciones.value = cotizaciones.value.filter(c => c.id === parseInt(id))
     }
-});
+  }
+})
+
+// Cargar los cotizaciones desde el store
+// onMounted(async () => {
+//     const user = varView.getRol
+//     if (!user || user !== 'Admin') {
+//         options.position = 'top-end',
+//         options.background = '#d33',
+//         options.texto = "Ingresa como Administrador",
+//         options.tiempo = 1500,
+//         mensaje()
+//         localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
+//         router.push('/')
+//     }
+
+//     await llamadatos()
+//     if (id) {
+//         cotizaciones.value = cotizaciones.value.filter(c => c.id === parseInt(id))
+//     }
+// });
 
 const columns = [
     {
@@ -232,7 +237,7 @@ function borrarCotizacion () {
 <template>
     <FondoDefault>
         <UButton icon="i-lucide-arrow-left-to-line" color="neutral" variant="link" class="my-2">
-            <NuxtLink to="/Cotizacion" @click="borrarCotizacion">Atrás, Cotizaciones completas</NuxtLink>
+            <NuxtLink to="/Cotizacion" @click="borrarCotizacion">Atrás, Cotizaciones completas {{ getRol }}</NuxtLink>
         </UButton>
         <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
         <Form :Propiedades="propiedadesForm">

@@ -71,7 +71,7 @@ function agenda() {
                 <UIcon name="i-lucide-image" size="xl"></UIcon>
                 Ananké
             </NuxtLink>
-            <p class="text-xs text-white mr-10 mt-2 md:hidden block">{{ usuario }}</p>
+            <p class="text-xs text-white mr-10 mt-3 md:hidden block">{{ usuario }}</p>
             <div class="menuResponsive" @click="cambiarEstado()">
                 <div :class="{ 'text-white': !showNavbarBurguer, 'text-gray-300': showNavbarBurguer }">
                     <i class="fa-solid fa-bars transition-all duration-300 cursor-pointer active:scale-95"></i>

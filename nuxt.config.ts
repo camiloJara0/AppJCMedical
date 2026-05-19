@@ -8,9 +8,9 @@ export default defineNuxtConfig({
   colorMode: { preference: 'system', classSuffix: '' },
   runtimeConfig: {
     public: {
-      SECRET_KEY: 'THESALUS943875PL',
-      // api: 'https://app.jycmedical.com',
-      api: 'http://127.0.0.1:8000',
+      SECRET_KEY: 'ANANKE943875PL',
+      api: 'https://jycmedical.com.co',
+      // api: 'http://127.0.0.1:8000',
       login: 'api/login',
       categoria: 'api/categorias',
       productos: 'api/productos',

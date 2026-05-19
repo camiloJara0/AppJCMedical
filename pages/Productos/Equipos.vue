@@ -151,6 +151,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestión de Equipos',
         agregar: agregarEquipo,
+        llamadatos: llamadatos,
         data: equipos,
         columns: columns,
         filtros: [

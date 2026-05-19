@@ -169,6 +169,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestión de Técnicos',
         agregar: agregarTecnico,
+        llamadatos: llamadatos,
         data: tecnicos,
         columns: columns,
         filtros: [

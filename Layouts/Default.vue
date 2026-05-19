@@ -8,10 +8,10 @@
         <Permiso v-if="varView.permisoTemporal"></Permiso>
         <Navbar></Navbar>
         <Aside></Aside>
-        <div class="section-content">
+        <div class="section-content md:mx-2.5 rounded-sm">
             <div class="container-content">
                 <slot></slot>
-                <FooterPage></FooterPage>
+                <FooterPage class="hidden md:flex"></FooterPage>
             </div>
         </div>
         <Footer></Footer>
@@ -86,21 +86,14 @@ onUnmounted(() => {
 @media screen and (max-width: 768px) {
     .containerMain {
         grid-template-areas: "navbar" "aside" "main" "footer";
-        grid-template-rows: 45px 40px 1fr 10px;
+        grid-template-rows: 45px 40px 1fr;
         grid-template-columns: 1fr;
-    }
-
-    .section-content {
-        padding: 5px;
-        margin: 0;
     }
 }
 
 .section-content {
     grid-area: main;
     overflow-y: hidden;
-    margin: 0 10px;
-    border-radius: 5px;
 }
 
 .container-content {

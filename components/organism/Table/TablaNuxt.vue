@@ -91,8 +91,8 @@ const columns = props.Propiedades.columns.map(col => {
     <UCard class="mb-3">
         <template #header>
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg">{{ props.Propiedades.titulo }}</h3>
-                <div class="flex gap-2">
+                <h3 class="font-bold text-lg md:w-fit w-1/2 pr-1">{{ props.Propiedades.titulo }}</h3>
+                <div class="flex flex-wrap justify-end gap-2">
                     <UButton v-for="button in props.Propiedades.buttons" :variant="button.variant" :color="button.color"
                         loading-auto :trailing-icon="button.icon" size="md" @click="button.accion">
                         <span class="hidden md:block">{{ button.texto }}</span>
@@ -125,6 +125,7 @@ const columns = props.Propiedades.columns.map(col => {
                         color="primary" trailing-icon="lucide-plus" size="md">
                         <span class="hidden md:block">Agregar</span>
                     </UButton>
+                    <UButton v-if="props.Propiedades.llamadatos" icon="i-lucide-cloud-sync" color="primary" variant="ghost" size="md" @click="props.Propiedades.llamadatos?.(true)" />
                 </div>
             </div>
             <div v-if="mostrarFiltros" class="w-full">

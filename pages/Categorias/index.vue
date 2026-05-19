@@ -160,6 +160,7 @@ const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestionar Categorías',
         agregar: agregarCategoria,
+        llamadatos: llamadatos,
         data: categorias,
         columns: columns,
         filtros: [
