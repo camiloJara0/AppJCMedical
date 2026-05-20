@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 export const useNotificacionesStore = defineStore("Notificaciones", {
     // state
     state: () => {
-        let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
         return {
             swal: null,
@@ -20,7 +19,7 @@ export const useNotificacionesStore = defineStore("Notificaciones", {
                 background: '#d33',
                 input: 'text',
                 inputAtributes: { placeholder: "Digite" },
-                theme: theme
+                theme: 'light'
             }
 
         };
