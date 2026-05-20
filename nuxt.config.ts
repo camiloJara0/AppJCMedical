@@ -1,8 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  ssr: false,
-  nitro: { preset: 'static' },
+  ssr: true,
+  nitro: { preset: 'node-server' },
   css: ['~/assets/css/main.css'],
   modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/color-mode', 'nuxt-charts', '@vite-pwa/nuxt'],
   colorMode: { preference: 'system', classSuffix: '' },
