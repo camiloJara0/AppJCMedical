@@ -33,6 +33,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
+    baseURL: '/app/',
     head: {
       link: [ 
           { rel: 'icon', type: 'image/x-icon', href: '/cruz.png' },
