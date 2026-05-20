@@ -35,9 +35,9 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/app/',
     head: {
-      link: [ 
-          { rel: 'icon', type: 'image/x-icon', href: '/cruz.png' },
-       ]
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/cruz.png' },
+      ]
     },
   },
   pwa: {
@@ -45,6 +45,8 @@ export default defineNuxtConfig({
     manifest: {
       name: 'ANANKE APP',
       short_name: 'ANANKE',
+      start_url: '/app/',
+      scope: '/app/',
       theme_color: '#2262a3',
       background_color: '#ffffff',
       display: 'standalone',
@@ -65,9 +67,11 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       clientsClaim: true,
       globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-     navigateFallback: '/index.html',
-    navigateFallbackAllowlist: [/^\/$/,/^\/.+/],
-
+      navigateFallback: 'app/index.html',
+      navigateFallbackAllowlist: [/^\/$/, /^\/.+/],
+      modifyURLPrefix: {
+        '/': '/app/'
+      }
     },
     devOptions: {
       enabled: true
