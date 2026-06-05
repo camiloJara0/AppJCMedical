@@ -18,7 +18,6 @@ const varView = useVarView();
 const api = useApiRest()
 const config = useRuntimeConfig()
 const indexedDB = useIndexedDBStore();
-const mostrarContraseña = ref(false)
 
 onMounted(async () => {
     try {
@@ -111,8 +110,7 @@ const propiedadesLogin = computed(() => {
         cambiarContraseña,
         validaUsuario,
         selectEmpresa: selectEmpresa,
-        opcionesCompañy: opcionesCompañy,
-        mostrarContraseña
+        opcionesCompañy: opcionesCompañy
     });
 
     const propiedadesRecuperarContraseña = useRecuperarContraseñaBuilder({

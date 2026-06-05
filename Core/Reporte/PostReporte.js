@@ -1,13 +1,32 @@
 export async function enviarReporte(isEditing, data) {
     try {
         const varView = useVarView()
+        const notificacionesStore = useNotificacionesStore()
+        let errores = []
+        let componentesCheck = []
         if(!isEditing){
-            data.componentes = Object.entries(data.componentes).map(([id, value]) => ({
+            Object.entries(data.componentes).map(([id, value]) => {
+                if (!value.estado) {
+                    errores.push(`Componente ${id} sin estado, verifique que todos este llenados.`);
+                }
+            });
+            if(errores.length > 0) {
+                errores.forEach(msg => {
+                    notificacionesStore.options.icono = 'error';
+                    notificacionesStore.options.titulo = 'Información inválida';
+                    notificacionesStore.options.texto = msg;
+                    notificacionesStore.options.tiempo = 5000;
+                    notificacionesStore.simple();
+                });
+                return false;
+            }
+            componentesCheck = Object.entries(data.componentes).map(([id, value]) => ({
                 componente_id: id,
                 estado: value.estado,
                 observacion: value.observacion,
             }));
         }
+
 
         data.materiales = data.materiales.filter(d => {
             return d && Object.values(d).some(v => v !== '' && v != null);
@@ -21,7 +40,6 @@ export async function enviarReporte(isEditing, data) {
         data.accesorios = data.accesorios.filter(d => {
             return d && Object.values(d).some(v => v !== '' && v != null);
         });
-
 
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
@@ -37,7 +55,7 @@ export async function enviarReporte(isEditing, data) {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({...data, componentes: componentesCheck})
         });
 
         if (!response.ok) {

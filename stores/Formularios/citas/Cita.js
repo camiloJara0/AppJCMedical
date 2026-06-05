@@ -39,7 +39,7 @@ export const useCitasStore = defineStore('Citas', {
             return await eliminarCita(datos);
         },
 
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio) {
             const varView = useVarView()
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
@@ -58,6 +58,7 @@ export const useCitasStore = defineStore('Citas', {
                 const user = varView.getUser
                 citasFiltradas = citas.filter(c => c.tecnico_id === user.tecnico_id)
             }
+            
             this.Citas = citasFiltradas
             return citasFiltradas
         }

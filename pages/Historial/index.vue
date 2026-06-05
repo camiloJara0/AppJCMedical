@@ -21,7 +21,7 @@ const refresh = ref(1);
 const showModal = ref(false);
 
 async function llamadatos(cambio = false) {
-    reportes.value = await storeReportes.traer(true, false, cambio);
+    reportes.value = await storeReportes.traer(true, cambio);
     varView.datosActualizados()
 }
 

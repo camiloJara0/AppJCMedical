@@ -3,6 +3,7 @@ import { useShowNavbar } from '~/stores/navbarResponsive.js';
 import { useButtonsAside } from '~/stores/ButtonActive';
 import { storeToRefs } from 'pinia';
 import ButtonRounded from '~/components/atoms/Buttons/ButtonRounded.vue';
+import { navMenuAdmin, navMenuTecnico } from '~/data/navMenuStructure.js';
 
 const storeAside = useButtonsAside();
 const buttons = ref([]);
@@ -10,6 +11,7 @@ const varView = useVarView()
 const footer = useSeccionFooter();
 const router = useRouter()
 const rol = ref('')
+const navMenu = ref([])
 
 const { botonActivo } = storeToRefs(storeAside);
 
@@ -21,6 +23,9 @@ onMounted(() => {
         // router.push('/')
     }
     buttons.value = storeAside.getbuttons(rol.value);
+    
+    // Cargar menú según rol
+    navMenu.value = rol.value === 'Admin' ? navMenuAdmin : navMenuTecnico;
 });
 
 // Funcion para Responsive, si aside esta activo se oculta navbar
@@ -36,7 +41,6 @@ function accesoRapidoSelected(nombre) {
         case 'Categorias': {
             const button = buttons.value.find(btn => btn.nombre === 'Productos');
             if (button) {
-                console.log(button.secciones);
                 footer.cambiarSecciones(button.secciones);
                 footer.cambiarIdActivo(1);
                 storeAside.botonActivo = 'Categorias';
@@ -66,7 +70,7 @@ function accesoRapidoSelected(nombre) {
             if (button) {
                 footer.cambiarSecciones(button.secciones);
                 storeAside.botonActivo = 'Citas';
-                footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0);
+                footer.cambiarIdActivo(rol.value == 'Admin' ? 2 : 0);
             }
             break;
         }
@@ -93,7 +97,7 @@ function accesoRapidoSelected(nombre) {
             if (button) {
                 footer.cambiarSecciones(button.secciones);
                 storeAside.botonActivo = 'TipoEquipos';
-                footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0);
+                footer.cambiarIdActivo(rol.value == 'Admin' ? 2 : 0);
             }
             break;
         }
@@ -101,7 +105,7 @@ function accesoRapidoSelected(nombre) {
             const button = buttons.value.find(btn => btn.nombre === 'Productos');
             if (button) {
                 footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(rol == 'Admin' ? 3 : 1);
+                footer.cambiarIdActivo(rol.value == 'Admin' ? 3 : 1);
                 storeAside.botonActivo = 'Equipos';
             }
             break;
@@ -143,7 +147,8 @@ function accesoRapidoSelected(nombre) {
             break;
         }
         default:
-            console.log("No se encontró el caso para:", nombre);
+            // Caso genérico: solo cambiar el botón activo
+            storeAside.botonActivo = nombre;
     }
 
     varView.expandido = false; // Cierra el menú después de seleccionar una sección
@@ -165,75 +170,16 @@ function accesoRapidoSelected(nombre) {
                         varView.expandido = true;
                         cambiarEstadoFalse()
                     }" tooltip="Abrir Menú" tooltip-position="right"
-                        color="flex items-center justify-center w-10 h-10 rounded-full md:text-gray-200 text-white font-bold md:dark:text-black transition">
+                        color="flex items-center justify-center w-10 h-10 rounded-full md:text-gray-200 text-gray-200 font-bold md:dark:text-black transition">
                         <i class="fa-solid fa-angle-right text-lg"></i>
                     </ButtonRounded>
 
                     <!-- Navegación por íconos -->
-                    <nav v-if="rol == 'Admin'" class="flex md:flex-col flex-row items-center gap-6">
-                        <!-- <ButtonAside v-for="button in buttons" :key="button.nombre" :data="button" /> -->
-                        <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
-                            <ButtonRounded tooltip="Agenda" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-calendar-day text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Citas'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Cotizacion" @click="accesoRapidoSelected('Cotizaciones')">
-                            <ButtonRounded tooltip="Cotizaciones" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-money-bill text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Cotizaciones'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Usuarios" @click="accesoRapidoSelected('Tecnicos')">
-                            <ButtonRounded tooltip="Tecnicos" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-user-gear text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Tecnicos'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Historial" @click="accesoRapidoSelected('Reportes')">
-                            <ButtonRounded tooltip="Reportes" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-file-lines text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Reportes'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Productos" @click="accesoRapidoSelected('Productos')">
-                            <ButtonRounded tooltip="Productos" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-store text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Productos'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                    </nav>
-
-                    <nav v-else class="flex md:flex-col flex-row items-center gap-6">
-                        <!-- <ButtonAside v-for="button in buttons" :key="button.nombre" :data="button" /> -->
-                        <NuxtLink to="/Citas" @click="accesoRapidoSelected('Citas')">
-                            <ButtonRounded tooltip="Agenda" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-calendar-day text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Citas'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Datos" @click="accesoRapidoSelected('Componentes')">
-                            <ButtonRounded tooltip="Componentes" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-microchip text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Componentes'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Datos/Sistemas" @click="accesoRapidoSelected('Sistemas')">
-                            <ButtonRounded tooltip="Sistemas" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-network-wired text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Sistemas'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Historial" @click="accesoRapidoSelected('Reportes')">
-                            <ButtonRounded tooltip="Reportes" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-file-lines text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Reportes'}"></i>
-                            </ButtonRounded>
-                        </NuxtLink>
-                        <NuxtLink to="/Productos/Equipos" @click="accesoRapidoSelected('Equipos')">
-                            <ButtonRounded tooltip="Equipos" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-black transition py-5">
-                                <i class="fa-solid fa-desktop text-lg" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Equipos'}"></i>
+                    <nav class="flex md:flex-col flex-row items-center gap-6">
+                        <NuxtLink v-for="btn in navMenu.filter(n => n.accesoRapido)" :key="btn.id" :to="btn.ruta" @click="accesoRapidoSelected(btn.action)">
+                            <ButtonRounded :tooltip="btn.nombre" tooltip-position="right"
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-gray-800 transition py-5" :color="{'text-white! dark:text-blue-700!': botonActivo === btn.action}">
+                                <i :class="[btn.icono, 'text-lg md:dark:text-gray-700 text-gray-300', {'text-white! dark:text-gray-300': botonActivo === btn.action}]"></i>
                             </ButtonRounded>
                         </NuxtLink>
                     </nav>
@@ -266,114 +212,15 @@ function accesoRapidoSelected(nombre) {
                             Secciones</p>
 
                         <!-- Navegación por íconos -->
-                        <div v-if="rol == 'Admin'" @click="cambiarEstadoFalse()">
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Citas"
-                            @click="accesoRapidoSelected('Citas')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Agenda</span>
-                            <i class="fa-solid fa-calendar-day text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Citas'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Categorias"
-                            @click="accesoRapidoSelected('Categorias')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Categorías</span>
-                            <i class="fa-solid fa-building text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Categorias'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Usuarios/Clientes"
-                            @click="accesoRapidoSelected('Clientes')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Clientes</span>
-                            <i class="fa-solid fa-users text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Clientes'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Datos"
-                            @click="accesoRapidoSelected('Componentes')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Componentes</span>
-                            <i class="fa-solid fa-microchip text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Componentes'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Cotizacion"
-                            @click="accesoRapidoSelected('Cotizaciones')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Cotizaciones</span>
-                            <i class="fa-solid fa-money-bill text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Cotizaciones'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Productos/Equipos"
-                            @click="accesoRapidoSelected('Equipos')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Equipos</span>
-                            <i class="fa-solid fa-desktop text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Equipos'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Historial"
-                            @click="accesoRapidoSelected('Reportes')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Reportes</span>
-                            <i class="fa-solid fa-file-lines text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Reportes'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Datos/Sistemas"
-                            @click="accesoRapidoSelected('Sistemas')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Sistemas</span>
-                            <i class="fa-solid fa-network-wired text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Sistemas'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Productos/Tipo_equipos"
-                            @click="accesoRapidoSelected('TipoEquipos')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Tipo Equipos</span>
-                            <i class="fa-solid fa-screwdriver-wrench text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'TipoEquipos'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Usuarios"
-                            @click="accesoRapidoSelected('Tecnicos')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Técnicos</span>
-                            <i class="fa-solid fa-user-gear text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Tecnicos'}"></i>
-                        </NuxtLink>
-
-                        <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Productos"
-                            @click="accesoRapidoSelected('Productos')">
-                            <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Productos</span>
-                            <i class="fa-solid fa-store text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Productos'}"></i>
-                        </NuxtLink>
-
-                        </div>
-
-                        <div v-else @click="cambiarEstadoFalse()">
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Citas"
-                                @click="accesoRapidoSelected('Citas')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Agenda</span>
-                                <i class="fa-solid fa-calendar-day text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Citas'}"></i>
+                        <div class="lista" @click="cambiarEstadoFalse()">
+                            <NuxtLink v-for="btn in navMenu" :key="btn.id" 
+                                class="flex items-center md:justify-between gap-2 py-2 px-2 -mx-2" 
+                                :to="btn.ruta" 
+                                :class="{'bg-(--color-default-100)': botonActivo === btn.action}"
+                                @click="accesoRapidoSelected(btn.action)">
+                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm" :class="{'text-white! dark:text-gray-300!': botonActivo === btn.action}">{{ btn.nombre }}</span>
+                                <i :class="[btn.icono, 'text-lg text-gray-400 dark:text-gray-600 transition', {'text-white! dark:text-gray-300!': botonActivo === btn.action}]"></i>
                             </NuxtLink>
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Datos"
-                                @click="accesoRapidoSelected('Componentes')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Componentes</span>
-                                <i class="fa-solid fa-microchip text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Componentes'}"></i>
-                            </NuxtLink>
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Productos/Equipos"
-                                @click="accesoRapidoSelected('Equipos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Equipos</span>
-                                <i class="fa-solid fa-desktop text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Equipos'}"></i>
-                            </NuxtLink>
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Historial"
-                                @click="accesoRapidoSelected('Reportes')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Reportes</span>
-                                <i class="fa-solid fa-file-lines text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Reportes'}"></i>
-                            </NuxtLink>
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Datos/Sistemas"
-                                @click="accesoRapidoSelected('Sistemas')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Sistemas</span>
-                                <i class="fa-solid fa-network-wired text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'Sistemas'}"></i>
-                            </NuxtLink>
-
-                            <NuxtLink class="flex items-center md:justify-between gap-2 py-2" to="/Productos/Tipo_equipos"
-                                @click="accesoRapidoSelected('TipoEquipos')">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm">Tipo Equipos</span>
-                                <i class="fa-solid fa-screwdriver-wrench text-lg text-gray-400 dark:text-gray-600 transition" :class="{'text-white! dark:text-slate-700!': botonActivo === 'TipoEquipos'}"></i>
-                            </NuxtLink>
-
                         </div>
                     </div>
 
@@ -408,6 +255,23 @@ function accesoRapidoSelected(nombre) {
     padding: 10px 0;
     transition: width 0.4s ease, transform 0.6s ease, opacity 0.6s ease;
 
+}
+
+.lista a{
+    border-radius: 5px;
+}
+
+.lista a:hover{
+    background-color: var(--color-default-100);
+    color: white !important;
+}
+
+.lista a:hover span{
+    color: white !important;
+}
+
+.lista a:hover i{
+    color: var(--color-gray-200) !important;
 }
 
 .section-asidebar.expandido {

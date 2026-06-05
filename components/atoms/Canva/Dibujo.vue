@@ -157,7 +157,7 @@ function isCanvasBlank(canvas: HTMLCanvasElement) {
           ref="canvasRef"
           width="400"
           height="200"
-          class="border border-gray-300 dark:border-gray-700 rounded-md cursor-crosshair"
+          class="border border-gray-300 dark:border-gray-700 rounded-md cursor-crosshair bg-white"
           @mousedown="startDrawing"
           @mousemove="draw"
           @mouseup="stopDrawing"

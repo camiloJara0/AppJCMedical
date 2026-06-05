@@ -188,7 +188,7 @@ function changeShowPendientes() {
 
                             <div>
                                 <h3 class="font-semibold text-gray-800 dark:text-white">
-                                    {{ cita.nombre_equipo }}
+                                    {{ cita.nombre_equipo.length > 25 ? cita.nombre_equipo.substring(0, 25) + '...' : cita.nombre_equipo }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
                                     {{ cita.nombre_cliente }}

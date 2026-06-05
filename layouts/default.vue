@@ -29,6 +29,7 @@ import Loader from '~/components/molecules/Spinner/Loader.vue';
 import Actualizado from '~/components/molecules/Spinner/Actualizado.vue';
 import Permiso from '~/components/molecules/Spinner/Permiso.vue';
 import LoaderPorcentaje from '~/components/molecules/Spinner/LoaderPorcentaje.vue';
+const router = useRouter()
 
 const varView = useVarView();
 const { $pwa } = useNuxtApp()
@@ -57,8 +58,17 @@ onMounted(async() => {
     }
 
     const permisos = JSON.parse(localStorage.getItem('permisosTemporales') ?? "[]");
-
     varView.permisoTemporal = permisos.length > 0 ? true : false
+
+    // 🔑 Validar token y expiración
+    const token = localStorage.getItem('token')
+    const expiracion = parseInt(localStorage.getItem('expiracion_sesion') ?? "0")
+
+    if (!token || Date.now() > expiracion) {
+        // Token inválido o expirado → redirigir al login
+        localStorage.clear()
+        router.push('/')
+    }
 });
 
 onUnmounted(() => {

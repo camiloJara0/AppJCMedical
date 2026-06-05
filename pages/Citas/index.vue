@@ -15,10 +15,10 @@ import TablaNuxt from '~/components/organism/Table/TablaNuxt.vue'
 import FondoDefault from '~/components/atoms/Fondos/FondoDefault.vue'
 import { eliminarCita } from '~/Core/Citas/DeleteCitas'
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte'
+import { storeToRefs } from 'pinia'
 
 const varView = useVarView()
 const citasStore = useCitasStore();
-const citas = ref([]);
 
 const calendarioCitasStore = useCalendarioCitas();
 const storeSistemas = useSistemasStore()
@@ -27,8 +27,10 @@ const show = ref(false);
 const sistemas = ref([])
 const refresh = ref(1);
 
+const { Citas } = storeToRefs(citasStore)
+
 onMounted(async () => {
-    citas.value = await citasStore.traer(false)
+    await citasStore.traer(false)
     await llamadatos()
     // Rellenar fecha del formulario
     citasStore.Formulario.Cita.fecha = calendarioCitasStore.fecha.split('/').reverse().join('-')
@@ -59,7 +61,7 @@ const {
 })
 
 async function llamadatos(cambio = false) {
-    citas.value = await citasStore.traer(true, false, cambio);
+    await citasStore.traer(true, cambio);
     varView.datosActualizados()
 }
 // Watch para actualizar citas al agregar nueva
@@ -160,7 +162,7 @@ const propiedades = computed(() => {
             ]
         })
         .addComponente('Citas', builderCitas
-            .setCitas(citas)
+            .setCitas(Citas)
             .setShowTodas(false)
             .setFiltros([
                 { columna: 'servicio', placeholder: 'Servicio', },
@@ -173,7 +175,7 @@ const propiedades = computed(() => {
         pagina
             .setContenedor('grid lg:grid-cols-[1.7fr_1fr] md:grid-cols-[1fr_1fr] grid-cols-1 lg:gap-6 gap-3')
             .addComponente('Calendario', builderCalendario
-                .setCitas(citas)
+                .setCitas(Citas)
                 .setEstilos('order-1')
             )
     } else {
@@ -282,7 +284,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestionar Citas',
         agregar: agregarCita,
         llamadatos: llamadatos,
-        data: citas,
+        data: Citas,
         columns: columns,
         buttons: [
             { icon: 'lucide-table', accion: showFila, texto: 'En lista', color: 'neutral', variant: 'subtle' }

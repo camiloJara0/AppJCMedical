@@ -33,17 +33,19 @@ export const login = async (datos) => {
             const data = await respuesta.json();
             if (data.success) {
                 varView.cargando = false
-                notificacionesStore.options.titulo = 'Iniciando Sesión...'
-                notificacionesStore.options.texto = "Iniciando sesion, espere un momento mientras se cargan todos los datos"
-                notificacionesStore.loading()
-
                 const tokenEncrypt = encryptData(data.access_token);
                 const rolEncrypt = encryptData(data.user.rol);
                 const userEncrypt = encryptData(data.user);
+                const expiracion = Date.now() + (16 * 60 * 60 * 1000) // 16 horas en milisegundos
 
-                localStorage.setItem('token', data.access_token);
                 localStorage.setItem('rol', rolEncrypt);
+                localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user', userEncrypt);
+                localStorage.setItem('expiracion_sesion', expiracion.toString())
+
+                notificacionesStore.options.titulo = 'Iniciando Sesión...'
+                notificacionesStore.options.texto = "Iniciando sesion, espere un momento mientras se cargan todos los datos"
+                notificacionesStore.loading()
 
                 await iniciar((porcentaje, texto) => {
                     actualizarProgreso(porcentaje, texto);

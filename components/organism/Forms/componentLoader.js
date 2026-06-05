@@ -4,6 +4,7 @@ import { defineAsyncComponent } from 'vue';
 export function loadComponent(name) {
   const componentMap = {
     Input: () => import('~/components/atoms/Inputs/Input.vue'),
+    InputContraseña: () => import('~/components/atoms/Inputs/InputContraseña.vue'),
     Select: () => import('~/components/atoms/Selects/Select.vue'),
     Label: () => import('~/components/atoms/Labels/Label.vue'),
     SelectSearch: () => import('~/components/atoms/Selects/SelectSearch.vue'),
@@ -16,7 +17,7 @@ export function loadComponent(name) {
     Card: () => import('~/components/molecules/Cards/Card.vue'),
     Button: () => import('~/components/atoms/Buttons/Button.vue'),
     Radio: () => import('~/components/atoms/RadioButtons/RadioButton.vue'),
-    Dibujo: () => import('~/components/atoms/Canva/Dibujo.vue')
+    Dibujo: () => import('~/components/atoms/Canva/Dibujo.vue'),
   };
 
   const loader = componentMap[name];

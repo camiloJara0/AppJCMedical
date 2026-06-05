@@ -3,17 +3,18 @@ import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
 import { login } from '~/Core/Login/Ingresar';
 import CrossImg from '~/assets/img/cross.png'
 import { useUsuariosStore } from '~/stores/Formularios/login/Login';
+import { usePasswordVisibilityStore } from '~/stores/passwordVisibility';
 
 export function useLoginBuilder({
   storeId,
   storePinia,
   recuperarcontraseña,
   cambiarContraseña,
-  validaUsuario,
-  mostrarContraseña
+  validaUsuario
 }) {
   const builder = new FormularioBuilder()
   const usuarioStore = useUsuariosStore()
+  const passwordStore = usePasswordVisibilityStore()
 
   const cambiarMostrarContraseña = () => {
       mostrarContraseña.value = !mostrarContraseña.value;
@@ -59,19 +60,15 @@ export function useLoginBuilder({
       },
     })
     .addCampo({
-      component: 'Input',
+      component: 'InputContraseña',
       placeholder: 'Ingresa tu Contraseña',
-      type: !mostrarContraseña.value ? 'password' : 'text',
       id: 'password',
       name: 'contraseña',
       tamaño: 'lg:w-2/3 w-full justify-self-center mx-auto',
       estilo: 'text-white!',
       vmodel: 'Usuario.contraseña',
       icon: 'i-lucide-lock',
-      slot: {
-        label: mostrarContraseña.value ? `<i class="fa-solid fa-eye text-gray-200"></i>` : `<i class="fa-solid fa-eye-slash text-(--color-default-claro)"></i>`,
-        action: cambiarMostrarContraseña
-      },
+      fieldId: 'password',
       events: {
         onKeyUp: () => login(usuarioStore.Formulario)
       },
@@ -80,7 +77,7 @@ export function useLoginBuilder({
       component: 'Button',
       texto: 'Ingresar',
       color: 'primary',
-      class: 'w-full bg-gradient-to-r from-[var(--color-default)] to-[var(--color-default-700)] text-white font-bold py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer active:scale-95',
+      class: 'w-full text-white font-bold py-2 rounded-lg shadow-md transition-all duration-300 cursor-pointer active:scale-95',
       tamaño: 'col-span-2 lg:w-2/3 w-full mx-auto cursor-pointer',
       events: {
         onClick: () => login(usuarioStore.Formulario)

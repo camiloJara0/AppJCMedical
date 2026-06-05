@@ -37,7 +37,7 @@ const mergedProps = computed(() => {
       :variant="mergedProps.variant"
       :size="mergedProps.size"
       :disabled="mergedProps.disabled"
-      :loading="mergedProps.loading"
+      loading-auto
       :ui="{ rounded: 'rounded-2xl' }"
       :class="['w-full flex justify-center', mergedProps.class]"
       @click="Propiedades.events?.onClick"

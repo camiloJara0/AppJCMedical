@@ -6,7 +6,9 @@ const varView = useVarView()
 
 const breadCrumbs = computed(() => {
   const path = route.fullPath
-  localStorage.setItem('seccion', path)
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    localStorage.setItem('seccion', path)
+  }
   const segments = path.split('/').filter(Boolean)
 
   const links = []

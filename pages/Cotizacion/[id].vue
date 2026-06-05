@@ -10,7 +10,6 @@ import { useCotizacionActions } from "~/composables/Usuarios/Cotizacion";
 import { useCotizacionBuilder } from "~/build/Cotizacion/useCotizacionBuilder";
 import { storeToRefs } from "pinia";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
-import { get } from "@nuxt/ui/runtime/utils/index.js";
 
 const route = useRoute()
 const id = route.params.id
@@ -53,38 +52,29 @@ const {
     isEditing
 });
 
-// Refrescar pagina cuando se agrega o modifica Producto
-watch(() => active.value,
-    async (estado) => {
-        if (!estado && varView.cambioEnApi) {
-            
-        }
-    }
-);
+// watchEffect(async () => {
 
-watchEffect(async () => {
-
-    const localRol = localStorage.getItem('rol')
-    if (!localRol) {
+//     const localRol = localStorage.getItem('rol')
+//     if (!localRol) {
         
-    }
-    const rol = varView.getRol
+//     }
+//     const rol = varView.getRol
 
-  if (rol !== 'Admin' || !rol) {
-    options.position = 'top-end'
-    options.background = '#d33'
-    options.texto = "Ingresa como Administrador"
-    options.tiempo = 1500
-    mensaje()
-    localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
-    router.push('/')
-  } else {
-    await llamadatos()
-    if (id) {
-      cotizaciones.value = cotizaciones.value.filter(c => c.id === parseInt(id))
-    }
-  }
-})
+//   if (rol !== 'Admin' || !rol) {
+//     options.position = 'top-end'
+//     options.background = '#d33'
+//     options.texto = "Ingresa como Administrador"
+//     options.tiempo = 1500
+//     mensaje()
+//     localStorage.setItem('cotizacion', `/Cotizacion/${id}`)
+//     router.push('/')
+//   } else {
+//     await llamadatos()
+//     if (id) {
+//       cotizaciones.value = cotizaciones.value.filter(c => c.id === parseInt(id))
+//     }
+//   }
+// })
 
 // Cargar los cotizaciones desde el store
 // onMounted(async () => {

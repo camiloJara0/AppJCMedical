@@ -87,9 +87,9 @@ function agenda() {
                         <span v-else> <i class="fa-solid fa-angle-left ml-2"></i></span>
                     </p>
                 </li>
-                <li>
+                <!-- <li>
                     <DropdownNavbar icon="fa-bell" nombre="Notificaciones" :submenu="submenuNotificaciones"/>
-                </li>
+                </li> -->
                 <li>
                     <DropdownNavbar icon="fa-circle-user" :nombre="usuario" :submenu="submenuSesion" />
                 </li>

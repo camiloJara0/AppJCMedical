@@ -94,7 +94,7 @@ export function useCitaActions({
     options.background = "#d33";
 
     cerrar();
-    window.location.reload()
+    await citasStore.traer(true, true)
   }
 
   /* =========================
@@ -119,31 +119,33 @@ export function useCitaActions({
      MOSTRAR MOTIVOS
   ========================= */
   function showMotivoCancelacion(cita) {
-    options.icono = 'info'
-    options.titulo = 'Motivo de cancelacion'
-    options.texto = cita.ultima_observacion || 'Cita cancelada!'
-    options.tiempo = 5000
-    simple()
+    const notificaciones = useNotificacionesStore()
+    notificaciones.options.icono = 'info'
+    notificaciones.options.titulo = 'Motivo de cancelacion'
+    notificaciones.options.texto = cita.ultima_observacion || 'Cita cancelada!'
+    notificaciones.options.tiempo = 5000
+    notificaciones.simple()
   }
 
   function showMotivoEdicion(cita) {
-    options.icono = 'info'
-    options.titulo = 'Motivo de edición'
-    options.texto = cita.ultima_observacion || 'La cita ha sido editada!'
-    options.tiempo = 5000
-    simple()
+    const notificaciones = useNotificacionesStore()
+    notificaciones.options.icono = 'info'
+    notificaciones.options.titulo = 'Motivo de edición'
+    notificaciones.options.texto = cita.ultima_observacion || 'La cita ha sido editada!'
+    notificaciones.options.tiempo = 5000
+    notificaciones.simple()
   }
 
   /* =========================
      OBSERVACIÓN PROFESIONAL
   ========================= */
   async function showObservacion(cita) {
-
-    options.icono = 'info'
-    options.titulo = 'Observacion del Profesional'
-    options.texto = cita.ultima_observacion || 'Cita Realizada con exito!'
-    options.tiempo = 5000
-    simple()
+    const notificaciones = useNotificacionesStore()
+    notificaciones.options.icono = 'info'
+    notificaciones.options.titulo = 'Observacion del Profesional'
+    notificaciones.options.texto = cita.ultima_observacion || 'Cita Realizada con exito!'
+    notificaciones.options.tiempo = 5000
+    notificaciones.simple()
   }
 
   function normalizarFecha(fecha) {
@@ -162,6 +164,9 @@ export function useCitaActions({
      ACTIVAR CITA
   ========================= */
   async function activarCita(cita) {
+        const notificaciones = useNotificacionesStore()
+    varView.sistemasBuilder = []
+    localStorage.removeItem('enviarReporte')
     const now = new Date()
     const horaActual = now.toTimeString().slice(0, 5)
 

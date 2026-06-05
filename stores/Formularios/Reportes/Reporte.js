@@ -69,6 +69,7 @@ export const useReporteStore = defineStore('Reportes', {
                 await apiRest.postOfflineData('reportes', reportes)
             } else {
                 reportes = await apiRest.getOfflineData('reportes')
+                reportes = reportes.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
             }
 
             this.Reportes = reportes

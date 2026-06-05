@@ -67,7 +67,7 @@ const mergedProps = computed(() => getMergedProps());
       class="mb-2 capitalize"
     >
   <URadioGroup
-
+    :modelValue="modelValue"
     :label="mergedProps.label"
     :description="mergedProps.description"
     :required="mergedProps.required"
