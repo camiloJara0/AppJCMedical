@@ -168,127 +168,127 @@ export function useReporteBuilder({
         })
 
         // Resumen de reporte de mantenimiento
-        .addCampo({
-            component: 'Label',
-            text: `
-<div class="w-full">
+//         .addCampo({
+//             component: 'Label',
+//             text: `
+// <div class="w-full">
 
-    <div class="flex items-center gap-2 mb-3">
-        <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-            <i class="fa-solid fa-clipboard-check text-primary"></i>
-        </div>
+//     <div class="flex items-center gap-2 mb-3">
+//         <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+//             <i class="fa-solid fa-clipboard-check text-primary"></i>
+//         </div>
 
-        <div>
-            <p class="text-xl font-bold text-gray-900 dark:text-white">
-                Resumen del Reporte
-            </p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                Verifica la información antes de finalizar el registro.
-            </p>
-        </div>
-    </div>
+//         <div>
+//             <p class="text-xl font-bold text-gray-900 dark:text-white">
+//                 Resumen del Reporte
+//             </p>
+//             <p class="text-sm text-gray-500 dark:text-gray-400">
+//                 Verifica la información antes de finalizar el registro.
+//             </p>
+//         </div>
+//     </div>
 
-    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+//     <div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-        <!-- Encabezado -->
-        <div class="bg-linear-to-r from-primary-500/10 to-primary-500/5 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-file-signature text-primary"></i>
-                <span class="font-semibold">
-                    Reporte listo para enviar
-                </span>
-            </div>
-        </div>
+//         <!-- Encabezado -->
+//         <div class="bg-linear-to-r from-primary-500/10 to-primary-500/5 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+//             <div class="flex items-center gap-2">
+//                 <i class="fa-solid fa-file-signature text-primary"></i>
+//                 <span class="font-semibold">
+//                     Reporte listo para enviar
+//                 </span>
+//             </div>
+//         </div>
 
-        <!-- Información principal -->
-        <div class="p-4 bg-white dark:bg-gray-800">
+//         <!-- Información principal -->
+//         <div class="p-4 bg-white dark:bg-gray-800">
 
-            <div class="grid md:grid-cols-2 gap-3 mb-4">
+//             <div class="grid md:grid-cols-2 gap-3 mb-4">
 
-                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
-                    <p class="text-xs uppercase text-gray-500 mb-1">
-                        Equipo
-                    </p>
-                    <p class="font-semibold">
-                        ${reporteStore.Formulario.equipo.nombre}
-                    </p>
-                </div>
+//                 <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+//                     <p class="text-xs uppercase text-gray-500 mb-1">
+//                         Equipo
+//                     </p>
+//                     <p class="font-semibold">
+//                         ${reporteStore.Formulario.equipo.nombre}
+//                     </p>
+//                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
-                    <p class="text-xs uppercase text-gray-500 mb-1">
-                        Cliente
-                    </p>
-                    <p class="font-semibold">
-                        ${reporteStore.Formulario.cliente?.nombre}
-                    </p>
-                </div>
+//                 <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+//                     <p class="text-xs uppercase text-gray-500 mb-1">
+//                         Cliente
+//                     </p>
+//                     <p class="font-semibold">
+//                         ${reporteStore.Formulario.cliente?.nombre}
+//                     </p>
+//                 </div>
 
-            </div>
+//             </div>
 
-            <!-- Métricas -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+//             <!-- Métricas -->
+//             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
 
-                <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-center">
-                    <div class="text-xl font-bold text-blue-600">
-                        ${Object.keys(reporteStore.Formulario.componentes ||{}).length}
-                    </div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">
-                        Componentes
-                    </div>
-                </div>
+//                 <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-center">
+//                     <div class="text-xl font-bold text-blue-600">
+//                         ${Object.keys(reporteStore.Formulario.componentes ||{}).length}
+//                     </div>
+//                     <div class="text-xs text-gray-600 dark:text-gray-400">
+//                         Componentes
+//                     </div>
+//                 </div>
 
-                <div class="rounded-xl bg-green-50 dark:bg-green-950/30 p-3 text-center">
-                    <div class="text-xl font-bold text-green-600">
-                        ${reporteStore.Formulario.materiales?.length || 0}
-                    </div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">
-                        Materiales
-                    </div>
-                </div>
+//                 <div class="rounded-xl bg-green-50 dark:bg-green-950/30 p-3 text-center">
+//                     <div class="text-xl font-bold text-green-600">
+//                         ${reporteStore.Formulario.materiales?.length || 0}
+//                     </div>
+//                     <div class="text-xs text-gray-600 dark:text-gray-400">
+//                         Materiales
+//                     </div>
+//                 </div>
 
-                <div class="rounded-xl bg-purple-50 dark:bg-purple-950/30 p-3 text-center">
-                    <div class="text-xl font-bold text-purple-600">
-                        ${reporteStore.Formulario.mediciones?.length || 0}
-                    </div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">
-                        Mediciones
-                    </div>
-                </div>
+//                 <div class="rounded-xl bg-purple-50 dark:bg-purple-950/30 p-3 text-center">
+//                     <div class="text-xl font-bold text-purple-600">
+//                         ${reporteStore.Formulario.mediciones?.length || 0}
+//                     </div>
+//                     <div class="text-xs text-gray-600 dark:text-gray-400">
+//                         Mediciones
+//                     </div>
+//                 </div>
 
-                <div class="rounded-xl bg-orange-50 dark:bg-orange-950/30 p-3 text-center">
-                    <div class="text-xl font-bold text-orange-600">
-                        ${reporteStore.Formulario.repuestos?.length || 0}
-                    </div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">
-                        Repuestos
-                    </div>
-                </div>
+//                 <div class="rounded-xl bg-orange-50 dark:bg-orange-950/30 p-3 text-center">
+//                     <div class="text-xl font-bold text-orange-600">
+//                         ${reporteStore.Formulario.repuestos?.length || 0}
+//                     </div>
+//                     <div class="text-xs text-gray-600 dark:text-gray-400">
+//                         Repuestos
+//                     </div>
+//                 </div>
 
-            </div>
+//             </div>
 
-        </div>
+//         </div>
 
-    </div>
+//     </div>
 
-    <!-- Nota -->
-    <div class="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3">
-        <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+//     <!-- Nota -->
+//     <div class="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3">
+//         <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
 
-        <div>
-            <p class="text-sm font-medium text-amber-700 dark:text-amber-300">
-                Última revisión recomendada
-            </p>
+//         <div>
+//             <p class="text-sm font-medium text-amber-700 dark:text-amber-300">
+//                 Última revisión recomendada
+//             </p>
 
-            <p class="text-xs text-gray-600 dark:text-gray-400">
-                Una vez enviado, el reporte quedará registrado en el historial del equipo y podrá ser consultado posteriormente. Verifica que las observaciones, mediciones y materiales utilizados sean correctos.
-            </p>
-        </div>
-    </div>
+//             <p class="text-xs text-gray-600 dark:text-gray-400">
+//                 Una vez enviado, el reporte quedará registrado en el historial del equipo y podrá ser consultado posteriormente. Verifica que las observaciones, mediciones y materiales utilizados sean correctos.
+//             </p>
+//         </div>
+//     </div>
 
-</div>
-`,
-            tamaño: 'w-full md:col-span-2 py-8'
-        })
+// </div>
+// `,
+//             tamaño: 'w-full md:col-span-2 py-8'
+//         })
 
         .nuevaSeccion('Recibido')
 

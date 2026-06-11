@@ -46,7 +46,7 @@ export const useReporteStore = defineStore('Reportes', {
 
     getters: {
         numeroPendientes(state) {
-            return state.Reportes.filter(reporte => reporte.estado !== 'realizada' || reporte.estado === 'eliminada').length;
+            return state.Reportes.filter(reporte => reporte.estado !== 'realizada' && reporte.estado !== 'eliminada' && reporte.estado !== 'En Revisión').length;
         }
     },
     

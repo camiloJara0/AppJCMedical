@@ -51,7 +51,7 @@ watch(() => active.value,
 
 onMounted(async () => {
   await storeComponentes.traer(false);
-  const listaSistemas = await storeSistemas.traer(true, true);
+  const listaSistemas = await storeSistemas.traer(true, true, true);
   sistemas.value = listaSistemas.map(c => { return { label: c.nombre, value: c.id } })
   await llamadatos();
 });

@@ -142,7 +142,7 @@ const equiposFiltrados = computed(() => {
 
                         <!-- Acción -->
                         <div class="mt-5">
-                            <UButton block size="lg" color="primary" icon="i-lucide-file-text"
+                            <UButton v-if="equipo.pivot.estado == 'pendiente'" block size="lg" color="primary" icon="i-lucide-file-text"
                                 @click="activarCitaVariosEquipos(equipo)">
                                 Generar Reporte
                             </UButton>

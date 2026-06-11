@@ -61,7 +61,7 @@ watch(() => active.value,
 // Cargar los Productos desde el store
 onMounted(async () => {
     await storeProductos.traer(false);
-    const listaCategorias = await storeCategorias.traer(true, true);
+    const listaCategorias = await storeCategorias.traer(true, true, true);
     categorias.value = listaCategorias.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
 });

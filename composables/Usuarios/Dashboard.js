@@ -9,10 +9,10 @@ export async function traerDashboard() {
     const storeCotizaciones = useCotizacionesStore()
     const storeCitas = useCitasStore()
 
-    const listaequipos = await storeEquipos.traer(false, true)
-    const listareportes = await storeReportes.traer(false, true)
-    const listacotizaciones = await storeCotizaciones.traer(false, true)
-    const listacitas = await storeCitas.traer(false, true)
+    const listaequipos = await storeEquipos.traer(false, false, true)
+    const listareportes = await storeReportes.traer(false, false)
+    const listacotizaciones = await storeCotizaciones.traer(false, false)
+    const listacitas = await storeCitas.traer(false, false)
 
     const equipos = listaequipos?.length || 0
     const mantenimientosPendientes = listacitas?.filter(c => c.estado == 'inactiva').length || 0

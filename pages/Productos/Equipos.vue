@@ -53,9 +53,9 @@ watch(() => active.value,
 
 onMounted(async () => {
     await storeEquipos.traer(false);
-    const listaTipoEquipos = await storeTipoEquipos.traer(true, true);
+    const listaTipoEquipos = await storeTipoEquipos.traer(true, true, true);
     tiposEquipos.value = listaTipoEquipos.map(c => { return {label: c.nombre, value: c.id}})
-    const listaClientes = await storeClientes.traer(true, true);
+    const listaClientes = await storeClientes.traer(true, true, true);
     clientes.value = listaClientes.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
 });

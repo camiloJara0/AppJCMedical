@@ -14,11 +14,11 @@ const tecnicos = ref([])
 const equipos = ref([])
 
 onMounted(async () => {
-    const listaEquipos = await storeEquipos.traer(true, true);
+    const listaEquipos = await storeEquipos.traer(true, false, true);
     equipos.value = listaEquipos.map(c => { return { label: c.nombre, value: c.id } })
-    const listaClientes = await storeClientes.traer(true, true);
+    const listaClientes = await storeClientes.traer(true, true, true);
     clientes.value = listaClientes.map(c => { return { label: c.nombre, value: c.id } })
-    const listaTecnicos = await storeTecnicos.traer(true, true);
+    const listaTecnicos = await storeTecnicos.traer(true, true, true);
     tecnicos.value = listaTecnicos.map(c => { return { label: c.nombre, value: c.id } })
 })
 
