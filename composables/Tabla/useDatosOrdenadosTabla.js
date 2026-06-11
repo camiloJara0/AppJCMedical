@@ -1,7 +1,10 @@
-import { ref, computed, watch } from 'vue';
-import { nombresMeses } from '~/data/Fechas';
+import { ref, computed, watch, unref } from 'vue';
 
 export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []) {
+    // Función para acceder a propiedades anidadas usando notación de punto
+    function getNestedValue(obj, path) {
+        return path.split('.').reduce((acc, key) => acc?.[key], obj);
+    }
     const busqueda = ref('');
     const filtros = ref({});
     const menorAMayor = ref(true);
@@ -18,11 +21,12 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
         // Reindexar cada vez que cambian los datos
         if (!nuevosDatos || nuevosDatos.length === 0) return;
 
-        // Índices hash para filtros categóricos
+        // Índices hash para filtros categóricos - soportan propiedades anidadas
         const indiceTemp = {};
         const indiceGlobalTemp = {};
 
         for (const item of nuevosDatos) {
+            // Indexar todas las propiedades del item
             for (const [col, valor] of Object.entries(item)) {
                 if (!indiceTemp[col]) indiceTemp[col] = {};
                 const val = String(valor).toLowerCase();
@@ -34,6 +38,27 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
                 for (const palabra of palabras) {
                     if (!indiceGlobalTemp[palabra]) indiceGlobalTemp[palabra] = [];
                     indiceGlobalTemp[palabra].push(item);
+                }
+            }
+
+            // Indexar también las propiedades anidadas definidas en columnas
+            for (const col of columnas) {
+                const columnaReal = col.columnaReal || col.columna;
+                if (columnaReal.includes('.')) {
+                    const valor = getNestedValue(item, columnaReal);
+                    if (valor !== null && valor !== undefined) {
+                        if (!indiceTemp[columnaReal]) indiceTemp[columnaReal] = {};
+                        const val = String(valor).toLowerCase();
+                        if (!indiceTemp[columnaReal][val]) indiceTemp[columnaReal][val] = [];
+                        indiceTemp[columnaReal][val].push(item);
+
+                        // --- Índice global para propiedades anidadas ---
+                        const palabras = val.split(/\s+/);
+                        for (const palabra of palabras) {
+                            if (!indiceGlobalTemp[palabra]) indiceGlobalTemp[palabra] = [];
+                            indiceGlobalTemp[palabra].push(item);
+                        }
+                    }
                 }
             }
         }
@@ -63,20 +88,34 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
             menorAMayor.value = true;
             Object.keys(cacheOrdenes).forEach(k => delete cacheOrdenes[k]);
             const termino = busqueda.value.trim().toLowerCase();
-            resultado = resultado.filter(item =>
-                Object.entries(item).some(([key, valor]) =>
+            resultado = resultado.filter(item => {
+                // Buscar en propiedades simples
+                let encontrado = Object.entries(item).some(([key, valor]) =>
                     !noBuscarPor?.includes(key) &&
                     String(valor).toLowerCase().includes(termino)
-                )
-            );
+                );
 
+                // Buscar en propiedades anidadas definidas en columnas
+                if (!encontrado) {
+                    encontrado = columnas.some(col => {
+                        const columnaReal = col.columnaReal || col.columna;
+                        if (columnaReal.includes('.')) {
+                            const valor = getNestedValue(item, columnaReal);
+                            return valor && String(valor).toLowerCase().includes(termino);
+                        }
+                        return false;
+                    });
+                }
+
+                return encontrado;
+            });
         }
 
-        // Datos por filtros en columnas, hash maps
+        // Datos por filtros en columnas
         const filtroFecha = { mes: null, año: null };
 
         for (const [columna, valorFiltro] of Object.entries(filtros.value)) {
-            if (valorFiltro && valorFiltro !== "" && valorFiltro !== "all") {
+            if (valorFiltro && valorFiltro !== "") {
                 columnaOrden.value = '';
                 menorAMayor.value = true;
                 Object.keys(cacheOrdenes).forEach(k => delete cacheOrdenes[k]);
@@ -88,12 +127,20 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
                 } else if (colDef?.tipo === 'año') {
                     filtroFecha.año = Number(valorFiltro);
                 } else {
-                    const val = String(valorFiltro).toLowerCase();
-                    const indiceCol = indicePorColumna.value[columnaReal];
-                    if (indiceCol && indiceCol[val]) {
-                        resultado = resultado.filter(item => indiceCol[val].includes(item));
+                    // Soportar propiedades anidadas
+                    if (columnaReal.includes('.')) {
+                        resultado = resultado.filter(item => {
+                            const valor = getNestedValue(item, columnaReal);
+                            return valor && String(valor).toLowerCase() === String(valorFiltro).toLowerCase();
+                        });
                     } else {
-                        resultado = [];
+                        const val = String(valorFiltro).toLowerCase();
+                        const indiceCol = indicePorColumna.value[columnaReal];
+                        if (indiceCol && indiceCol[val]) {
+                            resultado = resultado.filter(item => indiceCol[val].includes(item));
+                        } else {
+                            resultado = [];
+                        }
                     }
                 }
             }
@@ -104,7 +151,9 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
         if (filtroFecha.mes || filtroFecha.año) {
             resultado = resultado.filter(item => {
                 const colDef = columnas.find(c => c.tipo === 'mes' || c.tipo === 'año');
-                const fecha = new Date(item[colDef?.columnaReal || 'fecha'] + "T00:00:00");
+                const columnaReal = colDef?.columnaReal || 'fecha';
+                const fechaValue = getNestedValue(item, columnaReal);
+                const fecha = new Date(fechaValue + "T00:00:00");
                 const mes = fecha.getMonth() + 1;
                 const año = fecha.getFullYear();
 
@@ -123,8 +172,14 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
             const key = `${columnaOrden.value}_${menorAMayor.value ? "asc" : "desc"}`;
             if (!cacheOrdenes[key]) {
                 cacheOrdenes[key] = [...resultado].sort((a, b) => {
-                    const valorA = a[columnaOrden.value];
-                    const valorB = b[columnaOrden.value];
+                    // Soportar propiedades anidadas
+                    const valorA = columnaOrden.value.includes('.') 
+                        ? getNestedValue(a, columnaOrden.value)
+                        : a[columnaOrden.value];
+                    const valorB = columnaOrden.value.includes('.') 
+                        ? getNestedValue(b, columnaOrden.value)
+                        : b[columnaOrden.value];
+
                     if (typeof valorA === "number" && typeof valorB === "number") {
                         return menorAMayor.value ? valorA - valorB : valorB - valorA;
                     } else {
@@ -140,7 +195,7 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
         return resultado;
     });
 
-    // Generar ociones por datos no repetidos de columna a filtrar
+    // Generar opciones por datos no repetidos de columna a filtrar
     const filtrosConOpciones = computed(() => {
         return columnas.map(col => {
             const columnaReal = col.columnaReal || col.columna;
@@ -166,7 +221,7 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
                     ...new Set(
                         unref(datos)
                             .map(d => {
-                                const fecha = d[columnaReal];
+                                const fecha = getNestedValue(d, columnaReal);
                                 if (!fecha) return null;
                                 const parsed = new Date(fecha);
                                 return isNaN(parsed) ? null : parsed.getFullYear();
@@ -180,11 +235,11 @@ export function useOrdenamiento(datos = ref([]), columnas = [], noBuscarPor = []
                 };
             } else {
                 const valoresUnicos = [
-                    ...new Set(unref(datos).map(d => d[columnaReal]).filter(v => v !== null && v !== undefined))
+                    ...new Set(unref(datos).map(d => getNestedValue(d, columnaReal)).filter(v => v !== null && v !== undefined))
                 ];
                 return {
                     ...col,
-                    datos: valoresUnicos
+                    datos: valoresUnicos.map(v => ({ label: v, value: v }))
                 };
             }
         });

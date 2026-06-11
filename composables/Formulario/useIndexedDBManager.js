@@ -278,7 +278,6 @@ export async function guardarUsuarioEnIndexedDBID(data) {
 export async function actualizarEnIndexedDB(data) {
     const store = useIndexedDBStore();
     await store.initialize();
-    console.log(data)
     for (const [almacen, contenido] of Object.entries(data)) {
         store.almacen = almacen;
 
@@ -287,7 +286,6 @@ export async function actualizarEnIndexedDB(data) {
                 await store.actualiza({ ...item });
             }
         } else if (typeof contenido === 'object' && contenido !== null) {
-            console.log(almacen, contenido)
             await store.actualiza({ ...contenido });
         }
     }

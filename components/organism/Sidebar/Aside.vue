@@ -4,8 +4,14 @@ import { useButtonsAside } from '~/stores/ButtonActive';
 import { storeToRefs } from 'pinia';
 import ButtonRounded from '~/components/atoms/Buttons/ButtonRounded.vue';
 import { navMenuAdmin, navMenuTecnico } from '~/data/navMenuStructure.js';
+import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte';
+import { useCotizacionesStore } from '~/stores/Formularios/Cotizaciones';
+import { useCitasStore } from '~/stores/Formularios/citas/Cita';
 
 const storeAside = useButtonsAside();
+const reporteStore = useReporteStore()
+const cotizacionesStore = useCotizacionesStore()
+const citasStore = useCitasStore()
 const buttons = ref([]);
 const varView = useVarView()
 const footer = useSeccionFooter();
@@ -13,17 +19,23 @@ const router = useRouter()
 const rol = ref('')
 const navMenu = ref([])
 
+const { numeroPendientes } = storeToRefs(reporteStore)
+const { citasPendientes } = storeToRefs(citasStore)
+const { cotizacionesPendientes } = storeToRefs(cotizacionesStore)
 const { botonActivo } = storeToRefs(storeAside);
 
 onMounted(() => {
     storeAside.sessionActive();
     const login = varView.getUser
     rol.value = varView.getRol
-    if(!login || Object.keys(login).length === 0) {
+    if (!login || Object.keys(login).length === 0) {
         // router.push('/')
     }
     buttons.value = storeAside.getbuttons(rol.value);
     
+    reporteStore.traer(false, false)
+    citasStore.traer(false, false)
+    cotizacionesStore.traer(false, false)
     // Cargar menú según rol
     navMenu.value = rol.value === 'Admin' ? navMenuAdmin : navMenuTecnico;
 });
@@ -163,7 +175,8 @@ function accesoRapidoSelected(nombre) {
 
                 <!-- Estado colapsado -->
                 <div v-if="!varView.expandido"
-                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2 overflow-y-auto" :class="{'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico'}"> 
+                    class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2 overflow-y-auto"
+                    :class="{ 'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico' }">
 
                     <!-- Botón expandir -->
                     <ButtonRounded @click="() => {
@@ -176,10 +189,28 @@ function accesoRapidoSelected(nombre) {
 
                     <!-- Navegación por íconos -->
                     <nav class="flex md:flex-col flex-row items-center gap-6">
-                        <NuxtLink v-for="btn in navMenu.filter(n => n.accesoRapido)" :key="btn.id" :to="btn.ruta" @click="accesoRapidoSelected(btn.action)">
+                        <NuxtLink v-for="btn in navMenu.filter(n => n.accesoRapido)" :key="btn.id" :to="btn.ruta"
+                            @click="accesoRapidoSelected(btn.action)" class="relative">
+                            <UButton v-if="btn.nombre == 'Reportes' && numeroPendientes > 0"
+                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-5 flex justify-center items-center text-xs"
+                                color="error">
+                                {{ numeroPendientes }}
+                            </UButton>
+                            <UButton v-if="btn.nombre == 'Agenda' && citasPendientes > 0"
+                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                color="error">
+                                {{ citasPendientes }}
+                            </UButton>
+                            <UButton v-if="btn.nombre == 'Cotizaciones' && cotizacionesPendientes > 0"
+                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                color="error">
+                                {{ cotizacionesPendientes }}
+                            </UButton>
                             <ButtonRounded :tooltip="btn.nombre" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-gray-800 transition py-5" :color="{'text-white! dark:text-blue-700!': botonActivo === btn.action}">
-                                <i :class="[btn.icono, 'text-lg md:dark:text-gray-700 text-gray-300', {'text-white! dark:text-gray-300': botonActivo === btn.action}]"></i>
+                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-gray-800 transition py-5"
+                                :color="{ 'text-white! dark:text-blue-700!': botonActivo === btn.action }">
+                                <i
+                                    :class="[btn.icono, 'text-lg md:dark:text-gray-700 text-gray-300', { 'text-white! dark:text-gray-300': botonActivo === btn.action }]"></i>
                             </ButtonRounded>
                         </NuxtLink>
                     </nav>
@@ -213,13 +244,30 @@ function accesoRapidoSelected(nombre) {
 
                         <!-- Navegación por íconos -->
                         <div class="lista" @click="cambiarEstadoFalse()">
-                            <NuxtLink v-for="btn in navMenu" :key="btn.id" 
-                                class="flex items-center md:justify-between gap-2 py-2 px-2 -mx-2" 
-                                :to="btn.ruta" 
-                                :class="{'bg-(--color-default-100)': botonActivo === btn.action}"
+                            <NuxtLink v-for="btn in navMenu" :key="btn.id"
+                                class="flex items-center md:justify-between gap-2 py-2 px-2 -mx-2 relative"
+                                :to="btn.ruta" :class="{ 'bg-(--color-default-100)': botonActivo === btn.action }"
                                 @click="accesoRapidoSelected(btn.action)">
-                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm" :class="{'text-white! dark:text-gray-300!': botonActivo === btn.action}">{{ btn.nombre }}</span>
-                                <i :class="[btn.icono, 'text-lg text-gray-400 dark:text-gray-600 transition', {'text-white! dark:text-gray-300!': botonActivo === btn.action}]"></i>
+                                <span class="text-gray-200 dark:text-gray-800 font-medium text-sm"
+                                    :class="{ 'text-white! dark:text-gray-300!': botonActivo === btn.action }">{{
+                                    btn.nombre }}</span>
+                                <i
+                                    :class="[btn.icono, 'text-lg text-gray-400 dark:text-gray-600 transition', { 'text-white! dark:text-gray-300!': botonActivo === btn.action }]"></i>
+                                <UButton v-if="btn.nombre == 'Reportes' && numeroPendientes > 0"
+                                    class="rounded-full md:absolute top-0 -right-1 w-4 h-5 flex justify-center items-center text-xs"
+                                    color="error">
+                                    {{ numeroPendientes }}
+                                </UButton>
+                                <UButton v-if="btn.nombre == 'Agenda' && citasPendientes > 0"
+                                    class="rounded-full md:absolute top-0 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                    color="error">
+                                    {{ citasPendientes }}
+                                </UButton>
+                                <UButton v-if="btn.nombre == 'Cotizaciones' && cotizacionesPendientes > 0"
+                                    class="rounded-full md:absolute top-0 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                    color="error">
+                                    {{ cotizacionesPendientes }}
+                                </UButton>
                             </NuxtLink>
                         </div>
                     </div>
@@ -257,20 +305,20 @@ function accesoRapidoSelected(nombre) {
 
 }
 
-.lista a{
+.lista a {
     border-radius: 5px;
 }
 
-.lista a:hover{
+.lista a:hover {
     background-color: var(--color-default-100);
     color: white !important;
 }
 
-.lista a:hover span{
+.lista a:hover span {
     color: white !important;
 }
 
-.lista a:hover i{
+.lista a:hover i {
     color: var(--color-gray-200) !important;
 }
 

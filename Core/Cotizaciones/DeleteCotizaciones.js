@@ -1,6 +1,8 @@
+import { useCotizacionesStore } from "~/stores/Formularios/Cotizaciones";
+
 export async function eliminarCotizacion(cotizacion) {
     try {
-        
+        const cotizacionesStore = useCotizacionesStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -31,6 +33,7 @@ export async function eliminarCotizacion(cotizacion) {
         }
 
         const data = await response.json();
+        await cotizacionesStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al traer productos:', error);

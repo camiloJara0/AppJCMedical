@@ -48,7 +48,6 @@ const componentes = {
 }
 
 function getValue(obj, path) {
-    console.log(obj, path)
     if (!path) return undefined
     return path.split('.').reduce((acc, key) => acc[key], obj)
 }
@@ -102,7 +101,7 @@ const cerrar = () => {
     <FondoBlur v-if="unref(props.Propiedades.isActive) && !imprimir">
         <div class="bg-gray-50  rounded-2xl shadow-lg pb-7 md:w-[75%] md:h-[85%] w-[98%] h-[80%]">
             <div
-                class="w-full flex justify-between items-center gap-2 py-4 md:px-8 px-2 bg-[var(--color-default)] rounded-t-lg">
+                class="w-full flex justify-between items-center gap-2 py-4 md:px-8 px-2 bg-(--color-default) rounded-t-lg">
                 <div>
                     <h2 class="text-white font-bold md:text-2xl text-xl">Vista previa del PDF</h2>
                     <p class="text-gray-200 text-xs">{{ props.Propiedades.filename }}</p>
@@ -118,7 +117,7 @@ const cerrar = () => {
                 </div>
             </div>
             <!-- Contenido HTML -->
-            <div class="scrollForm bg-white w-full gap-[15px] max-h-[90%] overflow-y-auto border-b-lg">
+            <div class="scrollForm bg-white w-full gap-3.75 max-h-[90%] overflow-y-auto border-b-lg">
                 <div class="p-6 bg-white text-black shadow-md">
 
                     <component v-for="component in Propiedades.components" :is="componentes[component.tipo]"

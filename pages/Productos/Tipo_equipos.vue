@@ -12,14 +12,15 @@ const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeTipo_equipos = useTipo_equiposStore()
 const storeSistemas = useSistemasStore()
-const tipo_equipos = ref([]);
 const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 const sistemas = ref([])
 
+const { Tipo_equipos } = storeToRefs(storeTipo_equipos)
+
 async function llamadatos(cambio = false) {
-    tipo_equipos.value = await storeTipo_equipos.traer(true, false, cambio);
+    await storeTipo_equipos.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -48,7 +49,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    tipo_equipos.value = await storeTipo_equipos.traer(false);
+    await storeTipo_equipos.traer(false);
     await llamadatos();
 
     const listaSistemas = await storeSistemas.traer(true, true);
@@ -143,7 +144,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestión de Tipos de Equipos',
         agregar: agregarTipo_equipo,
         llamadatos: llamadatos,
-        data: tipo_equipos,
+        data: Tipo_equipos,
         columns: columns,
         filtros: [
             {columna: 'estado', placeholder: 'Estado', value: 'activo'}

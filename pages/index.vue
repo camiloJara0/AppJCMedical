@@ -25,7 +25,6 @@ onMounted(async () => {
 
         await indexedDB.initialize(); // tu lógica de inicialización
 
-
         const isValid = await indexedDB.validateVersion('db-ananke');
         if (isValid) {
             console.log("✅ Versión válida, limpiando datos...");
@@ -33,7 +32,6 @@ onMounted(async () => {
         } else {
             console.log("⚠️ Versión inválida o tabla faltante, eliminando...");
             await indexedDB.deleteDatabase('db-ananke');
-            await indexedDB.initialize(); // recrea la base con la versión correcta
         }
 
         localStorage.removeItem('token');

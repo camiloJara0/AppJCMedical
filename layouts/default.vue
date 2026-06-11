@@ -34,27 +34,9 @@ const router = useRouter()
 const varView = useVarView();
 const { $pwa } = useNuxtApp()
 
-function manejarCambioRed() {
-    const ahora = Date.now();
-    const ultima = localStorage.getItem('ultimaSincronizacion');
-    const LIMITE_TIEMPO = 60 * 60 * 1000;
-
-    if (navigator.onLine && (!ultima || ahora - parseInt(ultima) > LIMITE_TIEMPO)) {
-        localStorage.setItem('ultimaSincronizacion', ahora.toString());
-
-        console.log('Sincronización iniciada por cambio de red');
-    }
-}
-
 onMounted(async() => {
     if ($pwa?.isPWAInstalled) {
         console.log('La app ya está instalada como PWA')
-    }
-
-    window.addEventListener('online', manejarCambioRed);
-    // Opcional: iniciar si ya está en línea al cargar
-    if (navigator.onLine) {
-        manejarCambioRed();
     }
 
     const permisos = JSON.parse(localStorage.getItem('permisosTemporales') ?? "[]");
@@ -69,10 +51,6 @@ onMounted(async() => {
         localStorage.clear()
         router.push('/')
     }
-});
-
-onUnmounted(() => {
-    window.removeEventListener('online', manejarCambioRed);
 });
 
 </script>

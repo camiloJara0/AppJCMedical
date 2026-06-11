@@ -34,7 +34,7 @@ export const useTipo_equiposStore = defineStore('Tipo_equipos', {
             return await eliminarTipo_equipo(datos);
         },
 
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio, filtrar) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('tipo_equipos')

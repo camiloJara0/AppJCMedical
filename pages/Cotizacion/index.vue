@@ -9,14 +9,16 @@ import { useCotizacionesStore } from "~/stores/Formularios/Cotizaciones";
 import { useCotizacionActions } from "~/composables/Usuarios/Cotizacion";
 import { useCotizacionBuilder } from "~/build/Cotizacion/useCotizacionBuilder";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
+import { storeToRefs } from "pinia";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeCotizaciones = useCotizacionesStore()
-const cotizaciones = ref([]);
 const refresh = ref(1);
 const config = useRuntimeConfig()
 const backendUrl = config.public.api
+
+const {Cotizaciones} = storeToRefs(storeCotizaciones)
 
 const active = ref(false);
 const isEditing = ref(false);
@@ -28,7 +30,7 @@ const {
 } = useNotificacionesStore();
 
 async function llamadatos(cambio = false) {
-    cotizaciones.value = await storeCotizaciones.traer(true, false, cambio);
+    await storeCotizaciones.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -58,7 +60,7 @@ watch(() => active.value,
 
 // Cargar los cotizaciones desde el store
 onMounted(async () => {
-    cotizaciones.value = await storeCotizaciones.traer(false);
+    await storeCotizaciones.traer(false);
     await llamadatos();
 });
 
@@ -150,7 +152,6 @@ function getRowItems(row) {
         {
             label: 'Responder',
             onSelect() {
-                console.log('editar', cotizacion)
                 verCotizacion(cotizacion)
             }
         },
@@ -178,7 +179,7 @@ const propiedadesForm = computed(() => {
 const propiedadesTabla = computed(() => {
     return {
         titulo: 'Gestion de Cotizaciones',
-        data: cotizaciones,
+        data: Cotizaciones,
         llamadatos: llamadatos,
         columns: columns,
         filtros: [

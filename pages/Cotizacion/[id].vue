@@ -183,7 +183,6 @@ function getRowItems(row) {
         {
             label: 'Responder',
             onSelect() {
-                console.log('editar', cotizacion)
                 verCotizacion(cotizacion)
             }
         },

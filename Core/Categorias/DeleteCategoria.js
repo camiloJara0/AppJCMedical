@@ -1,5 +1,8 @@
+import { useCategoriasStore } from "~/stores/Formularios/Categorias";
+
 export async function eliminarCategoria(categoria) {
     try {
+        const categoriasStore = useCategoriasStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarCategoria(categoria) {
         }
 
         const data = await response.json();
+        await categoriasStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al traer productos:', error);

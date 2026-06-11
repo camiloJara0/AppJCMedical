@@ -1,5 +1,8 @@
+import { useTipo_equiposStore } from "~/stores/Formularios/Tipo_equipos/Tipo_equipo";
+
 export async function eliminarTipo_equipo(tipo_equipo) {
     try {
+        const tipoEquipoStore = useTipo_equiposStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarTipo_equipo(tipo_equipo) {
         }
 
         const data = await response.json();
+        await tipoEquipoStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar tipo de equipo:', error);

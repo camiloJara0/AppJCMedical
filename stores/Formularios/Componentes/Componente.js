@@ -35,7 +35,7 @@ export const useComponentesStore = defineStore('Componentes', {
             return await eliminarComponente(datos);
         },
 
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('componentes')

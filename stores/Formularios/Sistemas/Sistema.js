@@ -35,7 +35,7 @@ export const useSistemasStore = defineStore('Sistemas', {
             return await eliminarSistema(datos);
         },
 
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio, filtrar) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('sistemas')

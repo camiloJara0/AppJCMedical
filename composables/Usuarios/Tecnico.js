@@ -68,7 +68,6 @@ export function useTecnicoActions({
     notificaciones.options.background = "#d33";
 
     cerrar();
-    await llamadatos();
     refresh.value++;
   };
 

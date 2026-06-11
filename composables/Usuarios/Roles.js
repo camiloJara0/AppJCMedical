@@ -14,7 +14,6 @@ export function useRolActions({
   const store = useRolStore()
   
   const agregarRol = () => {
-    console.log('rol')
     show.value = true;
     varView.soloVer = false;
     varView.isEditing = false

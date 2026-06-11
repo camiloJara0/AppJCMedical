@@ -1,5 +1,8 @@
+import { useClientesStore } from "~/stores/Formularios/Clientes";
+
 export async function eliminarCliente(cliente) {
     try {
+        const clienteStore = useClientesStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarCliente(cliente) {
         }
 
         const data = await response.json();
+        await clienteStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar cliente:', error);

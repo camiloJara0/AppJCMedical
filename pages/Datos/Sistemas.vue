@@ -6,17 +6,19 @@ import { useSistemasBuilder } from "~/build/Sistemas/useSistemasBuilder";
 import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
 import { useSistemasStore } from "~/stores/Formularios/Sistemas/Sistema";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
+import { storeToRefs } from "pinia";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeSistemas = useSistemasStore()
-const sistemas = ref([]);
 const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 
+const {Sistemas} = storeToRefs(storeSistemas)
+
 async function llamadatos(cambio = false) {
-  sistemas.value = await storeSistemas.traer(true, false, cambio);
+  await storeSistemas.traer(true, cambio);
   varView.datosActualizados()
 }
 
@@ -45,7 +47,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-  sistemas.value = await storeSistemas.traer(false);
+  await storeSistemas.traer(false);
   await llamadatos();
 });
 
@@ -136,7 +138,7 @@ const propiedadesTabla = computed(() => {
     titulo: 'Gestionar Sistemas',
     agregar: agregarSistema,
     llamadatos: llamadatos,
-    data: sistemas,
+    data: Sistemas,
     columns: columns,
     filtros: [
         {columna: 'estado', placeholder: 'Estado', value: 'activo'},

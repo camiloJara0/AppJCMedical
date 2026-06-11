@@ -2,7 +2,6 @@ export async function enviarFirma(data) {
     try {
         const varView = useVarView()
         const router = useRouter()
-
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
         const response = await fetch(`${config.public.api}/${config.public.recibido_firma}`, {

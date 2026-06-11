@@ -1,5 +1,6 @@
 import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
 import { eliminarReporte } from "~/Core/Reportes/DeleteReportes";
+import { useSistemasStore } from "~/stores/Formularios/Sistemas/Sistema";
 
 export function useReporteActions({
   varView,
@@ -10,7 +11,7 @@ export function useReporteActions({
 }) {
 
   const store = useReporteStore()
-  
+
   const verReporte = async (reporte) => {
     store.Formulario.Reporte = { ...reporte };
     store.Formulario.componentes = reporte.estado_componente || {};
@@ -22,11 +23,12 @@ export function useReporteActions({
     store.Formulario.cita = reporte.cita || {};
     store.Formulario.cliente = reporte.cliente || {};
     store.Formulario.tecnico = reporte.tecnico || {};
+
     show.value = true;
   };
 
   const editarReporte = async (reporte) => {
-
+    const sistemasStore = useSistemasStore()
     const Reporte = JSON.parse(JSON.stringify(reporte));
     store.Formulario.Reporte.id = Reporte.id;
     store.Formulario.Reporte.cita_id = Reporte.cita_id;
@@ -36,7 +38,7 @@ export function useReporteActions({
     store.Formulario.Reporte.fecha = Reporte.fecha;
     store.Formulario.Reporte.tecnico_id = Reporte.tecnino_id;
     store.Formulario.Reporte.tipo = Reporte.tipo;
-    store.Formulario.componentes = Reporte.estado_componente || {};
+
 
     store.Formulario.materiales = Reporte.materiales || [];
     store.Formulario.mediciones = Reporte.mediciones || [];
@@ -49,7 +51,27 @@ export function useReporteActions({
     store.Formulario.tecnico = Reporte.tecnico || {};
     store.Formulario.estado.observacion = Reporte.historial_estados_reporte.at(-1).observaciones || '';
     store.Formulario.recibido = Reporte.firma_recibido || {};
+    store.Formulario.recibido.correo = Reporte.cliente.correo
 
+    reporte.estado_componente.forEach(item => {
+      store.Formulario.componentes[item.componente_id] = {
+        estado: item.estado,
+        observacion: item.observacion
+      };
+    });
+
+    const sistemas = await sistemasStore.traerSistemasPorEquipo(reporte.equipo.tipo_equipo_id);
+
+    const sistemasBuilder = sistemas.map(sistema => ({
+      id: sistema.id,
+      nombre: sistema.nombre,
+      componentes: sistema.componentes.map(c => ({
+        id: c.id,
+        nombre: c.nombre
+      }))
+    }))
+
+    varView.sistemasBuilder = sistemasBuilder
     varView.showNuevoRegistro = true;
     varView.isEditing = true
   };

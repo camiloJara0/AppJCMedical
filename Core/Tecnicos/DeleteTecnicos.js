@@ -1,5 +1,8 @@
+import { useTecnicosStore } from "~/stores/Formularios/Tecnicos/Tecnico";
+
 export async function eliminarTecnico(tecnico) {
     try {
+        const tecnicoStore = useTecnicosStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarTecnico(tecnico) {
         }
 
         const data = await response.json();
+        await tecnicoStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar técnico:', error);

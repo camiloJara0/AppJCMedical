@@ -26,6 +26,30 @@ export function useRecibidoBuilder({
     builder.nuevaSeccion('Actividades y observaciones')
 
     builder.addCampo({
+        component: 'Select',
+        label: 'Estado del reporte (opcional)',
+        placeholder: 'Estado',
+        name: 'estado',
+        id: 'estado',
+        options: [
+            'Requiere revision',
+            {label: 'Finalizado', value:'realizada'},
+
+        ],
+        vmodel: 'reporte.estado'
+    })
+    .addCampo({
+        component: 'Input',
+        type: 'text',
+        label: 'Observacion de estado (opcional)',
+        placeholder: 'Falta de repuesto, no se realizo mantenimiento, etc',
+        id: 'observacion',
+        name: 'observacion',
+        tamaño: 'w-full',
+        vmodel: 'estado.observacion',
+    })
+
+    builder.addCampo({
         component: 'Label',
         text: `<i class="fa-solid fa-file text-blue-500 mr-1"></i> RECIBIDO POR:`,
         tamaño: 'w-full col-span-2'

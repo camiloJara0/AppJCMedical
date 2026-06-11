@@ -13,7 +13,6 @@ definePageMeta({
 const varView = useVarView()
 
 onMounted(() => {
-    console.log(varView.propiedadesPDF)
     document.title = varView.propiedadesPDF.filename;
     window.print()
 })
@@ -28,14 +27,13 @@ const componentes = {
 }
 
 function getValue(obj, path) {
-    console.log(obj, path)
     if (!path) return undefined
     return path.split('.').reduce((acc, key) => acc[key], obj)
 }
 </script>
 
 <template>
-    <div class="absolute inset-0 bg-white text-black md:px-8 md:py-5 px-4 py-3 h-[100vh] z-999 print-page">
+    <div class="absolute inset-0 bg-white text-black md:px-8 md:py-5 px-4 py-3 h-screen z-999 print-page">
         <component v-for="component in varView.propiedadesPDF.components" :is="componentes[component.tipo]" :Propiedades="{
             ...component,
             disabled: true,
@@ -92,7 +90,6 @@ function getValue(obj, path) {
 @media print {
   body {
     margin: 0;
-    -webkit-print-color-adjust: exact; /* asegura colores */
   }
   .print-page {
     box-shadow: none;

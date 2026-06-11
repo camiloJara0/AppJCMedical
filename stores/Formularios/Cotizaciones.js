@@ -25,7 +25,9 @@ export const useCotizacionesStore = defineStore('Cotizaciones', {
     }),
 
     getters: {
-
+        cotizacionesPendientes(state) {
+            return state.Cotizaciones.filter(cotizacion => cotizacion.estado === 'pendiente').length;
+        }
     },
     
     actions: {
@@ -45,7 +47,7 @@ export const useCotizacionesStore = defineStore('Cotizaciones', {
         },
 
         // Funcion para listar Cotizaciones GET
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('solicitudes_cotizacions')

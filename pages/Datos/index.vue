@@ -7,19 +7,21 @@ import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
 import { useComponentesStore } from "~/stores/Formularios/Componentes/Componente";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
 import { useSistemasStore } from "~/stores/Formularios/Sistemas/Sistema";
+import { storeToRefs } from "pinia";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeComponentes = useComponentesStore()
 const storeSistemas = useSistemasStore()
-const componentes = ref([]);
 const sistemas = ref([])
 const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 
+const {Componentes} = storeToRefs(storeComponentes)
+
 async function llamadatos(cambio = false) {
-  componentes.value = await storeComponentes.traer(true, false, cambio);
+  await storeComponentes.traer(true, cambio);
   varView.datosActualizados()
 }
 
@@ -48,7 +50,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-  componentes.value = await storeComponentes.traer(false);
+  await storeComponentes.traer(false);
   const listaSistemas = await storeSistemas.traer(true, true);
   sistemas.value = listaSistemas.map(c => { return { label: c.nombre, value: c.id } })
   await llamadatos();
@@ -137,10 +139,11 @@ const propiedadesTabla = computed(() => {
     titulo: 'Gestionar Componentes',
     agregar: agregarComponente,
     llamadatos: llamadatos,
-    data: componentes,
+    data: Componentes,
     columns: columns,
     filtros: [
         {columna: 'estado', placeholder: 'Estado', value: 'activo'},
+        {columna: 'sistema.nombre', placeholder: 'Sistema'},
     ]
   }
 })

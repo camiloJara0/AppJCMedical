@@ -23,8 +23,8 @@ const isEditing = ref(false);
 const secciones = ref([])
 
 async function llamadatos(cambio = false) {
-    tecnicos.value = await storeTecnicos.traer(true, false, cambio);
-    roles.value = await storeRol.traer();
+    tecnicos.value = await storeTecnicos.traer(true, cambio);
+    // roles.value = await storeRol.traer();
     varView.datosActualizados()
 }
 

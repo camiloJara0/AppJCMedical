@@ -42,7 +42,7 @@ export const useClientesStore = defineStore('Clientes', {
         },
 
         // Funcion para listar Clientes GET
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio, filtrar) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('clientes')

@@ -86,7 +86,7 @@ export function useCitaActions({
     if (!eliminado) return;
 
     options.position = "top-end",
-    options.texto = "Cita eliminada con éxito."
+      options.texto = "Cita eliminada con éxito."
     options.background = "#6bc517"
     options.tiempo = 1500
 
@@ -111,6 +111,10 @@ export function useCitaActions({
     store.Formulario.Cita.estado = Cita.estado;
     show = true
     isEditing = true;
+
+    if(Cita.equipo_id === null){
+      store.Formulario.Cita.equipo_id = Cita.equipos.map(c => c.id)
+    }
     varView.showNuevaCita = true
     varView.isEditing = true
   }
@@ -122,7 +126,7 @@ export function useCitaActions({
     const notificaciones = useNotificacionesStore()
     notificaciones.options.icono = 'info'
     notificaciones.options.titulo = 'Motivo de cancelacion'
-    notificaciones.options.texto = cita.ultima_observacion || 'Cita cancelada!'
+    notificaciones.options.texto = cita.ultimo_estado?.observaciones || 'Cita cancelada!'
     notificaciones.options.tiempo = 5000
     notificaciones.simple()
   }
@@ -131,7 +135,7 @@ export function useCitaActions({
     const notificaciones = useNotificacionesStore()
     notificaciones.options.icono = 'info'
     notificaciones.options.titulo = 'Motivo de edición'
-    notificaciones.options.texto = cita.ultima_observacion || 'La cita ha sido editada!'
+    notificaciones.options.texto = cita.ultimo_estado?.observaciones || 'La cita ha sido editada!'
     notificaciones.options.tiempo = 5000
     notificaciones.simple()
   }
@@ -143,7 +147,7 @@ export function useCitaActions({
     const notificaciones = useNotificacionesStore()
     notificaciones.options.icono = 'info'
     notificaciones.options.titulo = 'Observacion del Profesional'
-    notificaciones.options.texto = cita.ultima_observacion || 'Cita Realizada con exito!'
+    notificaciones.options.texto = cita.ultimo_estado?.observaciones || 'Cita Realizada con exito!'
     notificaciones.options.tiempo = 5000
     notificaciones.simple()
   }
@@ -164,7 +168,13 @@ export function useCitaActions({
      ACTIVAR CITA
   ========================= */
   async function activarCita(cita) {
-        const notificaciones = useNotificacionesStore()
+    if (cita.equipo_id === null) {
+      store.CitaSeleccionada = JSON.parse(JSON.stringify(cita))
+      store.Equiposcita = cita.equipos
+      store.showReporteVariosEquipos = true
+      return
+    }
+
     varView.sistemasBuilder = []
     localStorage.removeItem('enviarReporte')
     const now = new Date()
@@ -216,7 +226,7 @@ export function useCitaActions({
      HELPERS INTERNOS
   ========================= */
   function prepararRegistro(cita, equipo, cliente) {
-    reporteStore.Formulario.equipo.nombre = cita.nombre_equipo
+    reporteStore.Formulario.equipo.nombre = equipo.nombre
     reporteStore.Formulario.equipo.id = equipo.id
 
     reporteStore.Formulario.recibido.correo = cliente.correo
@@ -228,6 +238,8 @@ export function useCitaActions({
     reporteStore.Formulario.reporte.equipo_id = cita.equipo_id
     reporteStore.Formulario.reporte.tipo = cita.tipo
     reporteStore.Formulario.reporte.estado = 'realizada'
+
+    reporteStore.Formulario.cliente.nombre = cliente.nombre
 
     reporteStore.Formulario.cita = { ...cita }
   }
@@ -255,6 +267,12 @@ export function useCitaActions({
 
   }
 
+  async function activarCitaVariosEquipos(equipo) {
+    const cita = store.CitaSeleccionada
+    cita.equipo_id = equipo.id
+    activarCita(cita)
+  }
+
   return {
     cancelarCita,
     actualizarCita,
@@ -265,5 +283,6 @@ export function useCitaActions({
     parseFechaISO,
     agregarCita,
     cerrar,
+    activarCitaVariosEquipos
   }
 }

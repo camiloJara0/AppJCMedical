@@ -10,18 +10,20 @@ import ExportarPDFs from "~/components/paginas/ExportarPDFs.vue";
 import { useClientesStore } from '~/stores/Formularios/Clientes';
 import { useTecnicosStore } from '~/stores/Formularios/Tecnicos/Tecnico';
 import Reporte from "~/components/paginas/Reporte.vue";
+import { storeToRefs } from "pinia";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeReportes = useReporteStore()
 const clienteStore = useClientesStore()
 const tecnicoStore = useTecnicosStore()
-const reportes = ref([]);
 const refresh = ref(1);
 const showModal = ref(false);
 
+const { Reportes } = storeToRefs(storeReportes)
+
 async function llamadatos(cambio = false) {
-    reportes.value = await storeReportes.traer(true, cambio);
+    await storeReportes.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -47,20 +49,10 @@ watch(() => showModal.value,
     }
 );
 
-watch(() => varView.showNuevoRegistro,
-    async (estado) => {
-        if (!estado && varView.cambioEnApi) {
-            await llamadatos(true);
-            refresh.value++;
-        }
-    }
-);
-
 onMounted(async () => {
-    reportes.value = await storeReportes.traer();
+    await storeReportes.traer(false, false);
     await clienteStore.traer(true, true)
     await tecnicoStore.traer(true, true)
-    await llamadatos();
 });
 
 const columns = [
@@ -120,7 +112,7 @@ const columns = [
 const propiedadesTabla = computed(() => {
     return {
         titulo: 'Reportes de Mantenimientos',
-        data: reportes,
+        data: Reportes,
         llamadatos: llamadatos,
         columns: columns,
         excel: true,

@@ -1,5 +1,8 @@
+import { useSistemasStore } from "~/stores/Formularios/Sistemas/Sistema";
+
 export async function eliminarSistema(sistema) {
     try {
+        const sistemaStore = useSistemasStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarSistema(sistema) {
         }
 
         const data = await response.json();
+        await sistemaStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar sistema:', error);

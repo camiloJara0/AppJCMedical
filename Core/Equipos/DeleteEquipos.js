@@ -1,5 +1,8 @@
+import { useEquiposStore } from "~/stores/Formularios/Equipos/Equipo";
+
 export async function eliminarEquipo(equipo) {
     try {
+        const equiposStore = useEquiposStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarEquipo(equipo) {
         }
 
         const data = await response.json();
+        await equiposStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar equipo:', error);

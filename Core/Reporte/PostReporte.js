@@ -1,32 +1,21 @@
+import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
+
 export async function enviarReporte(isEditing, data) {
     try {
         const varView = useVarView()
-        const notificacionesStore = useNotificacionesStore()
-        let errores = []
+        const reporteStore = useReporteStore()
         let componentesCheck = []
-        if(!isEditing){
-            Object.entries(data.componentes).map(([id, value]) => {
-                if (!value.estado) {
-                    errores.push(`Componente ${id} sin estado, verifique que todos este llenados.`);
-                }
-            });
-            if(errores.length > 0) {
-                errores.forEach(msg => {
-                    notificacionesStore.options.icono = 'error';
-                    notificacionesStore.options.titulo = 'Información inválida';
-                    notificacionesStore.options.texto = msg;
-                    notificacionesStore.options.tiempo = 5000;
-                    notificacionesStore.simple();
-                });
-                return false;
-            }
-            componentesCheck = Object.entries(data.componentes).map(([id, value]) => ({
-                componente_id: id,
-                estado: value.estado,
-                observacion: value.observacion,
-            }));
-        }
 
+        componentesCheck = Object.entries(data.componentes).map(([id, value]) => ({
+            componente_id: id,
+            estado: value.estado,
+            observacion: value.observacion,
+        }));
+
+        componentesCheck = componentesCheck.filter(d => {
+            if(d.estado == '' || !d.estado) return
+            return d && Object.values(d).some(v => v !== '' && v != null)
+        })
 
         data.materiales = data.materiales.filter(d => {
             return d && Object.values(d).some(v => v !== '' && v != null);
@@ -55,7 +44,7 @@ export async function enviarReporte(isEditing, data) {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({...data, componentes: componentesCheck})
+            body: JSON.stringify({ ...data, componentes: componentesCheck })
         });
 
         if (!response.ok) {
@@ -73,8 +62,8 @@ export async function enviarReporte(isEditing, data) {
         }
 
         const dataRes = await response.json();
-
-        if(isEditing) return true
+        await reporteStore.traer(true, true)
+        if (isEditing) return true
         varView.propiedadesPDF = dataRes.ids.Reporte.id
         varView.showPDFServicio = true
         return true;

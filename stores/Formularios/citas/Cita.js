@@ -20,10 +20,14 @@ export const useCitasStore = defineStore('Citas', {
             }
         },
         CitaSeleccionada: null,
+        showReporteVariosEquipos: false,
+        Equiposcita: []
     }),
 
     getters: {
-
+        citasPendientes(state) {
+            return state.Citas.filter(cita => cita.estado === 'inactiva').length;
+        }
     },
     
     actions: {
@@ -60,6 +64,14 @@ export const useCitasStore = defineStore('Citas', {
             }
             
             this.Citas = citasFiltradas
+            if(this.CitaSeleccionada){
+                const citaActualizada = citasFiltradas.find(c => c.id === this.CitaSeleccionada.id)
+                if(citaActualizada){
+                    this.CitaSeleccionada = citaActualizada
+                } else {
+                    this.CitaSeleccionada = null
+                }
+            }
             return citasFiltradas
         }
     }

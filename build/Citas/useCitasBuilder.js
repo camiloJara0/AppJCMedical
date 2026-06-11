@@ -1,6 +1,5 @@
 import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
 import { useCitasStore } from '~/stores/Formularios/citas/Cita'
-import { watch } from 'vue'
 
 export function useCitasBuilder({
     storeId,
@@ -69,7 +68,7 @@ export function useCitasBuilder({
             options: clientes,
         })
         .addCampo({
-            component: 'Select',
+            component: 'SelectMultiple',
             type: 'number',
             label: 'Equipo *',
             placeholder: 'Selecciona el equipo',
@@ -98,7 +97,9 @@ export function useCitasBuilder({
                 'Mantenimiento de emergencia',
                 'Mantenimiento rutinario',
                 'Mantenimiento mayor',
-                'Mantenimiento menor'
+                'Mantenimiento menor',
+                'Proyecto',
+                'Cotizacion'
             ]
         })
         .addCampo({

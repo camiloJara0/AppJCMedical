@@ -8,13 +8,14 @@ import { useCategoriasBuilder } from "~/build/Categorias/useCategoriasBuilder";
 import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
 import { useCategoriasStore } from "~/stores/Formularios/Categorias";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
-
+import { storeToRefs } from "pinia";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeCategorias = useCategoriasStore()
-const categorias = ref([]);
 const refresh = ref(1);
+
+const {Categorias} = storeToRefs(storeCategorias)
 
 const active = ref(false);
 const isEditing = ref(false);
@@ -26,7 +27,7 @@ const {
 } = useNotificacionesStore();
 
 async function llamadatos(cambio = false) {
-    categorias.value = await storeCategorias.traer(true, false, cambio);
+    await storeCategorias.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -58,9 +59,8 @@ watch(() => active.value,
 
 // Cargar los Categorias desde el store
 onMounted(async () => {
-    categorias.value = await storeCategorias.traer(false);
+    await storeCategorias.traer(false);
     await llamadatos();
-    console.log(categorias.value)
 });
 
 const propiedadesFormulario =
@@ -161,7 +161,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestionar Categorías',
         agregar: agregarCategoria,
         llamadatos: llamadatos,
-        data: categorias,
+        data: Categorias,
         columns: columns,
         filtros: [
             {columna: 'estado', placeholder: 'Estado', value: 'activo'}

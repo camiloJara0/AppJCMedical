@@ -40,7 +40,7 @@ export const useCategoriasStore = defineStore('Categorias', {
         },
 
         // Funcion para listar Categorías GET
-        async traer(online = true, filtrar, cambio) {
+        async traer(online = true, cambio, filtrar) {
             const apiRest = useApiRest()
             const indexedDB = useIndexedDBStore()   
             const refrescar = await indexedDB.necesitaRefrescar('categorias')

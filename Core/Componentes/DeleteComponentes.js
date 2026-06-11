@@ -1,5 +1,8 @@
+import { useComponentesStore } from "~/stores/Formularios/Componentes/Componente";
+
 export async function eliminarComponente(componente) {
     try {
+        const componenteStore = useComponentesStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarComponente(componente) {
         }
 
         const data = await response.json();
+        await componenteStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar componente:', error);

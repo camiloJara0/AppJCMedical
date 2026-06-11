@@ -1,5 +1,8 @@
+import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
+
 export async function eliminarReporte(reporte) {
     try {
+        const reporteStore = useReporteStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,6 +30,7 @@ export async function eliminarReporte(reporte) {
         }
 
         const data = await response.json();
+        await reporteStore.traer(true, true)
         return true;
     } catch (error) {
         console.error('Error al eliminar reporte:', error);

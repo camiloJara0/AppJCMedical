@@ -10,13 +10,14 @@ import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeClientes = useClientesStore()
-const clientes = ref([]);
 const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 
+const { Clientes } = storeToRefs(storeClientes)
+
 async function llamadatos(cambio = false) {
-    clientes.value = await storeClientes.traer(true, false, cambio);
+    await storeClientes.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -45,7 +46,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    clientes.value = await storeClientes.traer(false);
+    await storeClientes.traer(false);
     await llamadatos();
 });
 
@@ -136,7 +137,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestionar Clientes',
         agregar: agregarCliente,
         llamadatos: llamadatos,
-        data: clientes,
+        data: Clientes,
         columns: columns,
         filtros: [
             {columna: 'estado', placeholder: 'Estado', value: 'activo'}

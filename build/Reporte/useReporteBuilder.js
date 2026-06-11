@@ -26,52 +26,57 @@ export function useReporteBuilder({
             { type: 'cerrar', text: 'Atras', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
-        if(!isEditing){
-            builder
-            .nuevaSeccion('Checklist de componentes')
-        for (let i = 0; i < sistemas.length; i++) {
-    
-            builder.addCampo({
-                component: 'Label',
-                text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
-                tamaño: 'w-full md:col-span-2'
-            })
-    
-            for (let j = 0; j < sistemas[i].componentes.length; j++) {
-    
-                const componente = sistemas[i].componentes[j]
-    
-                // Inicializar estructura reactiva
-                if (!reporteStore.Formulario.componentes[componente.id]) {
-                    reporteStore.Formulario.componentes[componente.id] = {
-                        estado: null,
-                        observacion: ''
-                    }
+    builder
+        .nuevaSeccion('Checklist de componentes')
+
+        .addCampo({
+            component: 'Label',
+            text: `<div class="flex items-center py-2 gap-1"><i class="fa-solid fa-gear text-blue-500 mr-1"></i><p class="text-xl font-bold">${reporteStore.Formulario.equipo.nombre}</p></div>`
+            , tamaño: 'md:col-span-2 w-full'
+        })
+
+    for (let i = 0; i < sistemas.length; i++) {
+
+        builder.addCampo({
+            component: 'Label',
+            text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
+            tamaño: 'w-full md:col-span-2'
+        })
+
+        for (let j = 0; j < sistemas[i].componentes.length; j++) {
+
+            const componente = sistemas[i].componentes[j]
+
+            // Inicializar estructura reactiva
+            if (!reporteStore.Formulario.componentes[componente.id]) {
+                reporteStore.Formulario.componentes[componente.id] = {
+                    estado: null,
+                    observacion: ''
                 }
-    
-                builder.addCampo({
-                    component: 'Radio',
-                    label: componente.nombre + ': ',
-                    vmodel: `componentes.${componente.id}.estado`,
-                    tamaño: 'w-full',
-                    options: [
-                        { label: 'Bueno', value: 'bueno' },
-                        { label: 'Malo', value: 'malo' },
-                        { label: 'Regular', value: 'regular' }
-                    ]
-                })
-    
-                builder.addCampo({
-                    component: 'Input',
-                    label: `Observación ${componente.nombre} (opcional)`,
-                    // placeholder: `Observación ${componente.nombre}`,
-                    placeholder: '...',
-                    vmodel: `componentes.${componente.id}.observacion`,
-                    tamaño: 'w-full'
-                })
             }
+
+            builder.addCampo({
+                component: 'Radio',
+                label: componente.nombre + ': ',
+                vmodel: `componentes.${componente.id}.estado`,
+                tamaño: 'w-full',
+                options: [
+                    { label: 'Bueno', value: 'bueno' },
+                    { label: 'Malo', value: 'malo' },
+                    { label: 'Regular', value: 'regular' }
+                ]
+            })
+
+            builder.addCampo({
+                component: 'Input',
+                label: `Observación ${componente.nombre} (opcional)`,
+                // placeholder: `Observación ${componente.nombre}`,
+                placeholder: '...',
+                vmodel: `componentes.${componente.id}.observacion`,
+                tamaño: 'w-full'
+            })
         }
-        }
+    }
 
     builder.nuevaSeccion('Elementos utilizados')
 
@@ -147,22 +152,146 @@ export function useReporteBuilder({
         options: [
             'En proceso',
             'Esperando repuestos',
-            {label: 'Finalizado', value:'realizada'},
+            { label: 'Finalizado', value: 'realizada' },
         ],
         vmodel: 'reporte.estado'
     })
-    .addCampo({
-        component: 'Input',
-        type: 'text',
-        label: 'Observacion de estado (opcional)',
-        placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
-        id: 'observacion',
-        name: 'observacion',
-        tamaño: 'w-full',
-        vmodel: 'estado.observacion',
-    })
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Observacion de estado (opcional)',
+            placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
+            id: 'observacion',
+            name: 'observacion',
+            tamaño: 'w-full',
+            vmodel: 'estado.observacion',
+        })
 
-    .nuevaSeccion('Recibido')
+        // Resumen de reporte de mantenimiento
+        .addCampo({
+            component: 'Label',
+            text: `
+<div class="w-full">
+
+    <div class="flex items-center gap-2 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+            <i class="fa-solid fa-clipboard-check text-primary"></i>
+        </div>
+
+        <div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+                Resumen del Reporte
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Verifica la información antes de finalizar el registro.
+            </p>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+
+        <!-- Encabezado -->
+        <div class="bg-linear-to-r from-primary-500/10 to-primary-500/5 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-file-signature text-primary"></i>
+                <span class="font-semibold">
+                    Reporte listo para enviar
+                </span>
+            </div>
+        </div>
+
+        <!-- Información principal -->
+        <div class="p-4 bg-white dark:bg-gray-800">
+
+            <div class="grid md:grid-cols-2 gap-3 mb-4">
+
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+                    <p class="text-xs uppercase text-gray-500 mb-1">
+                        Equipo
+                    </p>
+                    <p class="font-semibold">
+                        ${reporteStore.Formulario.equipo.nombre}
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+                    <p class="text-xs uppercase text-gray-500 mb-1">
+                        Cliente
+                    </p>
+                    <p class="font-semibold">
+                        ${reporteStore.Formulario.cliente?.nombre}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Métricas -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+
+                <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-center">
+                    <div class="text-xl font-bold text-blue-600">
+                        ${Object.keys(reporteStore.Formulario.componentes ||{}).length}
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Componentes
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-green-50 dark:bg-green-950/30 p-3 text-center">
+                    <div class="text-xl font-bold text-green-600">
+                        ${reporteStore.Formulario.materiales?.length || 0}
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Materiales
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-purple-50 dark:bg-purple-950/30 p-3 text-center">
+                    <div class="text-xl font-bold text-purple-600">
+                        ${reporteStore.Formulario.mediciones?.length || 0}
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Mediciones
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-orange-50 dark:bg-orange-950/30 p-3 text-center">
+                    <div class="text-xl font-bold text-orange-600">
+                        ${reporteStore.Formulario.repuestos?.length || 0}
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        Repuestos
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Nota -->
+    <div class="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3">
+        <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+
+        <div>
+            <p class="text-sm font-medium text-amber-700 dark:text-amber-300">
+                Última revisión recomendada
+            </p>
+
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+                Una vez enviado, el reporte quedará registrado en el historial del equipo y podrá ser consultado posteriormente. Verifica que las observaciones, mediciones y materiales utilizados sean correctos.
+            </p>
+        </div>
+    </div>
+
+</div>
+`,
+            tamaño: 'w-full md:col-span-2 py-8'
+        })
+
+        .nuevaSeccion('Recibido')
+
     builder.addCampo({
         component: 'Label',
         text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 dark:text-gray-400 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,

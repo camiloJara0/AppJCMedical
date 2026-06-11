@@ -214,6 +214,7 @@ export const useIndexedDBStore = defineStore("indexeddb", {
                 for (const item of datos) {
                     // limpiar datos para evitar DataCloneError
                     const limpio = JSON.parse(JSON.stringify(item));
+                    console.log(item)
                     STlee.put(limpio);
                 }
 

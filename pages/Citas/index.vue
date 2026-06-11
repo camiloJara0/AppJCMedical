@@ -16,6 +16,7 @@ import FondoDefault from '~/components/atoms/Fondos/FondoDefault.vue'
 import { eliminarCita } from '~/Core/Citas/DeleteCitas'
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte'
 import { storeToRefs } from 'pinia'
+import ReporteVariosEquipos from '~/components/paginas/ReporteVariosEquipos.vue'
 
 const varView = useVarView()
 const citasStore = useCitasStore();
@@ -187,9 +188,28 @@ const propiedades = computed(() => {
 
 const columns = [
     { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'nombre_tecnico', header: 'Técnico' },
-    { accessorKey: 'nombre_cliente', header: 'Cliente' },
-    { accessorKey: 'nombre_equipo', header: 'Equipo' },
+    { accessorKey: 'tecnico.nombre', header: 'Técnico' },
+    { accessorKey: 'cliente.nombre', header: 'Cliente' },
+    { 
+        accessorKey: 'equipo_id', 
+        header: 'Equipo',
+        cell: ({ row }) => {
+            const data = row.original
+            // Caso: equipo único
+            if (data.equipo && data.equipo.nombre) {
+            const nombre = data.equipo.nombre
+            return nombre.length > 35 ? nombre.substring(0, 35) + '...' : nombre
+            }
+
+            // Caso: varios equipos
+            if (data.equipos && data.equipos.length > 0) {
+            return 'Varios Equipos'
+            }
+
+            // Caso: ninguno
+            return 'Sin equipo'
+        }
+    },
     { accessorKey: 'tipo', header: 'Tipo' },
     { accessorKey: 'fecha', header: 'Fecha', sorted: true },
     { accessorKey: 'hora', header: 'Hora' },
@@ -290,10 +310,10 @@ const propiedadesTabla = computed(() => {
             { icon: 'lucide-table', accion: showFila, texto: 'En lista', color: 'neutral', variant: 'subtle' }
         ],
         filtros: [
-            { columna: 'nombre_cliente', placeholder: 'Cliente' },
+            { columna: 'cliente.nombre', placeholder: 'Cliente' },
             { columna: 'tipo', placeholder: 'Tipo' },
             { columna: 'estado', placeholder: 'Estado' },
-            { columna: 'nombre_equipo', placeholder: 'Equipo' },
+            { columna: 'equipo.nombre', placeholder: 'Equipo' },
         ]
     }
 })
@@ -304,6 +324,7 @@ const propiedadesTabla = computed(() => {
     <FondoDefault v-if="varView.showEnFila">
         <TablaNuxt :Propiedades="propiedadesTabla"></TablaNuxt>
     </FondoDefault>
+    <ReporteVariosEquipos/>
     <PDFServicio v-if="varView.showPDFServicio"></PDFServicio>
     <Cita />
     <Reporte v-if="varView.showNuevoRegistro" />

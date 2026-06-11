@@ -14,15 +14,16 @@ const notificaciones = useNotificacionesStore();
 const storeEquipos = useEquiposStore()
 const storeTipoEquipos = useTipo_equiposStore()
 const storeClientes = useClientesStore()
-const equipos = ref([]);
 const refresh = ref(1);
 const active = ref(false);
 const isEditing = ref(false);
 const tiposEquipos = ref([])
 const clientes = ref([])
 
+const { Equipos } = storeToRefs(storeEquipos)
+
 async function llamadatos(cambio = false) {
-    equipos.value = await storeEquipos.traer(true, false, cambio);
+    await storeEquipos.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -51,7 +52,7 @@ watch(() => active.value,
 );
 
 onMounted(async () => {
-    equipos.value = await storeEquipos.traer(false);
+    await storeEquipos.traer(false);
     const listaTipoEquipos = await storeTipoEquipos.traer(true, true);
     tiposEquipos.value = listaTipoEquipos.map(c => { return {label: c.nombre, value: c.id}})
     const listaClientes = await storeClientes.traer(true, true);
@@ -90,7 +91,6 @@ const columns = [
                 : estado === 'inactivo'
                 ? 'neutral'
                 : 'warning'
-
             return h(
                 UBadge,
                 { variant: 'subtle', color, class: 'capitalize' },
@@ -152,7 +152,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestión de Equipos',
         agregar: agregarEquipo,
         llamadatos: llamadatos,
-        data: equipos,
+        data: Equipos,
         columns: columns,
         filtros: [
             {columna: 'ubicacion', placeholder: 'Ubicacion'},

@@ -1,5 +1,8 @@
+import { useProductosStore } from "~/stores/Formularios/Productos";
+
 export async function eliminarProductos(producto) {
     try {
+        const productoStore = useProductosStore()
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')
 
@@ -27,7 +30,8 @@ export async function eliminarProductos(producto) {
         }
 
         const data = await response.json();
-        return data;
+        await productoStore.traer(true, true)
+        return true;
     } catch (error) {
         console.error('Error al traer productos:', error);
         throw error;

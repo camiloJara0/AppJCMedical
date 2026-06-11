@@ -14,9 +14,10 @@ const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeProductos = useProductosStore()
 const storeCategorias = useCategoriasStore()
-const productos = ref([]);
 const categorias = ref([])
 const refresh = ref(1);
+
+const { Productos } = storeToRefs(storeProductos)
 
 const active = ref(false);
 const isEditing = ref(false);
@@ -28,7 +29,7 @@ const {
 } = useNotificacionesStore();
 
 async function llamadatos(cambio = false) {
-    productos.value = await storeProductos.traer(true, false, cambio);
+    await storeProductos.traer(true, cambio);
     varView.datosActualizados()
 }
 
@@ -59,7 +60,7 @@ watch(() => active.value,
 
 // Cargar los Productos desde el store
 onMounted(async () => {
-    productos.value = await storeProductos.traer(false);
+    await storeProductos.traer(false);
     const listaCategorias = await storeCategorias.traer(true, true);
     categorias.value = listaCategorias.map(c => { return {label: c.nombre, value: c.id}})
     await llamadatos();
@@ -196,7 +197,7 @@ const propiedadesTabla = computed(() => {
         titulo: 'Gestionar Productos',
         agregar: agregarProducto,
         llamadatos: llamadatos,
-        data: productos,
+        data: Productos,
         columns: columns,
     }
 })

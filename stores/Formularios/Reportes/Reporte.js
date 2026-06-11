@@ -20,6 +20,9 @@ export const useReporteStore = defineStore('Reportes', {
                 nombre: '',
                 id: '',
             },
+            cliente: {
+                nombre: ''
+            },
             componentes: {},
             materiales: [],
             mediciones: [],
@@ -42,7 +45,9 @@ export const useReporteStore = defineStore('Reportes', {
     }),
 
     getters: {
-
+        numeroPendientes(state) {
+            return state.Reportes.filter(reporte => reporte.estado !== 'realizada' || reporte.estado === 'eliminada').length;
+        }
     },
     
     actions: {

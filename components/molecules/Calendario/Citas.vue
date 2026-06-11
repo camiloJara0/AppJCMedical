@@ -169,11 +169,14 @@ function changeShowPendientes() {
                 class="transition-all duration-300">
 
                 <!-- Card Citas -->
-                <UCard class="hover:shadow-xl hover:-translate-y-1 border-l-4 h-50" :class="[
+                <UCard class="hover:shadow-xl hover:-translate-y-1 border-l-4 h-50 relative" :class="[
                     cita.estado === 'cancelada' && 'border-red-500 bg-red-50 dark:bg-red-900/30',
                     vencida(cita) && cita.estado === 'Inactiva' && 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20'
                     ]">
 
+                    <UButton v-if="cita.equipo_id === null" class="rounded-full absolute top-0 right-0" color="info" variant="soft">
+                        {{ cita.equipos.length}}
+                    </UButton>
                     <!-- HEADER -->
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
@@ -188,10 +191,10 @@ function changeShowPendientes() {
 
                             <div>
                                 <h3 class="font-semibold text-gray-800 dark:text-white">
-                                    {{ cita.nombre_equipo.length > 25 ? cita.nombre_equipo.substring(0, 25) + '...' : cita.nombre_equipo }}
+                                    {{ cita.equipo?.nombre?.length > 25 ? cita.equipo?.nombre?.substring(0, 25) + '...' : cita.equipo?.nombre || 'Varios Equipos' }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ cita.nombre_cliente }}
+                                    {{ cita.cliente.nombre }}
                                 </p>
                             </div>
                         </div>
@@ -208,7 +211,7 @@ function changeShowPendientes() {
                     <div class="mt-4 space-y-2 text-sm">
                         <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                             <UIcon name="i-heroicons-user" />
-                            {{ cita.nombre_tecnico }}
+                            {{ cita.tecnico.nombre }}
                         </div>
 
                         <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
