@@ -88,18 +88,19 @@ export function useCitasBuilder({
             tamaño: 'w-full',
             vmodel: 'Cita.tipo',
             options: [
-                'Preventivo',
-                'Correctivo',
-                'Diagnóstico',
-                'Predictivo',
-                'Proactivo',
-                'Detectivo',
-                'Mantenimiento de emergencia',
-                'Mantenimiento rutinario',
-                'Mantenimiento mayor',
-                'Mantenimiento menor',
-                'Proyecto',
-                'Cotizacion'
+                'Mantenimiento preventivo',
+                'Mantenimiento correctivo',
+                'Instalacion de equipo',
+                'Calibracion de equipo',
+                'Verificación metrológica',
+                'Capacitación de usuarios',
+                'Capacitación técnica',
+                'Visita comercial',
+                'Reunión de negocios',
+                'Prestación de productos',
+                'Demostración de equipo',
+                'Recolección de equipos',
+                'Entrega de equipos, repuestos o accesorios',
             ]
         })
         .addCampo({

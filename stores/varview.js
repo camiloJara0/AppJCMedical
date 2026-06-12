@@ -12,41 +12,18 @@ export const useVarView = defineStore('varView', {
             progreso: 0
         },
         isEditing: false,
-        // Formularios Paciente
-        showNuevoPaciente: false,
-        pacienteKardex: false,
-        // formularios Users
-        showNuevoUser: false,
-        // Formularios Citas
+        // Citas
         showNuevaCita: false,
-        showActualizarCita: false,
-        rangoCita: false,
-        tratamientos: [],
         showEnFila: false,
         showCalendario: true,
         showEnTabla: true,
-        // formularios Notas
-        showNuevaNota: false,
-        // formularios Datos Empresa
-        showNuevoEPS: false,
-        showModificarEPS: false,
         // formulario Datos Excel
         showDatosExcel: false,
         showCrearTabla: false,
         // Formularios Historia
         showNuevaHistoria: false,
-        // Modales ver Historia
-        showPDFNota: false,
-        showPDFEvolucion: false,
-        showPDFTerapia: false,
-        showPDFMedicina: false,
-        showPDFTrabajoSocial: false,
-        showPDFMedicamentos: false,
-        showPDFInsumo: false,
+        // Modales pdf
         showExportarPDFs: false,
-        // Modales Login
-        showRecuperarContraseña: false,
-        showCambiarContraseña: false,
         // Insumos
         importarArchivo: false,
         // validacion de formularios
@@ -72,6 +49,10 @@ export const useVarView = defineStore('varView', {
         expandido: false,
         permisoTemporal: false,
         showBreadCrumb: false,
+
+        showActividadDerivada: false,
+        actividad: '',
+        dataActividad: {}
     }),
 
     getters: {

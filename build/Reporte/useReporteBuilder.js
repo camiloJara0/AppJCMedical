@@ -31,7 +31,7 @@ export function useReporteBuilder({
 
         .addCampo({
             component: 'Label',
-            text: `<div class="flex items-center py-2 gap-1"><i class="fa-solid fa-gear text-blue-500 mr-1"></i><p class="text-xl font-bold">${reporteStore.Formulario.equipo.nombre}</p></div>`
+            text: `<div class="flex items-center py-2 gap-1"><i class="fa-solid fa-gear text-blue-500 mr-1"></i><p class="md:text-xl text-sm font-bold">${reporteStore.Formulario.equipo.nombre}</p></div>`
             , tamaño: 'md:col-span-2 w-full'
         })
 

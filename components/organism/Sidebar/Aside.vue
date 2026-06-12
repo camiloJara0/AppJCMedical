@@ -197,12 +197,12 @@ function accesoRapidoSelected(nombre) {
                                 {{ numeroPendientes }}
                             </UButton>
                             <UButton v-if="btn.nombre == 'Agenda' && citasPendientes > 0"
-                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-5 flex justify-center items-center text-xs"
                                 color="error">
                                 {{ citasPendientes }}
                             </UButton>
                             <UButton v-if="btn.nombre == 'Cotizaciones' && cotizacionesPendientes > 0"
-                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-4 flex justify-center items-center text-xs"
+                                class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-5 flex justify-center items-center text-xs"
                                 color="error">
                                 {{ cotizacionesPendientes }}
                             </UButton>

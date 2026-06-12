@@ -80,12 +80,6 @@ const exportPdf = async () => {
 
 const cerrar = () => {
     props.Propiedades.isActive.value = false
-    varView.showPDFEvolucion = false
-    varView.showPDFNota = false
-    varView.showPDFTerapia = false
-    varView.showPDFMedicina = false
-    varView.showPDFTrabajoSocial = false
-    varView.showPDFMedicamentos = false
 }
 
 // const elementoId = document.getElementById(props.Propiedades.elementId)

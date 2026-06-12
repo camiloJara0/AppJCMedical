@@ -64,6 +64,12 @@ export async function enviarReporte(isEditing, data) {
         const dataRes = await response.json();
         await reporteStore.traer(true, true)
         if (isEditing) return true
+        varView.actividad = data.cita.tipo
+        varView.dataActividad = {
+            ...data.cita
+        }
+        varView.showActividadDerivada = true
+
         varView.propiedadesPDF = dataRes.ids.Reporte.id
         varView.showPDFServicio = true
         return true;

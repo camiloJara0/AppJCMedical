@@ -17,6 +17,7 @@ import { eliminarCita } from '~/Core/Citas/DeleteCitas'
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte'
 import { storeToRefs } from 'pinia'
 import ReporteVariosEquipos from '~/components/paginas/ReporteVariosEquipos.vue'
+import AccionDerivada from '~/components/paginas/AccionDerivada.vue'
 
 const varView = useVarView()
 const citasStore = useCitasStore();
@@ -28,6 +29,7 @@ const show = ref(false);
 const sistemas = ref([])
 const refresh = ref(1);
 
+const {showActividadDerivada} = storeToRefs(varView)
 const { Citas } = storeToRefs(citasStore)
 
 onMounted(async () => {
@@ -70,15 +72,6 @@ watch(() => varView.showNuevaCita,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
             await llamadatos(true);
-        }
-    }
-);
-
-watch(() => varView.showActualizarCita,
-    async (estado) => {
-        if (!estado && varView.cambioEnApi) {
-            await llamadatos(true);
-            refresh.value++;
         }
     }
 );
@@ -326,6 +319,7 @@ const propiedadesTabla = computed(() => {
     </FondoDefault>
     <ReporteVariosEquipos/>
     <PDFServicio v-if="varView.showPDFServicio"></PDFServicio>
+    <AccionDerivada v-if="varView.showActividadDerivada"></AccionDerivada>
     <Cita />
     <Reporte v-if="varView.showNuevoRegistro" />
 </template>
