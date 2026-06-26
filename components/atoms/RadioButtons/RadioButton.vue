@@ -80,7 +80,7 @@ const mergedProps = computed(() => getMergedProps());
     :items="props.Propiedades.options"
     orientation="horizontal"
     indicator="end" variant="card"
-    @update:model-value="emit('update:modelValue', $event)"
+    @update:model-value="(value) => {emit('update:modelValue', value); emit('change', value); Propiedades.events?.onChange?.(value)}"
     @change="emit('change', $event); Propiedades.events?.onChange?.($event)"
   >
   </

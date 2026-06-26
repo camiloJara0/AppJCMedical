@@ -14,8 +14,7 @@ const cotizacionesStore = useCotizacionesStore()
 const citasStore = useCitasStore()
 const buttons = ref([]);
 const varView = useVarView()
-const footer = useSeccionFooter();
-const router = useRouter()
+const route = useRoute()
 const rol = ref('')
 const navMenu = ref([])
 
@@ -48,123 +47,7 @@ const cambiarEstadoFalse = () => {
     }
 };
 
-function accesoRapidoSelected(nombre) {
-    switch (nombre) {
-        case 'Categorias': {
-            const button = buttons.value.find(btn => btn.nombre === 'Productos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(1);
-                storeAside.botonActivo = 'Categorias';
-            }
-            break;
-        }
-        case 'Datos': {
-            const button = buttons.value.find(btn => btn.nombre === 'Datos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(1);
-                storeAside.botonActivo = 'Datos';
-            }
-            break;
-        }
-        case 'Productos': {
-            const button = buttons.value.find(btn => btn.nombre === 'Productos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(0);
-                storeAside.botonActivo = 'Productos';
-            }
-            break;
-        }
-        case 'Citas': {
-            const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                storeAside.botonActivo = 'Citas';
-                footer.cambiarIdActivo(rol.value == 'Admin' ? 2 : 0);
-            }
-            break;
-        }
-        case 'Clientes': {
-            const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                storeAside.botonActivo = 'Clientes';
-                footer.cambiarIdActivo(0);
-            }
-            break;
-        }
-        case 'Tecnicos': {
-            const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                storeAside.botonActivo = 'Tecnicos';
-                footer.cambiarIdActivo(1);
-            }
-            break;
-        }
-        case 'TipoEquipos': {
-            const button = buttons.value.find(btn => btn.nombre === 'Productos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                storeAside.botonActivo = 'TipoEquipos';
-                footer.cambiarIdActivo(rol.value == 'Admin' ? 2 : 0);
-            }
-            break;
-        }
-        case 'Equipos': {
-            const button = buttons.value.find(btn => btn.nombre === 'Productos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(rol.value == 'Admin' ? 3 : 1);
-                storeAside.botonActivo = 'Equipos';
-            }
-            break;
-        }
-        case 'Reportes': {
-            const button = buttons.value.find(btn => btn.nombre === 'Historial');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(0);
-                storeAside.botonActivo = 'Reportes';
-            }
-            break;
-        }
-        case 'Cotizaciones': {
-            const button = buttons.value.find(btn => btn.nombre === 'Historial');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(1);
-                storeAside.botonActivo = 'Cotizaciones';
-            }
-            break;
-        }
-        case 'Sistemas': {
-            const button = buttons.value.find(btn => btn.nombre === 'Datos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(1);
-                storeAside.botonActivo = 'Sistemas';
-            }
-            break;
-        }
-        case 'Componentes': {
-            const button = buttons.value.find(btn => btn.nombre === 'Datos');
-            if (button) {
-                footer.cambiarSecciones(button.secciones);
-                footer.cambiarIdActivo(0);
-                storeAside.botonActivo = 'Componentes';
-            }
-            break;
-        }
-        default:
-            // Caso genérico: solo cambiar el botón activo
-            storeAside.botonActivo = nombre;
-    }
-
-    varView.expandido = false; // Cierra el menú después de seleccionar una sección
-}
+const isActive = (path) => route.path === path
 </script>
 
 <template>
@@ -190,7 +73,7 @@ function accesoRapidoSelected(nombre) {
                     <!-- Navegación por íconos -->
                     <nav class="flex md:flex-col flex-row items-center gap-6">
                         <NuxtLink v-for="btn in navMenu.filter(n => n.accesoRapido)" :key="btn.id" :to="btn.ruta"
-                            @click="accesoRapidoSelected(btn.action)" class="relative">
+                             class="relative">
                             <UButton v-if="btn.nombre == 'Reportes' && numeroPendientes > 0"
                                 class="rounded-full absolute md:top-0 top-5 -right-1 w-4 h-5 flex justify-center items-center text-xs"
                                 color="error">
@@ -207,10 +90,15 @@ function accesoRapidoSelected(nombre) {
                                 {{ cotizacionesPendientes }}
                             </UButton>
                             <ButtonRounded :tooltip="btn.nombre" tooltip-position="right"
-                                color="flex items-center justify-center w-10 h-10 rounded-full text-gray-200 md:text-gray-300 md:dark:text-gray-800 transition py-5"
-                                :color="{ 'text-white! dark:text-blue-700!': botonActivo === btn.action }">
+                                color="flex items-center justify-center w-10 h-10 rounded-full transition py-5">
                                 <i
-                                    :class="[btn.icono, 'text-lg md:dark:text-gray-700 text-gray-300', { 'text-white! dark:text-gray-300': botonActivo === btn.action }]"></i>
+                                    :class="[
+                                        btn.icono,
+                                        'text-lg',
+                                        {'text-gray-300 md:dark:text-gray-800': !isActive(btn.ruta)}, 
+                                        { 'text-white md:dark:text-gray-600': isActive(btn.ruta) }
+                                    ]">
+                                </i>
                             </ButtonRounded>
                         </NuxtLink>
                     </nav>
@@ -246,13 +134,13 @@ function accesoRapidoSelected(nombre) {
                         <div class="lista" @click="cambiarEstadoFalse()">
                             <NuxtLink v-for="btn in navMenu" :key="btn.id"
                                 class="flex items-center md:justify-between gap-2 py-2 px-2 -mx-2 relative"
-                                :to="btn.ruta" :class="{ 'bg-(--color-default-100)': botonActivo === btn.action }"
-                                @click="accesoRapidoSelected(btn.action)">
+                                :to="btn.ruta" :class="{ 'bg-(--color-default-100)': isActive(btn.ruta) }">
                                 <span class="text-gray-200 dark:text-gray-800 font-medium text-sm"
-                                    :class="{ 'text-white! dark:text-gray-300!': botonActivo === btn.action }">{{
-                                    btn.nombre }}</span>
+                                    :class="{ 'text-white dark:text-gray-300': isActive(btn.ruta) }">
+                                    {{ btn.nombre }}
+                                </span>
                                 <i
-                                    :class="[btn.icono, 'text-lg text-gray-400 dark:text-gray-600 transition', { 'text-white! dark:text-gray-300!': botonActivo === btn.action }]"></i>
+                                    :class="[btn.icono, 'text-lg text-gray-400 dark:text-gray-600 transition', { 'text-white! dark:text-gray-300!': isActive(btn.ruta) }]"></i>
                                 <UButton v-if="btn.nombre == 'Reportes' && numeroPendientes > 0"
                                     class="rounded-full md:absolute top-0 -right-1 w-4 h-5 flex justify-center items-center text-xs"
                                     color="error">

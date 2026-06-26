@@ -28,7 +28,6 @@ const breadcrumbItems = computed(() => {
     ...breadCrumbs.value.map(crumb => ({
       label: crumb.name,
       to: crumb.to,
-      icon: 'lucide-file'
     }))
   ].slice(0, 5) // Limitar a 5 items
 })

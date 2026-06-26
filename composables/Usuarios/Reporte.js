@@ -55,7 +55,9 @@ export function useReporteActions({
 
     reporte.estado_componente.forEach(item => {
       store.Formulario.componentes[item.componente_id] = {
-        estado: item.estado,
+        bueno: item.estado === 'bueno',
+        malo: item.estado === 'malo',
+        regular: item.estado === 'regular',
         observacion: item.observacion
       };
     });

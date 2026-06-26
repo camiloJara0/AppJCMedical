@@ -188,7 +188,7 @@ const itemsCompletos = computed(() =>
 </script>
 
 <template>
-    <div class="col-span-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-4 space-y-4">
+    <div class="col-span-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-4 space-y-4" :class="Propiedades.tamaño">
 
         <!-- Título -->
         <div class="flex justify-between items-center">

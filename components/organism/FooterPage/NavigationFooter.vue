@@ -1,26 +1,39 @@
 <script setup>
-import { computed, watch } from 'vue';
-import { useSeccionFooter } from '~/stores/NavigationFooter';
-const footer = useSeccionFooter();
-const subSeccion = computed(() => footer.secciones)
+import { computed } from 'vue';
+
+const storeAside = useButtonsAside();
+const varView = useVarView();
+const route = useRoute()
+const buttons = ref([])
+const rol = ref('')
+
 // Traer secciones del footer y boton activo
 onMounted(() => {
-    footer.seccionesGuardadas();
-    const idGuardado = sessionStorage.getItem('seccionIdActivo');
-    if (idGuardado) {
-        footer.cambiarIdActivo(idGuardado);
-    } else {
-        footer.cambiarIdActivo(0)
-    }
+    rol.value = varView.getRol
+    buttons.value = storeAside.getbuttons(rol.value);
 });
 
+const secciones = computed(() => {
+    const botonActual = buttons.value.find(btn =>
+        btn.secciones.some(sec =>
+            route.path.startsWith(sec.ruta)
+        )
+    );
+
+    return botonActual?.secciones?.map(sec => ({
+        ...sec,
+        active: route.path === sec.ruta
+    }));
+});
+
+const isActive = (path) => route.path === path
 </script>
 
 <template>
     <div class="flex w-full items-center overflow-x-auto scrollForm">
-        <nuxt-link v-for="(pagina, key) in subSeccion" :to="pagina.ruta"
+        <nuxt-link v-for="pagina in secciones" :to="pagina.ruta"
             class="subSeccion select-none cursor-pointer py-2 md:min-w-50 min-w-28 flex justify-center text-xs bg-(--color-default-700) md:text-base hover:bg-(--color-default-600) hover:text-white"
-            :class="{ 'active dark:bg-gray-900 bg-gray-50 dark:text-white text-black font-semibold pointer-events-none': footer.idActivo === key, 'text-white' : footer.idActivo !== key }" @click="footer.cambiarIdActivo(key)">
+            :class="{ 'active dark:bg-gray-900 bg-gray-50 dark:text-white text-black font-semibold pointer-events-none': isActive(pagina.ruta), 'text-white' : !isActive(pagina.ruta) }">
             {{ pagina.titulo }}
         </nuxt-link>
     </div>

@@ -8,7 +8,11 @@ export async function enviarReporte(isEditing, data) {
 
         componentesCheck = Object.entries(data.componentes).map(([id, value]) => ({
             componente_id: id,
-            estado: value.estado,
+            estado: 
+                value.bueno ? 'bueno': 
+                value.malo ? 'malo' : 
+                value.regular ? 'regular' 
+                : '',
             observacion: value.observacion,
         }));
 

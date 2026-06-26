@@ -67,7 +67,7 @@ const getMergedProps = () => {
 const mergedProps = computed(() => getMergedProps());
 </script>
 <template>
-  <UCheckbox
+  <USwitch
     :model-value="modelValue"
     :label="mergedProps.label"
     :description="mergedProps.description"
@@ -77,27 +77,13 @@ const mergedProps = computed(() => getMergedProps());
     :name="mergedProps.name"
     :value="value"
     :color="mergedProps.color"
+    :class="Propiedades.tamaño"
     :variant="mergedProps.variant"
     :size="mergedProps.size"
     :indicator="mergedProps.indicator"
     :icon="icon"
     :indeterminate-icon="indeterminateIcon"
-    @update:model-value="emit('update:modelValue', $event)"
-    @change="emit('change', $event); Propiedades.events?.onChange?.($event)"
+    @update:model-value="(value) => {emit('update:modelValue', value); emit('change', value); Propiedades.events?.onChange?.(value)}"
   >
-    <!-- Slots para customización del label -->
-    <template v-if="$slots.label" #label="{ label }">
-      <slot name="label" :label="label" />
-    </template>
-
-    <!-- Slots para customización de la descripción -->
-    <template v-if="$slots.description" #description="{ description }">
-      <slot name="description" :description="description" />
-    </template>
-
-    <!-- Slot por defecto -->
-    <template v-if="$slots.default" #default>
-      <slot />
-    </template>
-  </UCheckbox>
+  </USwitch>
 </template>

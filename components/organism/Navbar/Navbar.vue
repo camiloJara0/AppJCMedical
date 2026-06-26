@@ -9,7 +9,6 @@ import { submenuNotificaciones, submenuSesion } from '~/data/NavMenu';
 import { useButtonsAside } from '~/stores/ButtonActive';
 import { ref, computed, onMounted } from 'vue';
 
-const footer = useSeccionFooter();
 const storeAside = useButtonsAside();
 const { showNavbarBurguer, cambiarEstado } = useShowNavbar();
 
@@ -52,14 +51,6 @@ const removeStorage = () => {
     sessionStorage.removeItem('seccionesGuardadas')
 };
 
-function agenda() {
-    const button = buttons.value.find(btn => btn.nombre === 'Usuarios');
-    if (button) {
-        footer.cambiarSecciones(button.secciones);
-        footer.cambiarIdActivo(rol == 'Admin' ? 2 : 0)
-    }
-}
-
 </script>
 
 <template>
@@ -94,7 +85,7 @@ function agenda() {
                     <DropdownNavbar icon="fa-circle-user" :nombre="usuario" :submenu="submenuSesion" />
                 </li>
                 <li>
-                    <NuxtLink to="/Citas" @click="agenda()" class="flex items-center">
+                    <NuxtLink to="/Citas" class="flex items-center">
                         <UButton icon="i-lucide-calendar" color="gray" variant="ghost" size="sm"
                             class="text-gray-300 hover:text-white transition-colors" />
                         <p class="text-gray-100 text-xs ml-1 font-semibold"

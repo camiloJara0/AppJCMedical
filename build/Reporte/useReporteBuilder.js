@@ -13,6 +13,22 @@ export function useReporteBuilder({
     const sistemas = varView.sistemasBuilder
     const reporteStore = useReporteStore()
 
+    function seleccionarEstado(value, id, estado) {
+
+        if(value){
+            if(estado == 'bueno'){
+                reporteStore.Formulario.componentes[id].malo = false
+                reporteStore.Formulario.componentes[id].regular = false
+            } else if(estado == 'regular'){
+                reporteStore.Formulario.componentes[id].bueno = false
+                reporteStore.Formulario.componentes[id].malo = false
+            } else {
+                reporteStore.Formulario.componentes[id].bueno = false
+                reporteStore.Formulario.componentes[id].regular = false
+            }
+        }
+    }
+
     builder
         .setStoreId(storeId)
         .setStorePinia(storePinia)
@@ -25,14 +41,14 @@ export function useReporteBuilder({
             { type: 'enviar', text: 'Siguiente', color: 'primary' },
             { type: 'cerrar', text: 'Atras', color: 'neutral', accion: cerrar },
         ])
-        .setFormularioContenedorCampos('grid md:grid-cols-2 grid-cols-1')
+        .setFormularioContenedorCampos('grid lg:grid-cols-8 md:grid-cols-3! grid-cols-3!')
     builder
         .nuevaSeccion('Checklist de componentes')
 
         .addCampo({
             component: 'Label',
             text: `<div class="flex items-center py-2 gap-1"><i class="fa-solid fa-gear text-blue-500 mr-1"></i><p class="md:text-xl text-sm font-bold">${reporteStore.Formulario.equipo.nombre}</p></div>`
-            , tamaño: 'md:col-span-2 w-full'
+            , tamaño: 'lg:col-span-8 col-span-3 w-full'
         })
 
     for (let i = 0; i < sistemas.length; i++) {
@@ -40,7 +56,7 @@ export function useReporteBuilder({
         builder.addCampo({
             component: 'Label',
             text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
-            tamaño: 'w-full md:col-span-2'
+            tamaño: 'w-full lg:col-span-8 col-span-3'
         })
 
         for (let j = 0; j < sistemas[i].componentes.length; j++) {
@@ -56,15 +72,45 @@ export function useReporteBuilder({
             }
 
             builder.addCampo({
-                component: 'Radio',
+                component: 'Checkbox',
                 label: componente.nombre + ': ',
-                vmodel: `componentes.${componente.id}.estado`,
-                tamaño: 'w-full',
+                vmodel: `componentes.${componente.id}.bueno`,
+                tamaño: 'w-full lg:mt-5',
+                label: 'Bueno',
                 options: [
                     { label: 'Bueno', value: 'bueno' },
+                ],
+                events: {
+                    onChange: (value) => {seleccionarEstado(value, componente.id, 'bueno')}
+                }
+            })
+
+            builder.addCampo({
+                component: 'Checkbox',
+                label: componente.nombre + ': ',
+                vmodel: `componentes.${componente.id}.malo`,
+                tamaño: 'w-full lg:mt-5',
+                label: 'Malo',
+                options: [
                     { label: 'Malo', value: 'malo' },
+                ],
+                events: {
+                    onChange: (value) => {seleccionarEstado(value, componente.id, 'malo')}
+                }
+            })
+
+            builder.addCampo({
+                component: 'Checkbox',
+                label: componente.nombre + ': ',
+                vmodel: `componentes.${componente.id}.regular`,
+                tamaño: 'w-full lg:mt-5',
+                label: 'Regular',
+                options: [
                     { label: 'Regular', value: 'regular' }
-                ]
+                ],
+                events: {
+                    onChange: (value) => {seleccionarEstado(value, componente.id, 'regular')}
+                }
             })
 
             builder.addCampo({
@@ -73,7 +119,7 @@ export function useReporteBuilder({
                 // placeholder: `Observación ${componente.nombre}`,
                 placeholder: '...',
                 vmodel: `componentes.${componente.id}.observacion`,
-                tamaño: 'w-full'
+                tamaño: 'w-full lg:col-start-4 lg:col-span-5 col-span-3'
             })
         }
     }
@@ -90,7 +136,8 @@ export function useReporteBuilder({
             { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del accesorio' },
             { typeCampo: 'Select', label: 'Estado', key: 'estado', name: 'estado', placeholder: 'Selecciona el estado', options: ['Bueno', 'Malo'] },
         ],
-        containerCampos: 'grid grid-cols-2 gap-3'
+        containerCampos: 'grid grid-cols-2 gap-3',
+        tamaño: 'lg:col-span-8 col-span-3'
     })
 
     builder.addCampo({
@@ -103,7 +150,8 @@ export function useReporteBuilder({
             { typeCampo: 'Input', type: 'number', label: 'Cantidad', key: 'cantidad', name: 'cantidad', placeholder: '0' },
             { typeCampo: 'Input', type: 'text', label: 'Descripción', key: 'descripcion', name: 'descripcion', placeholder: 'Descripcion' }
         ],
-        containerCampos: 'grid grid-cols-2 gap-3'
+        containerCampos: 'grid grid-cols-2 gap-3',
+        tamaño: 'lg:col-span-8 col-span-3'
     })
 
     builder.addCampo({
@@ -118,7 +166,8 @@ export function useReporteBuilder({
             { typeCampo: 'Input', type: 'number', label: 'Valor Medido', key: 'valorMedidio', name: 'valor_medido', placeholder: '0' },
             { typeCampo: 'Input', type: 'number', label: 'Valor Esperado', key: 'valorEsperado', name: 'valor_esperado', placeholder: '0' },
         ],
-        containerCampos: 'grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3'
+        containerCampos: 'grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3',
+        tamaño: 'lg:col-span-8 col-span-3'
     })
 
     builder.addCampo({
@@ -129,7 +178,8 @@ export function useReporteBuilder({
         buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '', } }],
         campos: [
             { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del repuesto' },
-        ]
+        ],
+        tamaño: 'lg:col-span-8 col-span-3'
     })
 
     builder.nuevaSeccion('Actividades y observaciones')
@@ -139,10 +189,19 @@ export function useReporteBuilder({
         label: 'Actividades realizadas/Observaciones',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: 'md:col-span-2 w-full',
+        tamaño: 'lg:col-span-8 col-span-3 w-full',
         rows: 8
     })
-
+    .addCampo({
+        component: 'Input',
+        type: 'text',
+        label: 'Observacion de estado (opcional)',
+        placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
+        id: 'observacion',
+        name: 'observacion',
+        tamaño: 'w-full lg:col-span-4 md:col-span-2 col-span-3',
+        vmodel: 'estado.observacion',
+    })
     builder.addCampo({
         component: 'Select',
         label: 'Estado del reporte (opcional)',
@@ -154,18 +213,10 @@ export function useReporteBuilder({
             'Esperando repuestos',
             { label: 'Finalizado', value: 'realizada' },
         ],
-        vmodel: 'reporte.estado'
+        vmodel: 'reporte.estado',
+        tamaño: 'lg:col-span-4 md:col-span-1 col-span-3'
     })
-        .addCampo({
-            component: 'Input',
-            type: 'text',
-            label: 'Observacion de estado (opcional)',
-            placeholder: 'Se espera la llegada de los repuestos para finalizar el reporte',
-            id: 'observacion',
-            name: 'observacion',
-            tamaño: 'w-full',
-            vmodel: 'estado.observacion',
-        })
+
 
         // Resumen de reporte de mantenimiento
 //         .addCampo({
@@ -295,7 +346,7 @@ export function useReporteBuilder({
     builder.addCampo({
         component: 'Label',
         text: `<i class="fa-solid fa-signature text-blue-500 mr-1"></i> RECIBIDO POR: <br> <span class="text-gray-600 dark:text-gray-400 text-sm">Si dejas vacío el campo de firma, se enviará automáticamente un correo a la persona responsable para que firme el reporte.</span>`,
-        tamaño: 'w-full md:col-span-2 pt-1'
+        tamaño: 'w-full lg:col-span-8 col-span-3 pt-1'
     })
 
         .addCampo({
@@ -305,22 +356,9 @@ export function useReporteBuilder({
             placeholder: 'Correo del que recibe',
             id: 'correo',
             name: 'correo',
-            tamaño: 'w-full',
+            tamaño: 'w-full lg:col-span-4 md:col-span-2 col-span-3',
             vmodel: 'recibido.correo',
             multiple: true,
-        })
-
-        .addCampo({
-            component: 'Input',
-            type: 'text',
-            label: 'Nombre *',
-            placeholder: 'Juan Perez',
-            id: 'nombre',
-            name: 'nombre',
-            tamaño: 'w-full',
-            minlength: 3,
-            vmodel: 'recibido.nombre',
-            upperCase: true
         })
 
         .addCampo({
@@ -330,18 +368,33 @@ export function useReporteBuilder({
             placeholder: 'Gerente',
             id: 'cargo',
             name: 'cargo',
-            tamaño: 'w-full',
+            tamaño: 'w-full lg:col-span-4 md:col-span-1 col-span-3 ',
             minlength: 3,
             vmodel: 'recibido.cargo',
             upperCase: true
         })
+
+        .addCampo({
+            component: 'Input',
+            type: 'text',
+            label: 'Nombre *',
+            placeholder: 'Juan Perez',
+            id: 'nombre',
+            name: 'nombre',
+            tamaño: 'w-full lg:col-span-4 md:col-span-1 col-span-3',
+            minlength: 3,
+            vmodel: 'recibido.nombre',
+            upperCase: true
+        })
+
+
 
     builder.addCampo({
         component: 'Dibujo',
         label: 'Firma del que Recibe: (opcional)',
         placeholder: 'Descripcion de la actividad',
         vmodel: 'actividades',
-        tamaño: ' w-full md:col-span-2 flex justify-center',
+        tamaño: ' w-full lg:col-span-8 col-span-3 flex justify-center',
         rows: 5,
         vmodel: 'recibido.firma'
     })
