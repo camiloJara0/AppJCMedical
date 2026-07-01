@@ -39,9 +39,14 @@ export const useReporteStore = defineStore('Reportes', {
             },
             estado: {
                 observacion: ''
+            },
+            resultado: {
+                estado: '',
+                observacion: ''
             }
         },
         ReporteSeleccionado: null,
+        showPDFReporte: false,
     }),
 
     getters: {

@@ -7,22 +7,14 @@ export function useClienteActions({
   notificaciones,
   llamadatos,
   refresh,
-  show,
-  isEditing
 }) {
 
   const store = useClientesStore()
   
   const agregarCliente = () => {
-    show.value = true;
+    store.showNuevoCliente = true;
     varView.soloVer = false;
     varView.isEditing = false
-  };
-
-  const cerrar = () => {
-    show.value = false;
-    isEditing.value = false;
-    varView.soloVer = true;
   };
 
   const verCliente = async (Cliente) => {
@@ -31,8 +23,8 @@ export function useClienteActions({
     store.Formulario.Cliente.telefono = Cliente.telefono;
     store.Formulario.Cliente.correo = Cliente.correo;
     store.Formulario.Cliente.estado = Cliente.estado;
-    show.value = true
-    isEditing.value = true;
+    store.showNuevoCliente = true
+    store.editarCliente = true;
     varView.isEditing = true
   };
 
@@ -66,7 +58,6 @@ export function useClienteActions({
     notificaciones.mensaje();
     notificaciones.options.background = "#d33";
 
-    cerrar();
     await llamadatos();
     refresh.value++;
   };
@@ -74,7 +65,6 @@ export function useClienteActions({
   return {
     agregarCliente,
     verCliente,
-    cerrar,
     eliminarClientes
   };
 }

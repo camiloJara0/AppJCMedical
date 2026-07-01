@@ -43,7 +43,8 @@ export const navMenuAdmin = [
         nombre: 'Equipos',
         icono: 'fa-solid fa-desktop',
         ruta: '/Productos/Equipos',
-        action: 'Equipos'
+        action: 'Equipos',
+        accesoRapido: true
     },
     {
         id: 7,
@@ -73,7 +74,6 @@ export const navMenuAdmin = [
         icono: 'fa-solid fa-user-gear',
         ruta: '/Usuarios',
         action: 'Tecnicos',
-        accesoRapido: true
     },
     {
         id: 11,

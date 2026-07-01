@@ -26,7 +26,7 @@ export function useProductosBuilder({
         ])
         .setCamposRequeridos(['Producto.nombre', 'Producto.descripcion','Producto.stock',])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Producto' : 'Nuevo Producto')
+        .nuevaSeccion('Formulario Producto')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-building text-blue-500 mr-1"></i>Datos de la Categoria',

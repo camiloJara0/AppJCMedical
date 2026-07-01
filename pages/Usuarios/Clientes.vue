@@ -2,19 +2,17 @@
 import Form from "~/components/organism/Forms/Form.vue";
 import { ref, onMounted, watch, unref } from "vue";
 import { useClienteActions } from "~/composables/Usuarios/Cliente.js";
-import { useClientesBuilder } from "~/build/Clientes/useClientesBuilder";
 import FondoDefault from "~/components/atoms/Fondos/FondoDefault.vue";
 import { useClientesStore } from "~/stores/Formularios/Clientes";
 import TablaNuxt from "~/components/organism/Table/TablaNuxt.vue";
+import Cliente from "~/components/paginas/Forms/Cliente.vue";
 
 const varView = useVarView();
 const notificaciones = useNotificacionesStore();
 const storeClientes = useClientesStore()
 const refresh = ref(1);
-const active = ref(false);
-const isEditing = ref(false);
 
-const { Clientes } = storeToRefs(storeClientes)
+const { Clientes, showNuevoCliente, editarCliente } = storeToRefs(storeClientes)
 
 async function llamadatos(cambio = false) {
     await storeClientes.traer(true, cambio);
@@ -24,19 +22,16 @@ async function llamadatos(cambio = false) {
 const {
     agregarCliente,
     verCliente,
-    cerrar,
     eliminarClientes
 } = useClienteActions({
     storeClientes,
     varView,
     notificaciones,
     llamadatos,
-    refresh,
-    show: active,
-    isEditing
+    refresh
 });
 
-watch(() => active.value,
+watch(() => showNuevoCliente.value,
     async (estado) => {
         if (!estado && varView.cambioEnApi) {
             await llamadatos(true);
@@ -50,13 +45,7 @@ onMounted(async () => {
     await llamadatos();
 });
 
-const propiedadesFormulario = useClientesBuilder({
-    storeId: "RegistroCliente",
-    storePinia: "Clientes",
-    cerrar: cerrar,
-    active,
-    isEditing
-});
+
 
 const columns = [
     { accessorKey: 'id', header: 'ID' },
@@ -152,6 +141,6 @@ const propiedadesTabla = computed(() => {
             <TablaNuxt 
                 :Propiedades="propiedadesTabla"
             />
-        <Form :Propiedades="propiedadesFormulario" />
+        <Cliente/>
     </FondoDefault>
 </template>

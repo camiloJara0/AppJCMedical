@@ -24,7 +24,7 @@ export function useTecnicosBuilder({
         ])
         .setCamposRequeridos(['Tecnico.nombre',])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Técnico' : 'Nuevo Técnico')
+        .nuevaSeccion('Formulario Técnico')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-wrench text-blue-500 mr-1"></i>Datos del Técnico',

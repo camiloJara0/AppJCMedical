@@ -104,7 +104,6 @@ export function useCitaActions({
     store.Formulario.Cita.id = Cita.id;
     store.Formulario.Cita.tecnico_id = Cita.tecnico_id;
     store.Formulario.Cita.cliente_id = Cita.cliente_id;
-    store.Formulario.Cita.equipo_id = Cita.equipo_id;
     store.Formulario.Cita.tipo = Cita.tipo;
     store.Formulario.Cita.fecha = Cita.fecha;
     store.Formulario.Cita.hora = Cita.hora;
@@ -114,6 +113,8 @@ export function useCitaActions({
 
     if(Cita.equipo_id === null){
       store.Formulario.Cita.equipo_id = Cita.equipos.map(c => c.id)
+    } else {
+      store.Formulario.Cita.equipo_id = [Cita.equipo_id]
     }
     varView.showNuevaCita = true
     varView.isEditing = true

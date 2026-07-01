@@ -22,7 +22,7 @@ export function useCategoriasBuilder({
         ])
         .setCamposRequeridos(['Categoria.nombre', 'Categoria.descripcion',,])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Categoria' : 'Nueva Categoria')
+        .nuevaSeccion('Formulario Categoria')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-building text-blue-500 mr-1"></i>Datos de la Categoria',

@@ -24,7 +24,7 @@ export function useReporteActions({
     store.Formulario.cliente = reporte.cliente || {};
     store.Formulario.tecnico = reporte.tecnico || {};
 
-    show.value = true;
+    store.showPDFReporte = true;
   };
 
   const editarReporte = async (reporte) => {
@@ -114,6 +114,7 @@ export function useReporteActions({
 
   const cerrar = () => {
     show.value = false;
+    store.showPDFReporte = false
   };
 
   return {

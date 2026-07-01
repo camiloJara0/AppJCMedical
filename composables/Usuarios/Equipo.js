@@ -1,3 +1,4 @@
+import { mapCamposLimpios } from "~/components/organism/Forms/useFormulario";
 import { eliminarEquipo } from "~/Core/Equipos/DeleteEquipos";
 import { useEquiposStore } from "~/stores/Formularios/Equipos/Equipo";
 
@@ -14,6 +15,7 @@ export function useEquipoActions({
   const store = useEquiposStore()
   
   const agregarEquipo = () => {
+    mapCamposLimpios(store.Formulario)
     show.value = true;
     varView.soloVer = false;
     varView.isEditing = false

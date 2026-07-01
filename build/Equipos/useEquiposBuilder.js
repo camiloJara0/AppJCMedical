@@ -23,7 +23,7 @@ export function useEquiposBuilder({
         ])
         .setCamposRequeridos(['Equipo.cliente_id', 'Equipo.tipo_equipo_id', 'Equipo.nombre'])
         .setFormularioContenedorCampos('grid md:grid-cols-2! grid-cols-1 ')
-        .nuevaSeccion(isEditing ? 'Editar Equipo' : 'Nuevo Equipo')
+        .nuevaSeccion('Formulario Equipo')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-cogs text-blue-500 mr-1"></i>Datos del Equipo',

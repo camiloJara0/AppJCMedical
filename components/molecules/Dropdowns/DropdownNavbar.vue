@@ -13,7 +13,7 @@ const props = defineProps({
   <!-- Dropdown Item Principal -->
   <UDropdownMenu class="hidden md:flex" :items="props.submenu">
     <UButton :label="nombre" :icon="'i-lucide-' + (icon.split('-').pop() || 'menu')" color="gray" variant="ghost" size="sm"
-      class="text-gray-300 hover:text-white transition-colors flex gap-1 items-center">
+      class="text-gray-100 hover:text-white transition-colors flex gap-1 items-center">
 
     </UButton>
   </UDropdownMenu>

@@ -1,8 +1,8 @@
 <script setup>
 import Pagina from '~/components/organism/Pagina/Pagina.vue'
 import PDFServicio from '~/components/paginas/PDFServicio.vue'
-import Cita from '~/components/paginas/Cita.vue'
-import Reporte from '~/components/paginas/Reporte.vue'
+import Cita from '~/components/paginas/Forms/Cita.vue'
+import Reporte from '~/components/paginas/Forms/Reporte.vue'
 
 import { ComponenteBuilder } from '~/build/Constructores/ComponentesBuilder'
 import { CalendarioBuilder, CitasBuilder } from '~/build/Constructores/CalendarioBuilder'

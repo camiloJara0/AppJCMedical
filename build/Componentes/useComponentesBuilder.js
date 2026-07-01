@@ -22,7 +22,7 @@ export function useComponentesBuilder({
         ])
         .setCamposRequeridos(['Componente.sistema_id', 'Componente.nombre'])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Componente' : 'Nuevo Componente')
+        .nuevaSeccion('Formulario Componente')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-microchip text-blue-500 mr-1"></i>Datos del Componente',

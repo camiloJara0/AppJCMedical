@@ -1,6 +1,6 @@
 <script setup>
 import { useReporteBuilder } from '~/build/Reporte/useReporteBuilder';
-import Form from '../organism/Forms/Form.vue';
+import Form from '~/components/organism/Forms/Form.vue';
 
 const varView = useVarView();
 
@@ -17,8 +17,6 @@ const propiedades = computed(() =>
         isEditing: varView.isEditing,
     })
 )
-
-
 </script>
 
 <template>

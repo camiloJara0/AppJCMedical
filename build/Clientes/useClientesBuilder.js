@@ -21,7 +21,7 @@ export function useClientesBuilder({
         ])
         .setCamposRequeridos(['Cliente.nombre', 'Cliente.telefono', 'Cliente.correo'])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Cliente' : 'Nuevo Cliente')
+        .nuevaSeccion('Formulario Cliente')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-user text-blue-500 mr-1"></i>Datos del Cliente',

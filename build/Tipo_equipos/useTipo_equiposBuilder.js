@@ -22,7 +22,7 @@ export function useTipo_equiposBuilder({
         ])
         .setCamposRequeridos(['Tipo_equipo.nombre'])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Tipo de Equipo' : 'Nuevo Tipo de Equipo')
+        .nuevaSeccion('Formulario Tipo de Equipo')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-layer-group text-blue-500 mr-1"></i>Datos del Tipo de Equipo',

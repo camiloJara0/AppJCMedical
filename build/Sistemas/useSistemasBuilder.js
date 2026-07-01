@@ -20,7 +20,7 @@ export function useSistemasBuilder({
             { type: 'cerrar', text: 'Cancelar', color: 'neutral', accion: cerrar },
         ])
         .setFormularioContenedorCampos('flex! flex-col gap-5')
-        .nuevaSeccion(isEditing ? 'Editar Sistema' : 'Nuevo Sistema')
+        .nuevaSeccion('Formulario Sistema')
         .addCampo({
             component: 'Label',
             text: '<i class="fa-solid fa-gears text-blue-500 mr-1"></i>Datos del Sistema',

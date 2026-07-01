@@ -19,6 +19,8 @@ export const useClientesStore = defineStore('Clientes', {
             }
         },
         ClienteSeleccionada: null,
+        showNuevoCliente: false,
+        editarCliente: false
     }),
 
     getters: {
