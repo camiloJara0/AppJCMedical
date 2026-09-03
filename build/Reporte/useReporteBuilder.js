@@ -45,23 +45,70 @@ export function useReporteBuilder({
     builder
         .nuevaSeccion('Checklist de componentes')
 
+        // ─────────────────────────────────────────────
+        // ENCABEZADO DEL EQUIPO
+        // ─────────────────────────────────────────────
         .addCampo({
             component: 'Label',
-            text: `<div class="flex items-center py-2 gap-1"><i class="fa-solid fa-gear text-blue-500 mr-1"></i><p class="md:text-xl text-sm font-bold">${reporteStore.Formulario.equipo.nombre}</p></div>`
-            , tamaño: 'lg:col-span-8 md:col-span-3 col-span-3 w-full'
+            text: `
+            <div class="flex items-center gap-3 py-3 px-1">
+                <div class="flex items-center justify-center
+                            w-9 h-9 rounded-lg
+                            bg-blue-50 dark:bg-blue-950/40
+                            text-blue-600 dark:text-blue-400">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </div>
+
+                <div class="min-w-0">
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                        Equipo
+                    </p>
+
+                    <p class="text-lg md:text-xl font-semibold
+                              text-gray-900 dark:text-white truncate">
+                        ${reporteStore.Formulario.equipo.nombre}
+                    </p>
+                </div>
+            </div>
+        `,
+            tamaño: 'w-full col-span-3 lg:col-span-8'
         })
+
 
     for (let i = 0; i < sistemas.length; i++) {
 
+        const sistema = sistemas[i]
+
+        // ─────────────────────────────────────────────
+        // SISTEMA
+        // ─────────────────────────────────────────────
         builder.addCampo({
             component: 'Label',
-            text: `<i class="fa-solid fa-gears text-blue-500 mr-1"></i> ${sistemas[i].nombre}`,
-            tamaño: 'w-full lg:col-span-8 md:col-span-3 col-span-3'
+            text: `
+            <div class="
+                mt-5 mb-2
+                pb-2
+                border-b border-gray-200 dark:border-gray-800
+            ">
+                <p class="
+                    text-xs
+                    font-semibold
+                    uppercase
+                    tracking-wider
+                    text-gray-500
+                    dark:text-gray-400
+                ">
+                    ${sistema.nombre}
+                </p>
+            </div>
+        `,
+            tamaño: 'w-full col-span-3 lg:col-span-8'
         })
 
-        for (let j = 0; j < sistemas[i].componentes.length; j++) {
 
-            const componente = sistemas[i].componentes[j]
+        for (let j = 0; j < sistema.componentes.length; j++) {
+
+            const componente = sistema.componentes[j]
 
             // Inicializar estructura reactiva
             if (!reporteStore.Formulario.componentes[componente.id]) {
@@ -71,55 +118,145 @@ export function useReporteBuilder({
                 }
             }
 
+            // ─────────────────────────────────────────────
+            // CONTENEDOR DEL COMPONENTE
+            // ─────────────────────────────────────────────
+            builder.addCampo({
+                component: 'Label',
+                text: `
+                <div class="
+                    mt-3
+                    p-4
+                    rounded-xl
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    bg-white
+                    dark:bg-gray-900/40
+                    shadow-sm
+                    hover:shadow-md
+                    transition-shadow
+                    duration-200
+                ">
+
+                    <div class="flex items-center justify-between gap-3 mb-2">
+
+                        <div class="min-w-0">
+                            <p class="
+                                text-sm
+                                font-semibold
+                                text-gray-900
+                                dark:text-white
+                                truncate
+                            ">
+                                <i class="fa-solid fa-circle-dot"></i>  ${componente.nombre}:
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="
+                        grid
+                        grid-cols-1
+                        lg:grid-cols-12
+                        gap-4
+                        items-start
+                    ">
+            `,
+                tamaño: 'w-full col-span-3 lg:col-span-8'
+            })
+
+
+            // ─────────────────────────────────────────────
+            // ESTADO
+            // ─────────────────────────────────────────────
             builder.addCampo({
                 component: 'Checkbox',
-                label: componente.nombre + ': ',
-                vmodel: `componentes.${componente.id}.bueno`,
-                tamaño: 'w-min lg:mt-5 lg:col-span-1 col-span-1',
                 label: 'Bueno',
+                vmodel: `componentes.${componente.id}.bueno`,
+                tamaño: 'w-fit lg:mt-5 lg:col-span-1 col-span-1',
                 options: [
-                    { label: 'Bueno', value: 'bueno' },
+                    {
+                        label: 'Bueno',
+                        value: 'bueno'
+                    }
                 ],
                 events: {
-                    onChange: (value) => { seleccionarEstado(value, componente.id, 'bueno') }
+                    onChange: (value) => {
+                        seleccionarEstado(
+                            value,
+                            componente.id,
+                            'bueno'
+                        )
+                    }
                 }
             })
 
             builder.addCampo({
                 component: 'Checkbox',
-                label: componente.nombre + ': ',
-                vmodel: `componentes.${componente.id}.malo`,
-                tamaño: 'w-full lg:mt-5 lg:col-span-1 col-span-1',
-                label: 'Malo',
-                options: [
-                    { label: 'Malo', value: 'malo' },
-                ],
-                events: {
-                    onChange: (value) => { seleccionarEstado(value, componente.id, 'malo') }
-                }
-            })
-
-            builder.addCampo({
-                component: 'Checkbox',
-                label: componente.nombre + ': ',
-                vmodel: `componentes.${componente.id}.regular`,
-                tamaño: 'w-full lg:mt-5 lg:col-span-1 col-span-1',
                 label: 'Regular',
+                vmodel: `componentes.${componente.id}.regular`,
+                tamaño: 'w-min lg:mt-5 lg:col-span-1 col-span-1',
                 options: [
-                    { label: 'Regular', value: 'regular' }
+                    {
+                        label: 'Regular',
+                        value: 'regular'
+                    }
                 ],
                 events: {
-                    onChange: (value) => { seleccionarEstado(value, componente.id, 'regular') }
+                    onChange: (value) => {
+                        seleccionarEstado(
+                            value,
+                            componente.id,
+                            'regular'
+                        )
+                    }
                 }
             })
 
+            builder.addCampo({
+                component: 'Checkbox',
+                label: 'Malo',
+                vmodel: `componentes.${componente.id}.malo`,
+                tamaño: 'w-min lg:mt-5 lg:col-span-1 col-span-1',
+                options: [
+                    {
+                        label: 'Malo',
+                        value: 'malo'
+                    }
+                ],
+                events: {
+                    onChange: (value) => {
+                        seleccionarEstado(
+                            value,
+                            componente.id,
+                            'malo'
+                        )
+                    }
+                }
+            })
+
+
+            // ─────────────────────────────────────────────
+            // OBSERVACIÓN
+            // ─────────────────────────────────────────────
             builder.addCampo({
                 component: 'Input',
-                label: `Observación ${componente.nombre} (opcional)`,
-                // placeholder: `Observación ${componente.nombre}`,
-                placeholder: '...',
+                label: 'Observación',
+                placeholder: 'Agregar una observación...',
                 vmodel: `componentes.${componente.id}.observacion`,
                 tamaño: 'w-full lg:col-start-4 lg:col-span-5 col-span-3'
+            })
+
+
+            // ─────────────────────────────────────────────
+            // CIERRE VISUAL DEL COMPONENTE
+            // ─────────────────────────────────────────────
+            builder.addCampo({
+                component: 'Label',
+                text: `</div></div>`,
+                tamaño: 'w-full col-span-3 lg:col-span-8'
             })
         }
     }

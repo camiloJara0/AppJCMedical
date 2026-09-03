@@ -168,7 +168,8 @@ export function useCitaActions({
   /* =========================
      ACTIVAR CITA
   ========================= */
-  async function activarCita(cita) {
+  async function activarCita(data) {
+    const cita = JSON.parse(JSON.stringify(data))
     if (cita.equipo_id === null) {
       store.CitaSeleccionada = JSON.parse(JSON.stringify(cita))
       store.Equiposcita = cita.equipos
