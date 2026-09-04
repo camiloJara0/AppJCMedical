@@ -9,7 +9,7 @@ export const useIndexedDBStore = defineStore("indexeddb", {
             almacen: '',
             aguardar: {},
             respuesta: null,
-            EXPECTED_VERSION: 1,
+            EXPECTED_VERSION: 2,
         };
     },
     actions: {
@@ -39,6 +39,7 @@ export const useIndexedDBStore = defineStore("indexeddb", {
                         'tecnicos',
                         'tipo_equipos',
                         'tipo_equipo_sistemas',
+                        'solicitudes_citas',
                     ]
 
                     // Crear cada objectStore con su índice

@@ -42,6 +42,18 @@ export function useClientesBuilder({
         })
         .addCampo({
             component: 'Input',
+            type: 'text',
+            label: 'Nit *',
+            placeholder: 'Nit del cliente',
+            id: 'nit',
+            name: 'nit',
+            tamaño: 'w-full',
+            minlength: 3,
+            vmodel: 'Cliente.NIT',
+            upperCase: true
+        })
+        .addCampo({
+            component: 'Input',
             type: 'tel',
             label: 'Teléfono *',
             placeholder: 'Teléfono del cliente',

@@ -25,6 +25,7 @@ export default defineNuxtConfig({
       rol: 'api/rol',
       secciones: 'api/secciones',
       recibido_firma: 'api/recibido_firma',
+      solicitud_cita: 'api/solicitud_cita',
 
       cambiarContraseña: 'api/cambiarContraseña',
       cambiarContraseñaPrimerVez: 'api/cambiarContraseñaPrimerVez',

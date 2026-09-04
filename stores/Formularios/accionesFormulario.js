@@ -27,6 +27,8 @@ import { enviarSistemas } from '~/Core/Sistemas/PostSistemas';
 // Componentes
 import { enviarComponentes } from '~/Core/Componentes/PostComponentes';
 import { enviarFirma } from '~/Core/Reporte/PostFirmaReporte';
+// Solicitudes Citas
+import { actualizarSolicitudCita } from '~/Core/SolicitudesCitas/PutSolicitudCita';
 
 
 // Importa accion de cada formulario desde el core
@@ -116,6 +118,10 @@ export const accionesFormularios = {
     },
     RegistrarFirma: async (data) => {
         const respuesta = await enviarFirma(data)
+        return respuesta
+    },
+    ActualizarSolicitudCita: async (data) => {
+        const respuesta = await actualizarSolicitudCita(data.SolicitudCita)
         return respuesta
     }
 };

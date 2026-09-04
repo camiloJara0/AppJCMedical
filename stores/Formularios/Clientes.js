@@ -15,7 +15,8 @@ export const useClientesStore = defineStore('Clientes', {
                 nombre: '',
                 telefono: '',
                 correo: '',
-                estado: ''
+                estado: '',
+                NIT: '',
             }
         },
         ClienteSeleccionada: null,

@@ -17,6 +17,9 @@ export const useVarView = defineStore('varView', {
         showEnFila: false,
         showCalendario: true,
         showEnTabla: true,
+        showSolicitudes: false,
+        showSolicitudCitaModal: false,
+        showConvertirCita: false,
         // formulario Datos Excel
         showDatosExcel: false,
         showCrearTabla: false,
