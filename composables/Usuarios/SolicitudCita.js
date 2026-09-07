@@ -46,7 +46,7 @@ export function useSolicitudCitaActions({
       cliente_id: solicitud.cliente_id || '',
       equipo_id: solicitud.equipo_id || '',
     }
-    isEditing.value = true
+    isEditing = true
     show.value = true
     varView.showSolicitudCitaModal = true
   }
@@ -73,7 +73,7 @@ export function useSolicitudCitaActions({
 
   function cerrar() {
     show.value = false
-    isEditing.value = false
+    isEditing = false
     varView.showSolicitudCitaModal = false
     varView.showConvertirCita = false
     store.SolicitudCitaSeleccionada = null

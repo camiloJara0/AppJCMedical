@@ -93,6 +93,11 @@ export async function cargarStore(storeName) {
       tablaStore = useRolStore();
       break;
     }
+    case 'SolicitudCita': {
+      const { useSolicitudesCitasStore } = await import('~/stores/Formularios/SolicitudesCitas')
+      tablaStore = useSolicitudesCitasStore();
+      break;
+    }
     default:
       console.warn(`Store "${storeName}" no reconocido.`);
       break;

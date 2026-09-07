@@ -49,9 +49,9 @@ const formConvertirCita = ref({
   hora: '',
 })
 
-const {showActividadDerivada} = storeToRefs(varView)
+const { showActividadDerivada } = storeToRefs(varView)
 const { Citas } = storeToRefs(citasStore)
-const { SolicitudesCitas } = storeToRefs(storeSolicitudes)
+const { SolicitudesCitas, solicitudesPendientes } = storeToRefs(storeSolicitudes)
 
 onMounted(async () => {
     await citasStore.traer(false)
@@ -166,7 +166,7 @@ async function abrirConvertirEnCita(solicitud) {
     }
 
     showConvertirCitaModal.value = true
-    varView.showSolicitudes = false
+    // varView.showSolicitudes = false
 }
 
 async function confirmarConvertirEnCita() {
@@ -196,78 +196,8 @@ async function confirmarConvertirEnCita() {
     const config = useRuntimeConfig()
     const token = localStorage.getItem('token')
 
-    // Buscar o crear cliente
-    let cliente_id = solicitud.cliente_id
-    if (!cliente_id && solicitud.NIT) {
-      // Intentar crear el cliente
-      try {
-        const respCliente = await fetch(`${config.public.api}/api/cliente`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            nombre: solicitud.nombre_contacto,
-            correo: solicitud.correo,
-            telefono: solicitud.telefono,
-            NIT: solicitud.NIT,
-            estado: 'activo',
-          })
-        })
-        if (respCliente.ok) {
-          const dataCliente = await respCliente.json()
-          cliente_id = dataCliente.id
-        }
-      } catch (e) {
-        console.error('Error al crear cliente:', e)
-      }
-    }
-
-    // Buscar o crear equipo
-    let equipo_id = solicitud.equipo_id
-    if (!equipo_id && solicitud.serial_equipo) {
-      try {
-        // Necesitamos un tipo_equipo_id, usar uno por defecto o buscar
-        const tiposResp = await fetch(`${config.public.api}/api/tipo_equipo`, {
-          headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
-        })
-        let tipoEquipoId = 1
-        if (tiposResp.ok) {
-          const tipos = await tiposResp.json()
-          if (tipos.length > 0) tipoEquipoId = tipos[0].id
-        }
-
-        const respEquipo = await fetch(`${config.public.api}/api/equipo`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            cliente_id: cliente_id,
-            tipo_equipo_id: tipoEquipoId,
-            nombre: solicitud.tipo_equipo_descripcion || solicitud.marca + ' ' + solicitud.modelo,
-            marca: solicitud.marca,
-            modelo: solicitud.modelo,
-            serie: solicitud.serial_equipo,
-            estado: 'activo',
-          })
-        })
-        if (respEquipo.ok) {
-          const dataEquipo = await respEquipo.json()
-          equipo_id = dataEquipo.id
-        }
-      } catch (e) {
-        console.error('Error al crear equipo:', e)
-      }
-    }
-
-    // Crear la cita
     try {
-      const respCita = await fetch(`${config.public.api}/api/cita`, {
+      const resp = await fetch(`${config.public.api}/api/solicitud_cita/convertir`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -275,23 +205,14 @@ async function confirmarConvertirEnCita() {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
+          solicitud_id: solicitud.id,
           tecnico_id: formConvertirCita.value.tecnico_id,
-          cliente_id: cliente_id,
-          equipo_id: equipo_id,
-          tipo: solicitud.tipo_cita,
           fecha: formConvertirCita.value.fecha,
           hora: formConvertirCita.value.hora,
         })
       })
 
-      if (respCita.ok) {
-        // Actualizar estado de la solicitud
-        await storeSolicitudes.actualizar({
-          id: solicitud.id,
-          estado: 'convertida_cita',
-          respuesta_admin: `Convertida en cita el ${new Date().toLocaleDateString('es-CO')}`,
-        })
-
+      if (resp.ok) {
         const notificaciones = useNotificacionesStore()
         notificaciones.options.icono = 'success'
         notificaciones.options.titulo = '¡Cita creada!'
@@ -377,7 +298,7 @@ const propiedades = computed(() => {
             titulo: 'Calendario de tu Agenda',
             descripcion: 'Visualiza y administra la agenda de citas.',
             button: [
-                { icon: 'fa-solid fa-calendar-check', accion: showSolicitudesView, text: 'Solicitudes', color: 'warning', variant: 'subtle' },
+                { icon: 'fa-solid fa-calendar-check', action: showSolicitudesView, text: 'Solicitudes ' + solicitudesPendientes.value, color: 'warning', variant: 'subtle' },
                 { text: 'En Lista', icon: 'fa-solid fa-table', color: 'neutral', variant: 'subtle', action: showFila },
                 { text: 'Calendario', icon: 'fa-solid fa-calendar', color: varView.showCalendario ? 'primary' : 'neutral', variant: 'subtle', action: showCalendarioView },
                 puedePost ? { text: 'Agendar', icon: 'fa-solid fa-plus', color: 'primary', action: agregarCita } : '',
@@ -630,7 +551,7 @@ const propiedadesTabla = computed(() => {
         columns: columns,
         buttons: [
             { icon: 'lucide-calendar-check', accion: showSolicitudesView, texto: 'Solicitudes', color: 'warning', variant: 'subtle' },
-            { icon: 'lucide-table', accion: showAgendaView, texto: 'Agenda', color: 'neutral', variant: 'subtle' },
+            { icon: 'lucide-calendar', accion: showAgendaView, texto: 'Agenda', color: 'neutral', variant: 'subtle' },
         ],
         filtros: [
             { columna: 'cliente.nombre', placeholder: 'Cliente' },
@@ -731,8 +652,8 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
     </FondoDefault>
 
     <!-- Modal Convertir en Cita -->
-    <FondoDefault v-if="showConvertirCitaModal">
-        <div class="w-full max-w-lg">
+    <UModal v-model:open="showConvertirCitaModal">
+        <template #content>
             <UCard>
                 <template #header>
                     <div class="flex items-center justify-between">
@@ -748,7 +669,7 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
                         <UButton icon="i-lucide-x" color="neutral" variant="ghost" @click="cerrarConvertirCita" />
                     </div>
                 </template>
-
+    
                 <div class="space-y-4">
                     <!-- Info de la solicitud -->
                     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-sm">
@@ -758,15 +679,16 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
                             <div class="col-span-2"><span class="text-gray-500">Motivo:</span> {{ solicitudSeleccionada?.motivo || 'N/A' }}</div>
                         </div>
                     </div>
-
+    
                     <!-- Selector de Técnico -->
                     <USelectMenu
                         v-model="formConvertirCita.tecnico_id"
                         :items="tecnicosList.map(t => ({ label: t.nombre, value: t.id }))"
                         placeholder="Seleccionar técnico"
                         label="Técnico *"
+                        valueKey="value"
                     />
-
+    
                     <!-- Fecha -->
                     <UInput
                         v-model="formConvertirCita.fecha"
@@ -774,7 +696,7 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
                         label="Fecha *"
                         placeholder="Fecha de la cita"
                     />
-
+    
                     <!-- Hora -->
                     <UInput
                         v-model="formConvertirCita.hora"
@@ -783,7 +705,7 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
                         placeholder="Hora de la cita"
                     />
                 </div>
-
+    
                 <template #footer>
                     <div class="flex justify-end gap-2">
                         <UButton label="Cancelar" color="neutral" variant="subtle" @click="cerrarConvertirCita" />
@@ -791,8 +713,8 @@ const solicitudSeleccionada = computed(() => storeSolicitudes.SolicitudCitaSelec
                     </div>
                 </template>
             </UCard>
-        </div>
-    </FondoDefault>
+        </template>
+    </UModal>
 
     <ReporteVariosEquipos/>
     <PDFServicio v-if="varView.showPDFServicio"></PDFServicio>

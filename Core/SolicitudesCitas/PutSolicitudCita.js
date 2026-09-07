@@ -37,7 +37,7 @@ export async function actualizarSolicitudCita(solicitud) {
     }
 
     const data = await response.json();
-    return data;
+    return true;
   } catch (error) {
     console.error('Error al actualizar solicitud de cita:', error);
     throw error;
