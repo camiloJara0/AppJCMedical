@@ -1,4 +1,44 @@
 import { useReporteStore } from "~/stores/Formularios/Reportes/Reporte";
+import { leerComoDataURL } from "~/utils/compresionImagenes";
+
+/**
+ * Normaliza una imagen del formulario al contrato del backend:
+ * { id?, url?, base64?, descripcion, tamano, position }.
+ * Acepta también File/Blob y strings planos (data URI o URL) por compatibilidad.
+ */
+async function normalizarImagenPayload(imagen, position) {
+    if (!imagen) return null;
+
+    if (imagen instanceof Blob) {
+        return {
+            base64: await leerComoDataURL(imagen),
+            descripcion: '',
+            tamano: '50',
+            position,
+        };
+    }
+
+    if (typeof imagen === 'string') {
+        if (!imagen) return null;
+        return imagen.startsWith('data:image')
+            ? { base64: imagen, descripcion: '', tamano: '50', position }
+            : { url: imagen, descripcion: '', tamano: '50', position };
+    }
+
+    const payload = {
+        descripcion: imagen.descripcion ?? '',
+        tamano: imagen.tamano ?? '50',
+        position,
+    };
+
+    if (imagen.id) payload.id = imagen.id;
+    if (imagen.base64) payload.base64 = imagen.base64;
+    if (imagen.url) payload.url = imagen.url;
+
+    if (!payload.base64 && !payload.url && !payload.id) return null;
+
+    return payload;
+}
 
 export async function enviarReporte(isEditing, data) {
     try {
@@ -33,6 +73,14 @@ export async function enviarReporte(isEditing, data) {
         data.accesorios = data.accesorios.filter(d => {
             return d && Object.values(d).some(v => v !== '' && v != null);
         });
+
+        if (Array.isArray(data.images)) {
+            data.images = (
+                await Promise.all(
+                    data.images.map((imagen, index) => normalizarImagenPayload(imagen, index))
+                )
+            ).filter(Boolean);
+        }
 
         const config = useRuntimeConfig()
         const token = localStorage.getItem('token')

@@ -18,6 +18,8 @@ export function loadComponent(name) {
     Button: () => import('~/components/atoms/Buttons/Button.vue'),
     Radio: () => import('~/components/atoms/RadioButtons/RadioButton.vue'),
     Dibujo: () => import('~/components/atoms/Canva/Dibujo.vue'),
+    FileUpload: () => import('~/components/atoms/Inputs/FileInput.vue'),
+    ImagenEvidencia: () => import('~/components/molecules/ImagenesEvidencia/ImagenEvidenciaUploader.vue')
   };
 
   const loader = componentMap[name];

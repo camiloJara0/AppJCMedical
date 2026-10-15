@@ -1,6 +1,12 @@
 import { FormularioBuilder } from '~/build/Constructores/FormBuilder'
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte'
 
+/**
+ * Configuración del wizard de Reporte de Mantenimiento.
+ * Genera la estructura que consume ReporteForm.vue:
+ * formulario.secciones[] = pasos { id, nombre, titulo, descripcion, icono,
+ * requeridos, completitud, opcional, bloques[] }.
+ */
 export function useReporteBuilder({
     storeId,
     storePinia,
@@ -10,669 +16,527 @@ export function useReporteBuilder({
 }) {
     const builder = new FormularioBuilder()
     const varView = useVarView()
-    const sistemas = varView.sistemasBuilder
     const reporteStore = useReporteStore()
+    const datos = reporteStore.Formulario
 
+    // ─────────────────────────────────────────────
+    // LÓGICA DE DOMINIO
+    // ─────────────────────────────────────────────
+
+    /** Exclusividad Bueno / Regular / Malo por componente. */
     function seleccionarEstado(value, id, estado) {
+        if (!value) return
 
-        if (value) {
-            if (estado == 'bueno') {
-                reporteStore.Formulario.componentes[id].malo = false
-                reporteStore.Formulario.componentes[id].regular = false
-            } else if (estado == 'regular') {
-                reporteStore.Formulario.componentes[id].bueno = false
-                reporteStore.Formulario.componentes[id].malo = false
-            } else {
-                reporteStore.Formulario.componentes[id].bueno = false
-                reporteStore.Formulario.componentes[id].regular = false
-            }
+        const componentes = datos.componentes[id]
+        if (estado === 'bueno') {
+            componentes.malo = false
+            componentes.regular = false
+        } else if (estado === 'regular') {
+            componentes.bueno = false
+            componentes.malo = false
+        } else {
+            componentes.bueno = false
+            componentes.regular = false
         }
     }
+
+    /** Asegura la estructura reactiva de cada componente del checklist. */
+    function inicializarComponentes() {
+        const sistemas = varView.sistemasBuilder || []
+
+        sistemas.forEach((sistema) => {
+            (sistema.componentes || []).forEach((componente) => {
+                if (!datos.componentes[componente.id]) {
+                    datos.componentes[componente.id] = {
+                        bueno: false,
+                        regular: false,
+                        malo: false,
+                        estado: null,
+                        observacion: '',
+                    }
+                }
+            })
+        })
+    }
+
+    inicializarComponentes()
+
+    // ─────────────────────────────────────────────
+    // UTILIDADES DE CONFIGURACIÓN
+    // ─────────────────────────────────────────────
+
+    const GRILLA_CAMPOS = 'grid grid-cols-1 lg:grid-cols-12 gap-4 items-start'
+    const GRILLA_GRUPO = 'grid grid-cols-1 lg:grid-cols-12 gap-3 items-start'
+
+    const listo = (valor) =>
+        Array.isArray(valor) ? valor.length > 0 : valor !== '' && valor !== null && valor !== undefined
+
+    const porcentaje = (listos, total) =>
+        total ? Math.round((listos / total) * 100) : 100
+
+    function checkboxEstado(id, etiqueta, estado, tamaño) {
+        return {
+            component: 'Checkbox',
+            label: etiqueta,
+            vmodel: `componentes.${id}.${estado}`,
+            tamaño,
+            options: [{ label: etiqueta, value: estado }],
+            events: {
+                onChange: (value) => seleccionarEstado(value, id, estado),
+            },
+        }
+    }
+
+    function tarjetaComponente(componente) {
+        return {
+            grupo: {
+                titulo: componente.nombre,
+                icono: 'fa-circle-dot',
+                grid: GRILLA_GRUPO,
+                tamaño: 'lg:col-span-full',
+                card: 'border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-950/40 shadow-none hover:shadow-md',
+            },
+            campos: [
+                checkboxEstado(componente.id, 'Bueno', 'bueno', 'lg:col-span-2'),
+                checkboxEstado(componente.id, 'Regular', 'regular', 'lg:col-span-2'),
+                checkboxEstado(componente.id, 'Malo', 'malo', 'lg:col-span-2'),
+                {
+                    component: 'Input',
+                    label: 'Observación',
+                    placeholder: 'Agregar una observación...',
+                    vmodel: `componentes.${componente.id}.observacion`,
+                    tamaño: 'lg:col-span-6',
+                },
+            ],
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PASOS DEL WIZARD
+    // ─────────────────────────────────────────────
+
+    const sistemas = varView.sistemasBuilder || []
+    const esFinalizado = datos.reporte.estado === 'realizada'
+
+    // ── Paso 1: Checklist de componentes ──
+    const pasoChecklist = {
+        id: 'checklist',
+        nombre: 'Componentes',
+        titulo: 'Checklist de componentes',
+        descripcion: 'Revisa el estado de cada componente de los sistemas del equipo.',
+        icono: 'fa-clipboard-check',
+        requeridos: [],
+        completitud: (form) => {
+            const estados = Object.values(form.componentes || {})
+            if (!estados.length) return 0
+            const marcados = estados.filter((c) => c.bueno || c.regular || c.malo).length
+            return porcentaje(marcados, estados.length)
+        },
+        bloques: [
+            {
+                titulo: datos.equipo?.nombre || 'Equipo',
+                icono: 'fa-gear',
+                descripcion: 'Información del equipo sobre el que se realiza el mantenimiento.',
+                campos: [
+                    {
+                        component: 'Label',
+                        text: `
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="rounded-xl bg-gray-50 dark:bg-gray-800/60 p-3">
+                                <p class="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Equipo</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">${datos.equipo?.nombre || '—'}</p>
+                            </div>
+                            <div class="rounded-xl bg-gray-50 dark:bg-gray-800/60 p-3">
+                                <p class="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Cliente</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">${datos.cliente?.nombre || '—'}</p>
+                            </div>
+                            <div class="rounded-xl bg-gray-50 dark:bg-gray-800/60 p-3">
+                                <p class="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Técnico</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">${datos.tecnico?.nombre || '—'}</p>
+                            </div>
+                            <div class="rounded-xl bg-gray-50 dark:bg-gray-800/60 p-3">
+                                <p class="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Fecha</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">${datos.Reporte?.fecha || '—'}</p>
+                            </div>
+                        </div>`,
+                        tamaño: 'lg:col-span-12',
+                    },
+                ],
+            },
+            ...sistemas.map((sistema) => ({
+                titulo: sistema.nombre,
+                icono: 'fa-diagram-project',
+                descripcion: `${(sistema.componentes || []).length} componente(s)`,
+                badge: `${(sistema.componentes || []).filter((c) => {
+                    const estado = datos.componentes[c.id] || {}
+                    return estado.bueno || estado.regular || estado.malo
+                }).length}/${(sistema.componentes || []).length}`,
+                campos: (sistema.componentes || []).map(tarjetaComponente),
+            })),
+        ],
+    }
+
+    // ── Paso 2: Elementos utilizados ──
+    const pasoElementos = {
+        id: 'elementos',
+        nombre: 'Elementos',
+        titulo: 'Elementos utilizados',
+        descripcion: 'Registra accesorios, materiales, mediciones y repuestos del servicio.',
+        icono: 'fa-toolbox',
+        requeridos: [],
+        completitud: (form) => {
+            const grupos = [form.accesorios, form.materiales, form.mediciones, form.repuestos]
+            const llenos = grupos.filter((grupo) => Array.isArray(grupo) && grupo.length).length
+            return porcentaje(llenos, grupos.length)
+        },
+        bloques: [
+            {
+                // titulo: 'Elementos y materiales',
+                // icono: 'fa-toolbox',
+                // descripcion: 'Agrega los elementos con los que se realizó el mantenimiento.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'GroupCampos',
+                        labelGroup: 'Accesorios con los que cuenta',
+                        vmodel: 'accesorios',
+                        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '', estado: '' } }],
+                        campos: [
+                            { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del accesorio' },
+                            { typeCampo: 'Select', label: 'Estado', key: 'estado', name: 'estado', placeholder: 'Selecciona el estado', options: ['Bueno', 'Malo'] },
+                        ],
+                        containerCampos: 'grid grid-cols-2 gap-3',
+                        tamaño: 'lg:col-span-12',
+                    },
+                    {
+                        component: 'GroupCampos',
+                        labelGroup: 'Set/Equipo patron/Materiales Utilizados',
+                        vmodel: 'materiales',
+                        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { descripcion: '', cantidad: '' } }],
+                        campos: [
+                            { typeCampo: 'Input', type: 'number', label: 'Cantidad', key: 'cantidad', name: 'cantidad', placeholder: '0' },
+                            { typeCampo: 'Input', type: 'text', label: 'Descripción', key: 'descripcion', name: 'descripcion', placeholder: 'Descripcion' },
+                        ],
+                        containerCampos: 'grid grid-cols-2 gap-3',
+                        tamaño: 'lg:col-span-12',
+                    },
+                    {
+                        component: 'GroupCampos',
+                        labelGroup: 'Mediciones Realizadas',
+                        vmodel: 'mediciones',
+                        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { variable: '', unidad: '', valor_medido: '', valor_esperado: '' } }],
+                        campos: [
+                            { typeCampo: 'Input', type: 'text', label: 'Unidad', key: 'unidad', name: 'unidad', placeholder: 'Centimetro' },
+                            { typeCampo: 'Input', type: 'text', label: 'Variable', key: 'variable', name: 'variable', placeholder: 'Neumatico' },
+                            { typeCampo: 'Input', type: 'number', label: 'Valor Medido', key: 'valor_medido', name: 'valor_medido', placeholder: '0' },
+                            { typeCampo: 'Input', type: 'number', label: 'Valor Esperado', key: 'valor_esperado', name: 'valor_esperado', placeholder: '0' },
+                        ],
+                        containerCampos: 'grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3',
+                        tamaño: 'lg:col-span-12',
+                    },
+                    {
+                        component: 'GroupCampos',
+                        labelGroup: 'Repuestos/Accesorios Requeridos',
+                        vmodel: 'repuestos',
+                        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '' } }],
+                        campos: [
+                            { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del repuesto' },
+                        ],
+                        containerCampos: 'grid grid-cols-2 gap-3',
+                        tamaño: 'lg:col-span-12',
+                    },
+                ],
+            },
+        ],
+    }
+
+    // ── Paso 3: Actividades y estado ──
+    const pasoActividades = {
+        id: 'actividades',
+        nombre: 'Actividades',
+        titulo: 'Actividades y observaciones',
+        descripcion: 'Documenta el trabajo realizado y define en qué etapa queda el reporte.',
+        icono: 'fa-clipboard-list',
+        requeridos: ['actividades', 'reporte.estado'],
+        bloques: [
+            {
+                // titulo: 'Actividades realizadas',
+                // icono: 'fa-clipboard-list',
+                // descripcion: 'Describe las actividades realizadas durante el mantenimiento y cualquier observación importante.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Textarea',
+                        label: 'Actividades / Observaciones',
+                        placeholder: 'Describe las actividades realizadas...',
+                        vmodel: 'actividades',
+                        tamaño: 'lg:col-span-12',
+                        rows: 8,
+                    },
+                ],
+            },
+            {
+                titulo: 'Estado del reporte',
+                icono: 'fa-list-check',
+                descripcion: 'Indica en qué etapa queda el reporte de mantenimiento.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Select',
+                        label: 'Estado del reporte *',
+                        placeholder: 'Estado',
+                        name: 'estado',
+                        id: 'estado',
+                        options: [
+                            'En proceso',
+                            'Esperando repuestos',
+                            { label: 'Finalizado', value: 'realizada' },
+                        ],
+                        vmodel: 'reporte.estado',
+                        tamaño: 'lg:col-span-4',
+                    },
+                    {
+                        component: 'Input',
+                        type: 'text',
+                        label: 'Observación (opcional)',
+                        placeholder: 'Describe el motivo del estado seleccionado',
+                        id: 'observacion',
+                        name: 'observacion',
+                        vmodel: 'estado.observacion',
+                        tamaño: 'lg:col-span-8',
+                    },
+                ],
+            },
+        ],
+    }
+
+    // ── Paso 4: Evidencia fotográfica ──
+    const pasoEvidencia = {
+        id: 'evidencia',
+        nombre: 'Evidencia',
+        titulo: 'Evidencia fotográfica',
+        descripcion: 'Agrega imágenes del mantenimiento. Se comprimen automáticamente antes de guardarse.',
+        icono: 'fa-camera',
+        requeridos: [],
+        opcional: true,
+        completitud: () => 100,
+        bloques: [
+            {
+                // titulo: 'Imágenes del reporte',
+                // icono: 'fa-images',
+                // descripcion: 'Define el tamaño de cada imagen en el PDF (100%, 50% o 30%) y su descripción.',
+                campos: [
+                    {
+                        component: 'ImagenEvidencia',
+                        label: 'Imágenes del reporte',
+                        description: 'JPG, PNG o WEBP de hasta 5 MB · máximo 20 imágenes',
+                        vmodel: 'images',
+                        tamaño: 'lg:col-span-12',
+                    },
+                ],
+            },
+        ],
+    }
+
+    // ── Paso 5: Recomendaciones ──
+    const pasoRecomendaciones = {
+        id: 'recomendaciones',
+        nombre: 'Recomendaciones',
+        // titulo: 'Recomendaciones',
+        // descripcion: 'Sugerencias para el cliente, riesgos detectados y próximas acciones.',
+        // icono: 'fa-lightbulb',
+        requeridos: [],
+        opcional: true,
+        completitud: (form) => {
+            const campos = [
+                form.recomendaciones?.cliente,
+                form.recomendaciones?.riesgos,
+                form.recomendaciones?.proximas,
+            ]
+            return porcentaje(campos.filter(listo).length, campos.length)
+        },
+        bloques: [
+            {
+                titulo: 'Recomendación para el cliente',
+                icono: 'fa-hand-holding-heart',
+                descripcion: 'Consejo o instrucción que debe seguir el cliente.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Textarea',
+                        label: 'Recomendación',
+                        placeholder: 'Ej: Realizar limpieza de filtros mensualmente...',
+                        vmodel: 'recomendaciones.cliente',
+                        tamaño: 'lg:col-span-12',
+                        rows: 4,
+                    },
+                ],
+            },
+            {
+                titulo: 'Riesgos identificados',
+                icono: 'fa-triangle-exclamation',
+                descripcion: 'Riesgos detectados que podrían afectar el equipo.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Textarea',
+                        label: 'Riesgos',
+                        placeholder: 'Ej: Desgaste avanzado en correa de transmisión...',
+                        vmodel: 'recomendaciones.riesgos',
+                        tamaño: 'lg:col-span-12',
+                        rows: 4,
+                    },
+                ],
+            },
+            {
+                titulo: 'Próximas acciones',
+                icono: 'fa-forward',
+                descripcion: 'Trabajos o revisiones recomendadas a futuro.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Textarea',
+                        label: 'Próximas acciones',
+                        placeholder: 'Ej: Programar cambio de rodamientos en próxima visita...',
+                        vmodel: 'recomendaciones.proximas',
+                        tamaño: 'lg:col-span-12',
+                        rows: 4,
+                    },
+                ],
+            },
+        ],
+    }
+
+    // ── Paso 6: Recibido (solo si el reporte queda finalizado) ──
+    const pasoRecibido = {
+        id: 'recibido',
+        nombre: 'Recibido',
+        titulo: 'Resultado y recibido',
+        descripcion: 'Define cómo queda el equipo y quién recibe el servicio.',
+        icono: 'fa-circle-check',
+        requeridos: ['resultado.estado', 'recibido.nombre', 'recibido.correo'],
+        bloques: [
+            {
+                // titulo: 'Resultado del mantenimiento',
+                // icono: 'fa-circle-check',
+                // descripcion: 'Define cómo queda el equipo después del servicio realizado.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Select',
+                        label: 'Resultado *',
+                        placeholder: 'Seleccione un resultado',
+                        name: 'resultado',
+                        id: 'resultado',
+                        options: [
+                            'Reparado',
+                            'Mantenimiento Realizado',
+                            'No Reparable',
+                            'Requiere Reemplazo',
+                            'Sin Falla',
+                        ],
+                        vmodel: 'resultado.estado',
+                        tamaño: 'lg:col-span-4',
+                    },
+                    {
+                        component: 'Input',
+                        type: 'text',
+                        label: 'Observación del resultado (opcional)',
+                        placeholder: 'Describe el resultado obtenido',
+                        name: 'observacionResultado',
+                        id: 'observacionResultado',
+                        vmodel: 'resultado.observacion',
+                        tamaño: 'lg:col-span-8',
+                    },
+                ],
+            },
+            {
+                titulo: 'Persona que recibe el equipo',
+                icono: 'fa-signature',
+                descripcion: 'Si no se registra una firma, se enviará un correo al responsable para completar la firma digital.',
+                grid: GRILLA_CAMPOS,
+                campos: [
+                    {
+                        component: 'Input',
+                        type: 'text',
+                        label: 'Nombre *',
+                        placeholder: 'Juan Pérez',
+                        id: 'nombre',
+                        name: 'nombre',
+                        tamaño: 'lg:col-span-4',
+                        minlength: 3,
+                        vmodel: 'recibido.nombre',
+                        upperCase: true,
+                    },
+                    {
+                        component: 'Input',
+                        type: 'text',
+                        label: 'Cargo (opcional)',
+                        placeholder: 'Gerente',
+                        id: 'cargo',
+                        name: 'cargo',
+                        tamaño: 'lg:col-span-4',
+                        minlength: 3,
+                        vmodel: 'recibido.cargo',
+                        upperCase: true,
+                    },
+                    {
+                        component: 'Input',
+                        type: 'email',
+                        label: 'Correo *',
+                        placeholder: 'correo@empresa.com',
+                        id: 'correo',
+                        name: 'correo',
+                        vmodel: 'recibido.correo',
+                        tamaño: 'lg:col-span-4',
+                    },
+                    {
+                        component: 'Dibujo',
+                        label: 'Firma (opcional)',
+                        vmodel: 'recibido.firma',
+                        tamaño: 'lg:col-span-12 flex justify-center pt-2',
+                    },
+                ],
+            },
+        ],
+    }
+
+    const secciones = [pasoChecklist, pasoElementos, pasoActividades, pasoEvidencia, pasoRecomendaciones]
+
+    if (esFinalizado) secciones.push(pasoRecibido)
+
+    // Validación global al enviar (último paso).
+    const camposRequeridos = ['actividades', 'reporte.estado']
+    if (esFinalizado) {
+        camposRequeridos.push('resultado.estado', 'recibido.nombre', 'recibido.correo')
+    }
+
+    // ─────────────────────────────────────────────
+    // ENSAMBLADO
+    // ─────────────────────────────────────────────
 
     builder
         .setStoreId(storeId)
         .setStorePinia(storePinia)
+        .setCamposRequeridos(camposRequeridos)
         .setFormularioFondo(true)
         .setFormularioShow(active)
-        .setFormularioTituloFormulario('Registrar Reporte de Mantenimiento')
+        .setFormularioTituloFormulario(
+            isEditing ? 'Editar Reporte de Mantenimiento' : 'Registrar Reporte de Mantenimiento'
+        )
         .setFormularioTipo('Wizard')
         .setFormulariotamaño('MD')
+        .setFormularioSecciones(secciones)
         .setBotones([
             { type: 'enviar', text: 'Siguiente', color: 'primary' },
             { type: 'cerrar', text: 'Atras', color: 'neutral', accion: cerrar },
         ])
-        .setFormularioContenedorCampos('grid lg:grid-cols-[20px_20px_20px_1fr_1fr_1fr_1fr_1fr] md:grid-cols-3! grid-cols-3!')
-    builder
-        .nuevaSeccion('Checklist de componentes')
 
-        // ─────────────────────────────────────────────
-        // ENCABEZADO DEL EQUIPO
-        // ─────────────────────────────────────────────
-        .addCampo({
-            component: 'Label',
-            text: `
-            <div class="flex items-center gap-3 py-3 px-1">
-                <div class="flex items-center justify-center
-                            w-9 h-9 rounded-lg
-                            bg-blue-50 dark:bg-blue-950/40
-                            text-blue-600 dark:text-blue-400">
-                    <i class="fa-solid fa-gear text-sm"></i>
-                </div>
+    const propiedades = builder.build()
 
-                <div class="min-w-0">
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Equipo
-                    </p>
+    propiedades.formulario.autoSave = true
+    propiedades.formulario.restaurarBorrador = !isEditing
+    propiedades.formulario.textoEnviar = 'Enviar reporte'
 
-                    <p class="text-lg md:text-xl font-semibold
-                              text-gray-900 dark:text-white truncate">
-                        ${reporteStore.Formulario.equipo.nombre}
-                    </p>
-                </div>
-            </div>
-        `,
-            tamaño: 'w-full col-span-3 lg:col-span-8'
-        })
-
-
-    for (let i = 0; i < sistemas.length; i++) {
-
-        const sistema = sistemas[i]
-
-        // ─────────────────────────────────────────────
-        // SISTEMA
-        // ─────────────────────────────────────────────
-        builder.addCampo({
-            component: 'Label',
-            text: `
-            <div class="
-                mt-5 mb-2
-                pb-2
-                border-b border-gray-200 dark:border-gray-800
-            ">
-                <p class="
-                    text-xs
-                    font-semibold
-                    uppercase
-                    tracking-wider
-                    text-gray-500
-                    dark:text-gray-400
-                ">
-                    ${sistema.nombre}
-                </p>
-            </div>
-        `,
-            tamaño: 'w-full col-span-3 lg:col-span-8'
-        })
-
-
-        for (let j = 0; j < sistema.componentes.length; j++) {
-
-            const componente = sistema.componentes[j]
-
-            // Inicializar estructura reactiva
-            if (!reporteStore.Formulario.componentes[componente.id]) {
-                reporteStore.Formulario.componentes[componente.id] = {
-                    estado: null,
-                    observacion: ''
-                }
-            }
-
-            // ─────────────────────────────────────────────
-            // CONTENEDOR DEL COMPONENTE
-            // ─────────────────────────────────────────────
-            builder.addCampo({
-                component: 'Label',
-                text: `
-                <div class="
-                    mt-3
-                    p-4
-                    rounded-xl
-                    border
-                    border-gray-200
-                    dark:border-gray-800
-                    bg-white
-                    dark:bg-gray-900/40
-                    shadow-sm
-                    hover:shadow-md
-                    transition-shadow
-                    duration-200
-                ">
-
-                    <div class="flex items-center justify-between gap-3 mb-2">
-
-                        <div class="min-w-0">
-                            <p class="
-                                text-sm
-                                font-semibold
-                                text-gray-900
-                                dark:text-white
-                                truncate
-                            ">
-                                <i class="fa-solid fa-circle-dot"></i>  ${componente.nombre}:
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="
-                        grid
-                        grid-cols-1
-                        lg:grid-cols-12
-                        gap-4
-                        items-start
-                    ">
-            `,
-                tamaño: 'w-full col-span-3 lg:col-span-8'
-            })
-
-
-            // ─────────────────────────────────────────────
-            // ESTADO
-            // ─────────────────────────────────────────────
-            builder.addCampo({
-                component: 'Checkbox',
-                label: 'Bueno',
-                vmodel: `componentes.${componente.id}.bueno`,
-                tamaño: 'w-fit lg:mt-5 lg:col-span-1 col-span-1',
-                options: [
-                    {
-                        label: 'Bueno',
-                        value: 'bueno'
-                    }
-                ],
-                events: {
-                    onChange: (value) => {
-                        seleccionarEstado(
-                            value,
-                            componente.id,
-                            'bueno'
-                        )
-                    }
-                }
-            })
-
-            builder.addCampo({
-                component: 'Checkbox',
-                label: 'Regular',
-                vmodel: `componentes.${componente.id}.regular`,
-                tamaño: 'w-min lg:mt-5 lg:col-span-1 col-span-1',
-                options: [
-                    {
-                        label: 'Regular',
-                        value: 'regular'
-                    }
-                ],
-                events: {
-                    onChange: (value) => {
-                        seleccionarEstado(
-                            value,
-                            componente.id,
-                            'regular'
-                        )
-                    }
-                }
-            })
-
-            builder.addCampo({
-                component: 'Checkbox',
-                label: 'Malo',
-                vmodel: `componentes.${componente.id}.malo`,
-                tamaño: 'w-min lg:mt-5 lg:col-span-1 col-span-1',
-                options: [
-                    {
-                        label: 'Malo',
-                        value: 'malo'
-                    }
-                ],
-                events: {
-                    onChange: (value) => {
-                        seleccionarEstado(
-                            value,
-                            componente.id,
-                            'malo'
-                        )
-                    }
-                }
-            })
-
-
-            // ─────────────────────────────────────────────
-            // OBSERVACIÓN
-            // ─────────────────────────────────────────────
-            builder.addCampo({
-                component: 'Input',
-                label: 'Observación',
-                placeholder: 'Agregar una observación...',
-                vmodel: `componentes.${componente.id}.observacion`,
-                tamaño: 'w-full lg:col-start-4 lg:col-span-5 col-span-3'
-            })
-
-
-            // ─────────────────────────────────────────────
-            // CIERRE VISUAL DEL COMPONENTE
-            // ─────────────────────────────────────────────
-            builder.addCampo({
-                component: 'Label',
-                text: `</div></div>`,
-                tamaño: 'w-full col-span-3 lg:col-span-8'
-            })
-        }
-    }
-
-    builder.nuevaSeccion('Elementos utilizados')
-
-    builder.addCampo({
-        component: 'GroupCampos',
-        labelGroup: 'Accesorios con los que cuenta',
-        value: [],
-        vmodel: 'accesorios',
-        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '', estado: '' } }],
-        campos: [
-            { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del accesorio' },
-            { typeCampo: 'Select', label: 'Estado', key: 'estado', name: 'estado', placeholder: 'Selecciona el estado', options: ['Bueno', 'Malo'] },
-        ],
-        containerCampos: 'grid grid-cols-2 gap-3',
-        tamaño: 'lg:col-span-8 col-span-3'
-    })
-
-    builder.addCampo({
-        component: 'GroupCampos',
-        labelGroup: 'Set/Equipo patron/Materiales Utilizados',
-        value: [],
-        vmodel: 'materiales',
-        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { descripcion: '', cantidad: '' } }],
-        campos: [
-            { typeCampo: 'Input', type: 'number', label: 'Cantidad', key: 'cantidad', name: 'cantidad', placeholder: '0' },
-            { typeCampo: 'Input', type: 'text', label: 'Descripción', key: 'descripcion', name: 'descripcion', placeholder: 'Descripcion' }
-        ],
-        containerCampos: 'grid grid-cols-2 gap-3',
-        tamaño: 'lg:col-span-8 col-span-3'
-    })
-
-    builder.addCampo({
-        component: 'GroupCampos',
-        labelGroup: 'Mediciones Realizadas',
-        value: [],
-        vmodel: 'mediciones',
-        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { variable: '', unidad: '', valor_medido: '', valor_esperado: '' } }],
-        campos: [
-            { typeCampo: 'Input', type: 'text', label: 'Unidad', key: 'unidad', name: 'unidad', placeholder: 'Centimetro' },
-            { typeCampo: 'Input', type: 'text', label: 'Variable', key: 'Variable', name: 'variable', placeholder: 'Neumatico' },
-            { typeCampo: 'Input', type: 'number', label: 'Valor Medido', key: 'valorMedidio', name: 'valor_medido', placeholder: '0' },
-            { typeCampo: 'Input', type: 'number', label: 'Valor Esperado', key: 'valorEsperado', name: 'valor_esperado', placeholder: '0' },
-        ],
-        containerCampos: 'grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3',
-        tamaño: 'lg:col-span-8 col-span-3'
-    })
-
-    builder.addCampo({
-        component: 'GroupCampos',
-        labelGroup: 'Repuestos/Accesorios Requeridos',
-        value: [],
-        vmodel: 'repuestos',
-        buttons: [{ icon: 'fa-solid fa-plus', label: 'Agregar', color: 'bg-blue-500', addItem: { nombre: '', } }],
-        campos: [
-            { typeCampo: 'Input', type: 'text', label: 'Nombre', key: 'nombre', name: 'nombre', placeholder: 'Nombre del repuesto' },
-        ],
-        tamaño: 'lg:col-span-8 col-span-3'
-    })
-
-        .nuevaSeccion('Actividades y observaciones')
-
-        .addCampo({
-            component: 'Label',
-            tamaño: 'lg:col-span-8 col-span-3',
-            text: `
-<div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
-
-    <div class="px-5 py-4 bg-linear-to-r from-primary-500/10 to-primary-500/5 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-                <i class="fa-solid fa-clipboard-list text-primary text-lg"></i>
-            </div>
-
-            <div>
-                <p class="font-semibold text-gray-900 dark:text-white">
-                    Actividades realizadas
-                </p>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Documenta el trabajo realizado durante el mantenimiento y cualquier observación importante.
-                </p>
-            </div>
-        </div>
-    </div>
-
-</div>
-`
-        })
-
-        .addCampo({
-            component: 'Textarea',
-            label: 'Actividades / Observaciones',
-            placeholder: 'Describe las actividades realizadas...',
-            vmodel: 'actividades',
-            tamaño: 'lg:col-span-8 col-span-3',
-            rows: 8
-        })
-
-        .addCampo({
-            component: 'Label',
-            tamaño: 'lg:col-span-8 col-span-3 pt-4',
-            text: `
-<div class="flex items-center gap-2">
-    <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-        <i class="fa-solid fa-list-check text-blue-600"></i>
-    </div>
-
-    <div>
-        <p class="font-semibold">
-            Estado del reporte
-        </p>
-
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-            Indica en qué etapa queda el reporte de mantenimiento.
-        </p>
-    </div>
-</div>
-`
-        })
-
-        .addCampo({
-            component: 'Select',
-            label: 'Estado del reporte *',
-            placeholder: 'Estado',
-            name: 'estado',
-            id: 'estado',
-            options: [
-                'En proceso',
-                'Esperando repuestos',
-                { label: 'Finalizado', value: 'realizada' }
-            ],
-            vmodel: 'reporte.estado',
-            tamaño: 'lg:col-span-1 md:col-span-1 col-span-3'
-        })
-
-        .addCampo({
-            component: 'Input',
-            type: 'text',
-            label: 'Observación (opcional)',
-            placeholder: 'Describe el motivo del estado seleccionado',
-            id: 'observacion',
-            name: 'observacion',
-            tamaño: 'lg:col-span-5 md:col-span-2 col-span-3',
-            vmodel: 'estado.observacion'
-        })
-
-
-
-    // Resumen de reporte de mantenimiento
-    //         .addCampo({
-    //             component: 'Label',
-    //             text: `
-    // <div class="w-full">
-
-    //     <div class="flex items-center gap-2 mb-3">
-    //         <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-    //             <i class="fa-solid fa-clipboard-check text-primary"></i>
-    //         </div>
-
-    //         <div>
-    //             <p class="text-xl font-bold text-gray-900 dark:text-white">
-    //                 Resumen del Reporte
-    //             </p>
-    //             <p class="text-sm text-gray-500 dark:text-gray-400">
-    //                 Verifica la información antes de finalizar el registro.
-    //             </p>
-    //         </div>
-    //     </div>
-
-    //     <div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-
-    //         <!-- Encabezado -->
-    //         <div class="bg-linear-to-r from-primary-500/10 to-primary-500/5 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-    //             <div class="flex items-center gap-2">
-    //                 <i class="fa-solid fa-file-signature text-primary"></i>
-    //                 <span class="font-semibold">
-    //                     Reporte listo para enviar
-    //                 </span>
-    //             </div>
-    //         </div>
-
-    //         <!-- Información principal -->
-    //         <div class="p-4 bg-white dark:bg-gray-800">
-
-    //             <div class="grid md:grid-cols-2 gap-3 mb-4">
-
-    //                 <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
-    //                     <p class="text-xs uppercase text-gray-500 mb-1">
-    //                         Equipo
-    //                     </p>
-    //                     <p class="font-semibold">
-    //                         ${reporteStore.Formulario.equipo.nombre}
-    //                     </p>
-    //                 </div>
-
-    //                 <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
-    //                     <p class="text-xs uppercase text-gray-500 mb-1">
-    //                         Cliente
-    //                     </p>
-    //                     <p class="font-semibold">
-    //                         ${reporteStore.Formulario.cliente?.nombre}
-    //                     </p>
-    //                 </div>
-
-    //             </div>
-
-    //             <!-- Métricas -->
-    //             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-
-    //                 <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-center">
-    //                     <div class="text-xl font-bold text-blue-600">
-    //                         ${Object.keys(reporteStore.Formulario.componentes ||{}).length}
-    //                     </div>
-    //                     <div class="text-xs text-gray-600 dark:text-gray-400">
-    //                         Componentes
-    //                     </div>
-    //                 </div>
-
-    //                 <div class="rounded-xl bg-green-50 dark:bg-green-950/30 p-3 text-center">
-    //                     <div class="text-xl font-bold text-green-600">
-    //                         ${reporteStore.Formulario.materiales?.length || 0}
-    //                     </div>
-    //                     <div class="text-xs text-gray-600 dark:text-gray-400">
-    //                         Materiales
-    //                     </div>
-    //                 </div>
-
-    //                 <div class="rounded-xl bg-purple-50 dark:bg-purple-950/30 p-3 text-center">
-    //                     <div class="text-xl font-bold text-purple-600">
-    //                         ${reporteStore.Formulario.mediciones?.length || 0}
-    //                     </div>
-    //                     <div class="text-xs text-gray-600 dark:text-gray-400">
-    //                         Mediciones
-    //                     </div>
-    //                 </div>
-
-    //                 <div class="rounded-xl bg-orange-50 dark:bg-orange-950/30 p-3 text-center">
-    //                     <div class="text-xl font-bold text-orange-600">
-    //                         ${reporteStore.Formulario.repuestos?.length || 0}
-    //                     </div>
-    //                     <div class="text-xs text-gray-600 dark:text-gray-400">
-    //                         Repuestos
-    //                     </div>
-    //                 </div>
-
-    //             </div>
-
-    //         </div>
-
-    //     </div>
-
-    //     <!-- Nota -->
-    //     <div class="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3">
-    //         <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
-
-    //         <div>
-    //             <p class="text-sm font-medium text-amber-700 dark:text-amber-300">
-    //                 Última revisión recomendada
-    //             </p>
-
-    //             <p class="text-xs text-gray-600 dark:text-gray-400">
-    //                 Una vez enviado, el reporte quedará registrado en el historial del equipo y podrá ser consultado posteriormente. Verifica que las observaciones, mediciones y materiales utilizados sean correctos.
-    //             </p>
-    //         </div>
-    //     </div>
-
-    // </div>
-    // `,
-    //             tamaño: 'w-full md:col-span-2 py-8'
-    //         })
-    if (reporteStore.Formulario.reporte.estado == 'realizada') {
-
-        builder
-            .nuevaSeccion('Recibido')
-            .addCampo({
-                component: 'Label',
-                tamaño: 'lg:col-span-8 col-span-3',
-                text: `
-<div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
-
-    <div class="px-5 py-4 bg-linear-to-r from-green-500/10 to-green-500/5 border-b border-gray-200 dark:border-gray-700">
-
-        <div class="flex items-center gap-3">
-
-            <div class="w-11 h-11 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <i class="fa-solid fa-circle-check text-green-600 text-lg"></i>
-            </div>
-
-            <div>
-                <p class="font-semibold text-gray-900 dark:text-white">
-                    Resultado del mantenimiento
-                </p>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Define cómo queda el equipo después del servicio realizado.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-`
-            })
-
-            .addCampo({
-                component: 'Select',
-                label: 'Resultado *',
-                placeholder: 'Seleccione un resultado',
-                name: 'estado',
-                id: 'estado',
-                options: [
-                    'Reparado',
-                    'Mantenimiento Realizado',
-                    'No Reparable',
-                    'Requiere Reemplazo',
-                    'Sin Falla'
-                ],
-                vmodel: 'resultado.estado',
-                tamaño: 'lg:col-span-1 md:col-span-3 col-span-3'
-            })
-
-            .addCampo({
-                component: 'Input',
-                type: 'text',
-                label: 'Observación del resultado (opcional)',
-                placeholder: 'Describe el resultado obtenido',
-                id: 'observacion',
-                name: 'observacion',
-                tamaño: 'lg:col-span-7 md:col-span-3 col-span-3',
-                vmodel: 'resultado.observacion'
-            })
-
-            .addCampo({
-                component: 'Label',
-                tamaño: 'lg:col-span-8 col-span-3 pt-4',
-                text: `
-<div class="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-
-    <div class="px-5 py-4 bg-linear-to-r from-amber-500/10 to-amber-500/5">
-
-        <div class="flex items-center gap-3">
-
-            <div class="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                <i class="fa-solid fa-signature text-amber-600"></i>
-            </div>
-
-            <div>
-
-                <p class="font-semibold">
-                    Persona que recibe el equipo
-                </p>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Si no se registra una firma, se enviará automáticamente un correo al responsable para completar la firma digital.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-`
-            })
-
-            .addCampo({
-                component: 'Input',
-                type: 'text',
-                label: 'Nombre *',
-                placeholder: 'Juan Pérez',
-                id: 'nombre',
-                name: 'nombre',
-                tamaño: 'lg:col-span-4 md:col-span-1 col-span-3',
-                minlength: 3,
-                vmodel: 'recibido.nombre',
-                upperCase: true
-            })
-
-            .addCampo({
-                component: 'Input',
-                type: 'text',
-                label: 'Cargo (opcional)',
-                placeholder: 'Gerente',
-                id: 'cargo',
-                name: 'cargo',
-                tamaño: 'lg:col-span-4 md:col-span-2 col-span-3',
-                minlength: 3,
-                vmodel: 'recibido.cargo',
-                upperCase: true
-            })
-
-            .addCampo({
-                component: 'Input',
-                type: 'email',
-                label: 'Correo *',
-                placeholder: 'correo@empresa.com',
-                id: 'correo',
-                name: 'correo',
-                tamaño: 'lg:col-span-8 col-span-3',
-                vmodel: 'recibido.correo',
-                multiple: true
-            })
-
-            .addCampo({
-                component: 'Dibujo',
-                label: 'Firma (opcional)',
-                tamaño: 'lg:col-span-8 col-span-3 flex justify-center pt-2',
-                rows: 5,
-                vmodel: 'recibido.firma'
-            })
-    }
-    return builder.build()
+    return propiedades
 }

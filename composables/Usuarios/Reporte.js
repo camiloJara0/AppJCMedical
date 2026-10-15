@@ -23,7 +23,8 @@ export function useReporteActions({
     store.Formulario.cita = reporte.cita || {};
     store.Formulario.cliente = reporte.cliente || {};
     store.Formulario.tecnico = reporte.tecnico || {};
-
+    store.Formulario.existing_image_urls = reporte.images || [];
+    console.log('Reporte a ver:', store.Formulario, reporte);
     store.showPDFReporte = true;
   };
 
@@ -39,6 +40,8 @@ export function useReporteActions({
     store.Formulario.Reporte.tecnico_id = Reporte.tecnino_id;
     store.Formulario.Reporte.tipo = Reporte.tipo;
 
+    // Estado en el formato que consumen el wizard y el payload (reporte.estado)
+    store.Formulario.reporte.estado = Reporte.estado;
 
     store.Formulario.materiales = Reporte.materiales || [];
     store.Formulario.mediciones = Reporte.mediciones || [];
@@ -52,6 +55,21 @@ export function useReporteActions({
     store.Formulario.estado.observacion = Reporte.historial_estados_reporte.at(-1).observaciones || '';
     store.Formulario.recibido = Reporte.firma_recibido || {};
     store.Formulario.recibido.correo = Reporte.cliente.correo
+
+    // Evidencia existente en el contrato del uploader: { id, url, descripcion, tamano }
+    store.Formulario.images = (Reporte.images || []).map((imagen) => ({
+        id: imagen.id,
+        url: imagen.url,
+        descripcion: imagen.descripcion || '',
+        tamano: imagen.tamano ?? imagen['tamaño'] ?? '50',
+    }));
+    store.Formulario.existing_image_urls = Reporte.images || [];
+
+    store.Formulario.recomendaciones = {
+        cliente: Reporte.recomendaciones_cliente || '',
+        riesgos: Reporte.riesgos_identificados || '',
+        proximas: Reporte.proximas_acciones || '',
+    };
 
     reporte.estado_componente.forEach(item => {
       store.Formulario.componentes[item.componente_id] = {

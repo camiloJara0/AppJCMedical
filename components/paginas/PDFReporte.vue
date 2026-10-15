@@ -186,6 +186,22 @@ const {
                                 <p class="text-sm whitespace-pre-wrap">{{ reporte.actividades.descripcion }}</p>
                             </div>
                         </div>
+
+                        <!-- Imagenes -->
+                        <div v-if="reporte.existing_image_urls?.length > 0" class="space-y-4">
+                            <h3 class="text-lg font-semibold text-blue-600 flex items-center gap-2">
+                                <i class="fa-solid fa-image"></i> Imagenes del Reporte
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div v-for="(img, idx) in reporte.existing_image_urls" :key="idx" class="border rounded-lg overflow-hidden relative">
+                                    <!-- cambiar tamaño de imagen -->
+                                     <div class="absolute top-1 left-1">
+                                        <i class="fa-solid fa-expand"></i>
+                                     </div>
+                                    <img :src="img.url" alt="Imagen del reporte" class="w-full h-auto object-cover">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <template #footer>

@@ -43,7 +43,13 @@ export const useReporteStore = defineStore('Reportes', {
             resultado: {
                 estado: '',
                 observacion: ''
-            }
+            },
+            recomendaciones: {
+                cliente: '',
+                riesgos: '',
+                proximas: ''
+            },
+            images: []
         },
         ReporteSeleccionado: null,
         showPDFReporte: false,
