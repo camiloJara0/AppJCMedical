@@ -40,7 +40,7 @@ const mergedProps = computed(() => {
       loading-auto
       :ui="{ rounded: 'rounded-2xl' }"
       :class="['w-full flex justify-center', mergedProps.class]"
-      @click="Propiedades.events?.onClick"
+      @click="Propiedades.events?.onClick?.()"
     >
       {{ mergedProps.label }}
       <slot />
@@ -58,7 +58,7 @@ const mergedProps = computed(() => {
         : 'bg-blue-500 hover:bg-blue-600 active:scale-95 text-white',
       mergedProps.class
     ]"
-    @click="emit('click', $event)"
+    @click="Propiedades.events?.onClick?.()"
   >
     <span v-if="mergedProps.icon" class="mr-2">
       <i :class="mergedProps.icon" />

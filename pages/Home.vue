@@ -38,6 +38,7 @@ onMounted(async () => {
   const ultimosReportes = await storeReportes.traer();
   reportes.value = ultimosReportes.slice(0,3)
   rol.value = varView.getRol
+  if(rol.value == 'SuperAdmin') navigateTo('/Backoffice')
   sessionStorage.removeItem('activeButton');
   sessionStorage.removeItem('seccionIdActivo')
   footer.cambiarSecciones([]);

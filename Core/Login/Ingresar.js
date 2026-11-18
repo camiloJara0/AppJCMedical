@@ -52,7 +52,9 @@ export const login = async (datos) => {
                 });
                 actualizarProgreso(100, 'completado')
 
-                if(data.user.rol === 'Admin'){
+                if(data.user.rol === 'SuperAdmin'){
+                    router.push('/Backoffice')
+                } else if(data.user.rol === 'Admin'){
                     const cotizacion = localStorage.getItem('cotizacion')
                     router.push( cotizacion ? cotizacion : '/Home')
                 } else {

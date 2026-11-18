@@ -70,7 +70,7 @@ const removeStorage = () => {
             </div>
 
             <ul class="navbar__content__list" @click="removeStorage()"
-                :class="{ 'mostrarResponsive': showNavbarBurguer, 'ocultarResponsive': !showNavbarBurguer, 'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico' }">
+                :class="{ 'mostrarResponsive': showNavbarBurguer, 'ocultarResponsive': !showNavbarBurguer, 'select-none hidden': !['Admin', 'Tecnico', 'SuperAdmin'].includes(rol) }">
                 <li>
                     <Breadcrumb />
                     <p class="text-gray-100 text-xs ml-1 font-semibold md:block hidden" @click="varView.showBreadCrumb = !varView.showBreadCrumb">

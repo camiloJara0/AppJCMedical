@@ -134,3 +134,59 @@ export const navMenuTecnico = [
         action: 'TipoEquipos'
     }
 ]
+
+export const navMenuSuperAdmin = [
+    {
+        id: 1,
+        nombre: 'Panel',
+        icono: 'fa-solid fa-gauge-high',
+        ruta: '/Backoffice',
+        action: 'Backoffice',
+        accesoRapido: true
+    },
+    {
+        id: 2,
+        nombre: 'Usuarios',
+        icono: 'fa-solid fa-users-gear',
+        ruta: '/Backoffice/Usuarios',
+        action: 'BackofficeUsuarios'
+    },
+    {
+        id: 3,
+        nombre: 'Roles',
+        icono: 'fa-solid fa-user-shield',
+        ruta: '/Backoffice/Roles',
+        action: 'BackofficeRoles'
+    },
+    {
+        id: 4,
+        nombre: 'Auditoría',
+        icono: 'fa-solid fa-clipboard-list',
+        ruta: '/Backoffice/Auditoria',
+        action: 'BackofficeAuditoria',
+        accesoRapido: true
+    },
+    {
+        id: 5,
+        nombre: 'Errores',
+        icono: 'fa-solid fa-bug',
+        ruta: '/Backoffice/Errores',
+        action: 'BackofficeErrores',
+        accesoRapido: true,
+    },
+    {
+        id: 6,
+        nombre: 'Métricas',
+        icono: 'fa-solid fa-chart-line',
+        ruta: '/Backoffice/Metricas',
+        action: 'BackofficeMetricas'
+    },
+    {
+        id: 7,
+        nombre: 'Sistema',
+        icono: 'fa-solid fa-server',
+        ruta: '/Backoffice/Sistema',
+        action: 'BackofficeSistema',
+        accesoRapido: true
+    }
+]

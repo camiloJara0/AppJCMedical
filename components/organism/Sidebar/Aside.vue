@@ -3,7 +3,7 @@ import { useShowNavbar } from '~/stores/navbarResponsive.js';
 import { useButtonsAside } from '~/stores/ButtonActive';
 import { storeToRefs } from 'pinia';
 import ButtonRounded from '~/components/atoms/Buttons/ButtonRounded.vue';
-import { navMenuAdmin, navMenuTecnico } from '~/data/navMenuStructure.js';
+import { navMenuAdmin, navMenuTecnico, navMenuSuperAdmin } from '~/data/navMenuStructure.js';
 import { useReporteStore } from '~/stores/Formularios/Reportes/Reporte';
 import { useCotizacionesStore } from '~/stores/Formularios/Cotizaciones';
 import { useCitasStore } from '~/stores/Formularios/citas/Cita';
@@ -31,12 +31,14 @@ onMounted(() => {
         // router.push('/')
     }
     buttons.value = storeAside.getbuttons(rol.value);
-    
-    reporteStore.traer(false, false)
-    citasStore.traer(false, false)
-    cotizacionesStore.traer(false, false)
+
+    if (rol.value !== 'SuperAdmin') {
+        reporteStore.traer(false, false)
+        citasStore.traer(false, false)
+        cotizacionesStore.traer(false, false)
+    }
     // Cargar menú según rol
-    navMenu.value = rol.value === 'Admin' ? navMenuAdmin : navMenuTecnico;
+    navMenu.value = menuPorRol(rol.value);
 });
 
 // Funcion para Responsive, si aside esta activo se oculta navbar
@@ -48,6 +50,15 @@ const cambiarEstadoFalse = () => {
 };
 
 const isActive = (path) => route.path === path
+
+const ROLES_PERMITIDOS = ['Admin', 'Tecnico', 'SuperAdmin']
+
+const menuPorRol = (valorRol) => {
+    if (valorRol === 'SuperAdmin') return navMenuSuperAdmin
+    if (valorRol === 'Admin') return navMenuAdmin
+    if (valorRol === 'Tecnico') return navMenuTecnico
+    return []
+}
 </script>
 
 <template>
@@ -59,7 +70,7 @@ const isActive = (path) => route.path === path
                 <!-- Estado colapsado -->
                 <div v-if="!varView.expandido"
                     class="menu-colapsado flex md:flex-col flex-row items-center justify-between md:h-screen md:w-16 md:py-4 pb-2 overflow-y-auto"
-                    :class="{ 'select-none hidden': rol !== 'Admin' && rol !== 'Tecnico' }">
+                    :class="{ 'select-none hidden': !ROLES_PERMITIDOS.includes(rol) }">
 
                     <!-- Botón expandir -->
                     <ButtonRounded @click="() => {
